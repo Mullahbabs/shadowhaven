@@ -1,0 +1,1400 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    />
+    <title>▷ SHADOWHAVEN MARKET | dark tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
+      body {
+        background: #0a0c0f;
+        font-family: "Inter", system-ui, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        color: #e5e7eb;
+        background-image: radial-gradient(
+          rgba(30, 40, 55, 0.3) 1px,
+          transparent 1px
+        );
+        background-size: 30px 30px;
+      }
+      .mono-text {
+        font-family: "JetBrains Mono", monospace;
+      }
+      .glass-panel {
+        background: rgba(10, 15, 22, 0.8);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1px solid rgba(70, 130, 180, 0.15);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      }
+      .neon-border {
+        border: 1px solid rgba(0, 255, 196, 0.2);
+        box-shadow: 0 0 10px rgba(0, 255, 196, 0.08);
+      }
+      .scrollbar-thin::-webkit-scrollbar {
+        width: 5px;
+      }
+      .scrollbar-thin::-webkit-scrollbar-track {
+        background: #0e1219;
+      }
+      .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #2a3a4a;
+        border-radius: 10px;
+      }
+      .modal-overlay {
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(6px);
+      }
+      input,
+      textarea,
+      select {
+        background: rgba(20, 28, 38, 0.9);
+        border: 1px solid rgba(70, 130, 180, 0.25);
+        color: #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 0.6rem 0.8rem;
+        outline: none;
+        transition: border 0.2s;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: rgba(0, 230, 180, 0.6);
+        box-shadow: 0 0 8px rgba(0, 230, 180, 0.15);
+      }
+      .wallet-box {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+      }
+      @keyframes ticker {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      .ticker-wrapper {
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .ticker-content {
+        display: inline-block;
+        animation: ticker 35s linear infinite;
+      }
+      .loading-spinner {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 0.6s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div id="root"></div>
+
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+    ></script>
+
+    <script type="text/babel">
+      const { useState, useEffect, useCallback } = React;
+
+      // ---------- EmailJS Init (credentials placeholder) ----------
+      (function () {
+        try {
+          emailjs.init("YOUR_PUBLIC_KEY"); // <-- REPLACE WITH YOUR PUBLIC KEY
+        } catch (e) {
+          console.warn(
+            "EmailJS not configured – success modal will still appear.",
+          );
+        }
+      })();
+
+      // ---------- Extensive Product Database (35+ tools) ----------
+      const PRODUCTS = [
+        // REMOTE ACCESS (RATs)
+        {
+          id: 1,
+          name: "BlackPhantom RAT",
+          category: "Remote Access",
+          price: 0.084,
+          crypto: "BTC",
+          shortDesc: "FUD crypted RAT, polymorphic engine, reverse proxy.",
+          rating: 4.8,
+          img: "🕳️",
+          fullDesc:
+            "BlackPhantom RAT is a fully undetectable remote access trojan designed for persistent control over target machines. Features include keylogging, screen capture, file exfiltration, reverse proxy, and encrypted C2 communication. Bypasses Windows Defender and major AVs through polymorphic code injection. Includes builder with customizable install vectors and anti-VM detection.",
+        },
+        {
+          id: 2,
+          name: "DarkCrystal RAT",
+          category: "Remote Access",
+          price: 0.062,
+          crypto: "ETH",
+          shortDesc: "Modular RAT with plugin support & webcam grab.",
+          rating: 4.6,
+          img: "🦎",
+          fullDesc:
+            "Modular architecture allows custom plugin development. Features webcam grab, audio capture, persistence via WMI, and registry manipulation. Encrypted configuration stored in alternate data streams. Compatible with Windows 10/11 and Server editions.",
+        },
+        {
+          id: 3,
+          name: "VenomRAT+",
+          category: "Remote Access",
+          price: 0.095,
+          crypto: "USDT",
+          shortDesc: "HVNC + reverse proxy + browser credential dumper.",
+          rating: 4.7,
+          img: "🐍",
+          fullDesc:
+            "Hidden Virtual Network Computing for stealthy desktop control. Includes SOCKS5 proxy, browser credential dumper, and cryptocurrency wallet extractor. Bypasses UAC via fodhelper.exe technique. Monthly stub updates to maintain FUD status.",
+        },
+        {
+          id: 4,
+          name: "AsyncRAT Mod",
+          category: "Remote Access",
+          price: 0.045,
+          crypto: "BTC",
+          shortDesc: "AES-256 encryption, anti-VM, USB spreader.",
+          rating: 4.3,
+          img: "🐀",
+          fullDesc:
+            "Modified AsyncRAT with AES-256 encryption for configuration and communication. Anti-VM detection prevents analysis in sandboxes. USB spreader module infects removable drives. Includes keylogger with offline storage and email exfiltration.",
+        },
+        {
+          id: 5,
+          name: "NjRAT Gold",
+          category: "Remote Access",
+          price: 0.038,
+          crypto: "ETH",
+          shortDesc:
+            "Process hollowing, registry persistence, encrypted config.",
+          rating: 4.2,
+          img: "🦅",
+          fullDesc:
+            "Updated NjRAT with process hollowing into legitimate processes, registry persistence via Active Setup, and encrypted configuration files. Includes remote shell, file manager, and process killer. Lightweight stub (~50KB).",
+        },
+        {
+          id: 6,
+          name: "QuasarRAT EX",
+          category: "Remote Access",
+          price: 0.071,
+          crypto: "USDT",
+          shortDesc: "Enterprise RAT framework, IPv6 & Tor support.",
+          rating: 4.9,
+          img: "💻",
+          fullDesc:
+            "Full-featured RAT with task manager, file explorer, registry editor, and remote shell. Supports IPv6 and Tor for anonymized C2. Includes certificate manager for signing payloads. Reverse proxy with custom SSL pinning.",
+        },
+
+        // CREDENTIAL HARVESTING
+        {
+          id: 7,
+          name: "EtherStealth Grabber",
+          category: "Credential Harvesting",
+          price: 0.032,
+          crypto: "ETH",
+          shortDesc: "Multi-chain wallet drainer + session cookie stealer.",
+          rating: 4.5,
+          img: "🦊",
+          fullDesc:
+            "Targets browser-based cryptocurrency wallets (MetaMask, TrustWallet, Phantom) and exchanges. Extracts saved credentials, session cookies, and autofill data. The grabber module hooks into Web3 injection to approve malicious transactions. Delivered via obfuscated JS payload.",
+        },
+        {
+          id: 8,
+          name: "RedLine Stealer",
+          category: "Credential Harvesting",
+          price: 0.028,
+          crypto: "BTC",
+          shortDesc: "Browser & FTP credential stealer, VPN config grabber.",
+          rating: 4.6,
+          img: "🔴",
+          fullDesc:
+            "Harvests saved passwords, cookies, credit cards from Chromium and Firefox browsers. Also grabs VPN configurations, FTP credentials from FileZilla, and Discord tokens. Exfiltrates via Telegram bot API or custom webhook.",
+        },
+        {
+          id: 9,
+          name: "Vidar Infostealer",
+          category: "Credential Harvesting",
+          price: 0.041,
+          crypto: "USDT",
+          shortDesc: "2FA bypass via session tokens, wallet extraction.",
+          rating: 4.7,
+          img: "🎭",
+          fullDesc:
+            "Bypasses two-factor authentication by stealing authenticated session tokens. Extracts desktop cryptocurrency wallets (Exodus, Electrum, Atomic) and Telegram sessions. Includes desktop screenshot capture and geo-IP lookup.",
+        },
+        {
+          id: 10,
+          name: "Raccoon Stealer v2",
+          category: "Credential Harvesting",
+          price: 0.055,
+          crypto: "ETH",
+          shortDesc: "Cloud-based stealer with web panel, 60+ app support.",
+          rating: 4.4,
+          img: "🦝",
+          fullDesc:
+            "SaaS credential stealer with web-based management panel. Auto-updating grabber modules for 60+ applications including browsers, email clients, and VPNs. Includes traffic analysis and logging with search functionality.",
+        },
+        {
+          id: 11,
+          name: "AzorUlt Sentinel",
+          category: "Credential Harvesting",
+          price: 0.067,
+          crypto: "BTC",
+          shortDesc: "Banking trojan with web injects + info stealer.",
+          rating: 4.8,
+          img: "🏦",
+          fullDesc:
+            "Targets banking portals with custom web injects for real-time credential interception. Also functions as a general info stealer with exfiltration over DNS tunneling. Includes man-in-the-browser attack modules for Chrome and Firefox.",
+        },
+
+        // EXPLOIT SCRIPTS
+        {
+          id: 12,
+          name: "SQLi Inferno Map",
+          category: "Exploit Scripts",
+          price: 0.019,
+          crypto: "BTC",
+          shortDesc: "Automated SQL injection, multithreaded, proxy rotation.",
+          rating: 4.6,
+          img: "🗂️",
+          fullDesc:
+            "Detects and exploits SQL injection vulnerabilities. Supports MySQL, MSSQL, PostgreSQL, and Oracle. Features include database enumeration, table dumping, file read/write, and OS command execution via stacked queries. Multithreaded with automatic proxy rotation.",
+        },
+        {
+          id: 13,
+          name: "XSS Hunter Pro",
+          category: "Exploit Scripts",
+          price: 0.023,
+          crypto: "ETH",
+          shortDesc: "Blind XSS detection, DOM-based, WAF bypass payloads.",
+          rating: 4.5,
+          img: "🎯",
+          fullDesc:
+            "Automated XSS scanning with DOM-based and stored XSS detection. Includes payload generator with WAF bypass techniques. Integrates with collaborative XSS servers for blind XSS confirmation.",
+        },
+        {
+          id: 14,
+          name: "RFI/LFI Scanner",
+          category: "Exploit Scripts",
+          price: 0.017,
+          crypto: "USDT",
+          shortDesc: "Remote & local file inclusion, PHP wrapper support.",
+          rating: 4.3,
+          img: "📂",
+          fullDesc:
+            "Scans for file inclusion vulnerabilities. Supports PHP wrappers (php://filter, data://), log poisoning, and /proc/self/environ techniques. Includes null byte injection and path truncation attacks.",
+        },
+        {
+          id: 15,
+          name: "Command Injection Kit",
+          category: "Exploit Scripts",
+          price: 0.026,
+          crypto: "BTC",
+          shortDesc: "OS command injection, reverse shell payloads.",
+          rating: 4.7,
+          img: "💉",
+          fullDesc:
+            "Detects blind and verbose command injection vulnerabilities. Includes reverse shell payloads for Windows (PowerShell) and Linux (Bash/Netcat). Supports time-based detection and out-of-band exfiltration via DNS.",
+        },
+        {
+          id: 16,
+          name: "XXE Exploiter",
+          category: "Exploit Scripts",
+          price: 0.031,
+          crypto: "ETH",
+          shortDesc: "XML External Entity attack, SSRF chaining.",
+          rating: 4.4,
+          img: "📄",
+          fullDesc:
+            "Automated XXE detection with out-of-band exfiltration via FTP/HTTP. Includes SSRF chaining module to pivot into internal networks. Supports parameter entities and CDATA wrapping.",
+        },
+
+        // ANONYMITY
+        {
+          id: 17,
+          name: "PhantomVPN Configs",
+          category: "Anonymity",
+          price: 0.011,
+          crypto: "USDT",
+          shortDesc: "WireGuard obfuscated, multi-hop, no logs.",
+          rating: 4.9,
+          img: "🔐",
+          fullDesc:
+            "Pre-configured WireGuard profiles routed through multi-hop obfuscated servers. No logs policy verified by independent audit. Includes killswitch, DNS leak protection, and split tunneling. Servers located in privacy-friendly jurisdictions. Configs updated weekly to avoid blacklisting.",
+        },
+        {
+          id: 18,
+          name: "Tor Bridge Kit",
+          category: "Anonymity",
+          price: 0.009,
+          crypto: "BTC",
+          shortDesc: "Obfs4 bridges for censored regions, DPI bypass.",
+          rating: 4.6,
+          img: "🧅",
+          fullDesc:
+            "Pre-configured Tor bridges with obfs4 and meek transports. Bypasses Deep Packet Inspection and national firewalls. Includes automatic bridge rotation and connection troubleshooting scripts.",
+        },
+        {
+          id: 19,
+          name: "MAC Changer Pro",
+          category: "Anonymity",
+          price: 0.006,
+          crypto: "ETH",
+          shortDesc: "Spoof MAC on all interfaces, auto vendor lookup.",
+          rating: 4.4,
+          img: "🖧",
+          fullDesc:
+            "Randomizes MAC addresses on boot for all network interfaces. Supports Windows, Linux, and macOS with automatic vendor OUI lookup to generate realistic addresses. Includes persistence scripts.",
+        },
+        {
+          id: 20,
+          name: "DNSCrypt Proxy",
+          category: "Anonymity",
+          price: 0.004,
+          crypto: "USDT",
+          shortDesc: "Encrypted DNS with DoH/DoT, malware blocking.",
+          rating: 4.7,
+          img: "🔒",
+          fullDesc:
+            "Encrypts all DNS queries using DNSCrypt, DNS-over-HTTPS, or DNS-over-TLS. Blocks tracking, malware, and advertising domains using regularly updated blocklists. Includes caching for performance.",
+        },
+
+        // FINANCIAL OBFUSCATION
+        {
+          id: 21,
+          name: "CryptoMixer API",
+          category: "Financial Obfuscation",
+          price: 0.065,
+          crypto: "BTC",
+          shortDesc: "High-throughput tumbler, CoinJoin, instant settlement.",
+          rating: 4.4,
+          img: "🌀",
+          fullDesc:
+            "API access to a high-throughput cryptocurrency mixing service. Supports Bitcoin, Ethereum, and Monero. Uses CoinJoin and zero-knowledge proofs for untraceable transactions. Minimum mix 0.01 BTC, instant settlement after 3 confirmations. No logs retained.",
+        },
+        {
+          id: 22,
+          name: "MoneroSwap",
+          category: "Financial Obfuscation",
+          price: 0.048,
+          crypto: "ETH",
+          shortDesc: "Cross-chain atomic swap to XMR, no KYC.",
+          rating: 4.5,
+          img: "🔄",
+          fullDesc:
+            "Atomic swap protocol to exchange BTC or ETH for Monero. Decentralized order book with no KYC requirements. Uses hash time-locked contracts (HTLCs) for trustless swaps.",
+        },
+        {
+          id: 23,
+          name: "TornadoCash CLI",
+          category: "Financial Obfuscation",
+          price: 0.037,
+          crypto: "USDT",
+          shortDesc: "Command-line interface for Tornado Cash privacy pools.",
+          rating: 4.3,
+          img: "🌪️",
+          fullDesc:
+            "Script to interact with Tornado Cash smart contracts from the command line. Supports ETH and ERC-20 token deposits and withdrawals with customizable anonymity sets.",
+        },
+
+        // EXPLOIT ACQUISITION
+        {
+          id: 24,
+          name: "ZeroDay Broker Access",
+          category: "Exploit Acquisition",
+          price: 0.29,
+          crypto: "ETH",
+          shortDesc: "Curated private 0day list, monthly updated catalog.",
+          rating: 4.7,
+          img: "💣",
+          fullDesc:
+            "Access to a vetted broker network offering private zero-day exploits for Windows, Linux, iOS, and Android. Includes detailed vulnerability analysis, proof-of-concept code, and delivery vectors. Monthly subscription grants updated catalog.",
+        },
+        {
+          id: 25,
+          name: "ExploitDB Premium",
+          category: "Exploit Acquisition",
+          price: 0.18,
+          crypto: "BTC",
+          shortDesc: "Verified exploits with PoC, CVE-2020 to CVE-2025.",
+          rating: 4.8,
+          img: "📚",
+          fullDesc:
+            "Curated database of working exploits with proof-of-concept code. Covers CVEs from 2020 through 2025. Each entry includes environment setup, usage instructions, and affected version matrix.",
+        },
+        {
+          id: 26,
+          name: "Bug Bounty Intel",
+          category: "Exploit Acquisition",
+          price: 0.22,
+          crypto: "USDT",
+          shortDesc: "Leaked private bug reports, critical vulnerabilities.",
+          rating: 4.6,
+          img: "🐛",
+          fullDesc:
+            "Collection of leaked bug bounty reports with reproduction steps. Includes critical vulnerabilities in major platforms, API endpoints, and authentication bypass techniques.",
+        },
+
+        // PHISHING
+        {
+          id: 27,
+          name: "ClonePhish Kit",
+          category: "Phishing",
+          price: 0.022,
+          crypto: "USDT",
+          shortDesc: "AI-generated phishing pages, MFA interception.",
+          rating: 4.3,
+          img: "🎣",
+          fullDesc:
+            "ClonePhish uses AI to replicate target login pages with pixel-perfect accuracy. Includes reverse proxy for real-time credential capture, MFA token interception, and session hijacking. Anti-bot detection and geolocation targeting. Templates for 50+ major services.",
+        },
+        {
+          id: 28,
+          name: "EvilGophish",
+          category: "Phishing",
+          price: 0.034,
+          crypto: "BTC",
+          shortDesc: "Gophish fork with landing page cloning, automation.",
+          rating: 4.6,
+          img: "📧",
+          fullDesc:
+            "Modified Gophish with automatic landing page cloning, email campaign scheduling, and real-time credential capture dashboard. Includes bypass for Microsoft Safe Links and URL rewriting.",
+        },
+        {
+          id: 29,
+          name: "SMSCaster",
+          category: "Phishing",
+          price: 0.028,
+          crypto: "ETH",
+          shortDesc: "Bulk SMS phishing platform, spoofed sender IDs.",
+          rating: 4.2,
+          img: "📱",
+          fullDesc:
+            "Bulk SMS sender with spoofed alphanumeric sender IDs. Templates for banking, delivery, and tax scams. Includes link shortener with click tracking and geo-redirection.",
+        },
+        {
+          id: 30,
+          name: "Vishing AI Bot",
+          category: "Phishing",
+          price: 0.051,
+          crypto: "USDT",
+          shortDesc: "AI voice phishing, natural conversation, multi-language.",
+          rating: 4.4,
+          img: "🤖",
+          fullDesc:
+            "Text-to-speech voice phishing bot powered by large language models. Maintains natural conversation flow for social engineering. Supports multiple languages and regional accents. Includes call recording and transcription.",
+        },
+
+        // NETWORK TOOLS
+        {
+          id: 31,
+          name: "DDoS-Stresser VIP",
+          category: "Network Tools",
+          price: 0.045,
+          crypto: "BTC",
+          shortDesc: "L7/L4 attack panel, 100+ Gbps, Cloudflare bypass.",
+          rating: 4.2,
+          img: "⚡",
+          fullDesc:
+            "Cloud-based stress testing panel with Layer 7 (HTTP/HTTPS) and Layer 4 (SYN, UDP, ICMP) amplification. 100+ Gbps capacity. Bypasses Cloudflare UAM and DDoS-GUARD. 1-hour attack slots with target geolocation.",
+        },
+        {
+          id: 32,
+          name: "Port Scanner Elite",
+          category: "Network Tools",
+          price: 0.013,
+          crypto: "ETH",
+          shortDesc: "Stealth SYN scanner, decoy & idle scan techniques.",
+          rating: 4.5,
+          img: "🔍",
+          fullDesc:
+            "Multi-threaded port scanner with SYN stealth, decoy scanning, and idle scan techniques. Service version detection and OS fingerprinting. Outputs to multiple formats (XML, JSON, grepable).",
+        },
+        {
+          id: 33,
+          name: "Packet Sniffer Pro",
+          category: "Network Tools",
+          price: 0.019,
+          crypto: "USDT",
+          shortDesc: "Deep packet inspection, ARP spoofing, session hijack.",
+          rating: 4.7,
+          img: "📡",
+          fullDesc:
+            "Captures and analyzes live network traffic. Supports ARP spoofing for MITM attacks, DNS poisoning, and TCP session hijacking. Includes protocol dissectors for HTTP, FTP, SMTP, and custom protocols.",
+        },
+        {
+          id: 34,
+          name: "Botnet C2 Panel",
+          category: "Network Tools",
+          price: 0.12,
+          crypto: "BTC",
+          shortDesc: "Web-based C2 dashboard, HTTP/DNS tunneling.",
+          rating: 4.1,
+          img: "🕸️",
+          fullDesc:
+            "Web-based command and control panel for managing distributed botnet nodes. Supports HTTP, HTTPS, and DNS tunneling with encrypted communications. Includes task scheduler, geo-distribution map, and automated spreading modules.",
+        },
+        {
+          id: 35,
+          name: "WiFi Cracker Suite",
+          category: "Network Tools",
+          price: 0.036,
+          crypto: "ETH",
+          shortDesc: "WPA3/WPA2 cracking, PMKID attack, handshake capture.",
+          rating: 4.4,
+          img: "📶",
+          fullDesc:
+            "Hashcat-based WiFi cracking toolkit with custom wordlists and rule sets. PMKID attack for WPA3 transition mode. Includes handshake capture and deauthentication tools. GPU-accelerated with multi-device support.",
+        },
+      ];
+
+      const CATEGORIES = ["All", ...new Set(PRODUCTS.map((p) => p.category))];
+
+      // ---------- Wallet Addresses ----------
+      const WALLETS = {
+        BTC: {
+          address: "15hLEAL4SWJLJgNUwTnWo8Xmy54U41ZG7r",
+          network: "Bitcoin Network",
+        },
+        ETH: {
+          address: "0x14325a3d0b6af8689836f7a0f3f8acb51411af60",
+          network: "Ethereum (ERC-20)",
+        },
+        USDT: {
+          address: "TVd666M5AuGrJMXH3QrG6MPgyS7vpZe61T",
+          network: "Tron USDT / TRC20",
+        },
+      };
+
+      // ---------- Trust Ticker ----------
+      const TICKER_MESSAGES = [
+        "🔒 PGP signed communications available • ",
+        "⭐ 4.7/5 average vendor rating across 12,000+ transactions • ",
+        "🛡️ Escrow protection on all orders above 0.05 BTC • ",
+        "💬 24/7 encrypted support via Session messenger • ",
+        "✅ Multi-sig wallets for large transactions • ",
+        "🚫 No KYC/AML – privacy by design • ",
+        "🔄 Instant delivery upon payment confirmation • ",
+        "🌍 Servers in privacy-friendly jurisdictions • ",
+      ];
+
+      const formatCrypto = (val, symbol) => `${val.toFixed(3)} ${symbol}`;
+
+      const useLocalStorage = (key, initialValue) => {
+        const [storedValue, setStoredValue] = useState(() => {
+          try {
+            const item = window.localStorage.getItem(key);
+            return item ? JSON.parse(item) : initialValue;
+          } catch (e) {
+            return initialValue;
+          }
+        });
+        const setValue = (value) => {
+          try {
+            const valueToStore =
+              value instanceof Function ? value(storedValue) : value;
+            setStoredValue(valueToStore);
+            window.localStorage.setItem(key, JSON.stringify(valueToStore));
+          } catch (e) {
+            console.error("localStorage error", e);
+          }
+        };
+        return [storedValue, setValue];
+      };
+
+      const ShadowHaven = () => {
+        const [cart, setCart] = useLocalStorage("shadow_cart", []);
+        const [wishlist, setWishlist] = useLocalStorage("shadow_wishlist", []);
+        const [selectedCategory, setSelectedCategory] = useState("All");
+        const [showCartPanel, setShowCartPanel] = useState(false);
+        const [showWishPanel, setShowWishPanel] = useState(false);
+        const [showTerms, setShowTerms] = useState(false);
+        const [showCheckout, setShowCheckout] = useState(false);
+        const [showSuccess, setShowSuccess] = useState(false);
+        const [showQuickview, setShowQuickview] = useState(null);
+        const [notification, setNotification] = useState(null);
+        const [checkoutAgreed, setCheckoutAgreed] = useState(false);
+        const [paymentLoading, setPaymentLoading] = useState(false);
+
+        const filteredProducts =
+          selectedCategory === "All"
+            ? PRODUCTS
+            : PRODUCTS.filter((p) => p.category === selectedCategory);
+
+        const addToCart = useCallback((p) => {
+          setCart((prev) => {
+            const ex = prev.find((i) => i.id === p.id);
+            if (ex)
+              return prev.map((i) =>
+                i.id === p.id ? { ...i, qty: i.qty + 1 } : i,
+              );
+            return [...prev, { ...p, qty: 1 }];
+          });
+          setNotification(`✔ Added ${p.name} to cart`);
+        }, []);
+        const removeFromCart = useCallback(
+          (id) => setCart((prev) => prev.filter((i) => i.id !== id)),
+          [],
+        );
+        const clearCart = useCallback(() => setCart([]), []);
+        const toggleWishlist = useCallback((p) => {
+          setWishlist((prev) => {
+            if (prev.find((i) => i.id === p.id)) {
+              setNotification(`Removed ${p.name} from wishlist`);
+              return prev.filter((i) => i.id !== p.id);
+            } else {
+              setNotification(`❤ Added ${p.name} to wishlist`);
+              return [...prev, p];
+            }
+          });
+        }, []);
+        const isInWishlist = (id) => wishlist.some((i) => i.id === id);
+        const cartItemCount = cart.reduce((s, i) => s + i.qty, 0);
+
+        useEffect(() => {
+          if (notification) {
+            const t = setTimeout(() => setNotification(null), 2500);
+            return () => clearTimeout(t);
+          }
+        }, [notification]);
+        useEffect(() => {
+          if (showCheckout) setCheckoutAgreed(false);
+        }, [showCheckout]);
+
+        const handleCheckoutSubmit = async (e) => {
+          e.preventDefault();
+          setPaymentLoading(true);
+          const form = e.target;
+          const email = form.email.value.trim();
+          const social = form.social.value.trim();
+          if (!email) {
+            setNotification("Email required for payment confirmation.");
+            setPaymentLoading(false);
+            return;
+          }
+
+          const cartSummary = cart
+            .map(
+              (i) => `${i.name} x${i.qty} (${formatCrypto(i.price, i.crypto)})`,
+            )
+            .join(", ");
+          const total = cart
+            .reduce((a, i) => a + i.price * i.qty, 0)
+            .toFixed(4);
+          const params = {
+            user_email: email,
+            social_media: social || "Not provided",
+            cart_items: cartSummary,
+            total_crypto: total,
+            btc_wallet: WALLETS.BTC.address,
+            eth_wallet: WALLETS.ETH.address,
+            usdt_wallet: WALLETS.USDT.address,
+          };
+
+          // Attempt EmailJS – but success modal fires regardless
+          try {
+            await emailjs.send(
+              "YOUR_SERVICE_ID",
+              "YOUR_CHECKOUT_TEMPLATE_ID",
+              params,
+            );
+          } catch (err) {
+            console.warn(
+              "EmailJS send failed (continuing to success modal):",
+              err,
+            );
+          }
+
+          setPaymentLoading(false);
+          setShowCheckout(false);
+          setShowSuccess(true);
+          clearCart();
+        };
+
+        const handleContactSubmit = async (e) => {
+          e.preventDefault();
+          const form = e.target;
+          const reason = form.reason.value;
+          const desc = form.description.value.trim();
+          const email = form.email.value.trim();
+          const social = form.social.value.trim();
+          if (!desc || !email) {
+            setNotification("Description and email are required.");
+            return;
+          }
+          const params = {
+            reason,
+            description: desc,
+            user_email: email,
+            social_media: social || "N/A",
+          };
+          try {
+            await emailjs.send(
+              "YOUR_SERVICE_ID",
+              "YOUR_CONTACT_TEMPLATE_ID",
+              params,
+            );
+            setNotification(
+              "✔ Request submitted. We'll reach out if we can source it.",
+            );
+            form.reset();
+          } catch (err) {
+            setNotification(
+              "✔ Request received (offline mode). We'll review it.",
+            );
+            form.reset();
+          }
+        };
+
+        const handleContinueShopping = () => {
+          setShowSuccess(false);
+          clearCart();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        // ---------- MODALS ----------
+        const TermsModal = () => (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay"
+            onClick={() => setShowTerms(false)}
+          >
+            <div
+              className="glass-panel rounded-2xl max-w-2xl w-full p-6 border border-gray-700 max-h-[85vh] overflow-y-auto scrollbar-thin"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between mb-4">
+                <h2 className="text-xl font-bold mono-text text-emerald-400">
+                  <i className="fas fa-skull mr-2"></i>Terms & Operational
+                  Silence
+                </h2>
+                <button
+                  onClick={() => setShowTerms(false)}
+                  className="text-gray-400 hover:text-white text-2xl"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="space-y-3 text-sm text-gray-300">
+                <p>
+                  <span className="text-emerald-300 font-semibold">1.</span> No
+                  physical address. Crypto only.
+                </p>
+                <p>
+                  <span className="text-emerald-300 font-semibold">2.</span>{" "}
+                  BTC, ETH, USDT accepted. No refunds.
+                </p>
+                <p>
+                  <span className="text-emerald-300 font-semibold">3.</span> We
+                  don't store IPs or personal data. PGP disputes only.
+                </p>
+                <p className="text-red-400/80 italic mt-4">
+                  <i className="fas fa-exclamation-triangle"></i> Tools are for
+                  educational/research purposes only.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowTerms(false)}
+                className="mt-6 w-full bg-gray-800 hover:bg-gray-700 py-2 rounded-lg"
+              >
+                I understand
+              </button>
+            </div>
+          </div>
+        );
+
+        const QuickviewModal = () => {
+          if (!showQuickview) return null;
+          const p = showQuickview;
+          return (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay"
+              onClick={() => setShowQuickview(null)}
+            >
+              <div
+                className="glass-panel rounded-2xl max-w-lg w-full p-6 border border-emerald-800/40 max-h-[85vh] overflow-y-auto scrollbar-thin"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-4xl">{p.img}</span>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">{p.name}</h3>
+                      <span className="text-xs text-emerald-400 bg-emerald-900/30 px-2 py-0.5 rounded">
+                        {p.category}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowQuickview(null)}
+                    className="text-gray-400 hover:text-white text-2xl"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="bg-black/30 p-4 rounded-xl border border-gray-700 mb-4">
+                  <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-line">
+                    {p.fullDesc}
+                  </p>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="mono-text text-amber-300 font-bold">
+                    {formatCrypto(p.price, p.crypto)}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    <i className="fas fa-star text-yellow-500"></i> {p.rating}
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    addToCart(p);
+                    setShowQuickview(null);
+                  }}
+                  className="mt-4 w-full bg-emerald-800/70 hover:bg-emerald-700 text-white py-2 rounded-lg"
+                >
+                  <i className="fas fa-cart-plus mr-2"></i>Add to Cart
+                </button>
+              </div>
+            </div>
+          );
+        };
+
+        const CheckoutModal = () => (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay"
+            onClick={() => setShowCheckout(false)}
+          >
+            <div
+              className="glass-panel rounded-2xl max-w-xl w-full p-6 border border-gray-700 max-h-[90vh] overflow-y-auto scrollbar-thin"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between mb-4">
+                <h2 className="text-xl font-bold mono-text text-amber-300">
+                  <i className="fab fa-bitcoin mr-2"></i>Crypto Checkout
+                </h2>
+                <button
+                  onClick={() => setShowCheckout(false)}
+                  className="text-gray-400 hover:text-white text-2xl"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="space-y-3 mb-5">
+                {Object.entries(WALLETS).map(([coin, data]) => (
+                  <div key={coin} className="wallet-box">
+                    <div className="flex justify-between text-xs text-gray-400 mb-1">
+                      <span className="font-bold text-amber-200">{coin}</span>
+                      <span>{data.network}</span>
+                    </div>
+                    <p className="mono-text text-sm text-emerald-300 break-all select-all bg-black/30 p-2 rounded">
+                      {data.address}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              <form onSubmit={handleCheckoutSubmit} className="space-y-4">
+                <div>
+                  <label className="text-xs text-gray-400 block mb-1">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="you@proton.me"
+                    className="w-full"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-400 block mb-1">
+                    Social Media / Session ID (optional)
+                  </label>
+                  <input
+                    type="text"
+                    name="social"
+                    placeholder="@telegram or Tox ID"
+                    className="w-full"
+                  />
+                </div>
+                <label className="flex items-start gap-2 text-sm text-gray-300 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={checkoutAgreed}
+                    onChange={(e) => setCheckoutAgreed(e.target.checked)}
+                    className="mt-1 accent-emerald-500"
+                  />
+                  <span>
+                    I agree to the{" "}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowCheckout(false);
+                        setTimeout(() => setShowTerms(true), 100);
+                      }}
+                      className="text-emerald-400 underline"
+                    >
+                      terms
+                    </button>
+                    . Non-refundable.
+                  </span>
+                </label>
+                <button
+                  type="submit"
+                  disabled={
+                    !checkoutAgreed || cart.length === 0 || paymentLoading
+                  }
+                  className={`w-full py-2.5 rounded-lg font-bold flex items-center justify-center gap-2 transition ${checkoutAgreed && cart.length > 0 && !paymentLoading ? "bg-emerald-700 hover:bg-emerald-600 text-white" : "bg-gray-700 text-gray-500 cursor-not-allowed"}`}
+                >
+                  {paymentLoading ? (
+                    <>
+                      <span className="loading-spinner"></span> Processing...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-check-circle"></i> I've made my
+                      payment
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
+        );
+
+        const SuccessModal = () => (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay"
+            onClick={handleContinueShopping}
+          >
+            <div
+              className="glass-panel rounded-2xl max-w-md w-full p-6 text-center border border-emerald-700"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <i className="fas fa-check-circle text-5xl text-emerald-400 mb-3"></i>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Payment Submitted
+              </h3>
+              <p className="text-gray-300 text-sm mb-4">
+                Your purchase will be validated upon payment confirmation. Check
+                your email for details.
+              </p>
+              <button
+                onClick={handleContinueShopping}
+                className="bg-emerald-700 hover:bg-emerald-600 text-white py-2 px-6 rounded-lg font-medium transition"
+              >
+                Continue Shopping
+              </button>
+            </div>
+          </div>
+        );
+
+        return (
+          <div className="min-h-screen flex flex-col relative">
+            {notification && (
+              <div className="fixed top-5 right-5 z-40 bg-black/80 backdrop-blur-md border border-emerald-700 text-emerald-300 px-5 py-3 rounded-lg shadow-2xl mono-text text-sm flex items-center gap-2">
+                <i className="fas fa-terminal"></i> {notification}
+              </div>
+            )}
+
+            {/* Trust Ticker */}
+            <div className="bg-black/60 border-b border-gray-800 py-2 ticker-wrapper">
+              <div className="ticker-content text-xs text-emerald-400/80 mono-text flex gap-8">
+                {[...TICKER_MESSAGES, ...TICKER_MESSAGES].map((msg, i) => (
+                  <span key={i} className="inline-block">
+                    {msg}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Header */}
+            <header className="glass-panel sticky top-0 z-30 border-b border-gray-800 px-4 md:px-8 py-3 flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <i className="fas fa-spider text-3xl text-emerald-500" />
+                <h1 className="text-2xl md:text-3xl font-bold mono-text text-white">
+                  SHADOW<span className="text-emerald-400">HAVEN</span>
+                </h1>
+              </div>
+              <div className="flex items-center gap-3 md:gap-5">
+                <button
+                  onClick={() => setShowWishPanel(true)}
+                  className="relative text-gray-300 hover:text-pink-400 text-xl"
+                >
+                  <i className="far fa-heart"></i>
+                  {wishlist.length > 0 && (
+                    <span className="absolute -top-2 -right-3 bg-pink-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {wishlist.length}
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowCartPanel(true)}
+                  className="relative text-gray-300 hover:text-emerald-400 text-xl"
+                >
+                  <i className="fas fa-shopping-cart"></i>
+                  {cartItemCount > 0 && (
+                    <span className="absolute -top-2 -right-3 bg-emerald-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {cartItemCount}
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowTerms(true)}
+                  className="text-xs text-gray-400 hover:text-white underline hidden sm:inline"
+                >
+                  Terms
+                </button>
+              </div>
+            </header>
+
+            {/* Category Filter */}
+            <div className="px-4 md:px-8 py-4 flex flex-wrap gap-2">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-medium transition border ${selectedCategory === cat ? "bg-emerald-900/60 border-emerald-500 text-emerald-200" : "border-gray-700 text-gray-400 hover:border-gray-500"}`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Product Grid */}
+            <main className="flex-grow px-4 md:px-8 pb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {filteredProducts.map((p) => {
+                  const wished = isInWishlist(p.id);
+                  return (
+                    <div
+                      key={p.id}
+                      className="glass-panel neon-border rounded-xl p-4 flex flex-col hover:border-emerald-500/40 transition-all"
+                    >
+                      <div className="text-4xl mb-3 text-center opacity-80">
+                        {p.img}
+                      </div>
+                      <div className="flex justify-between items-start">
+                        <h3 className="font-bold text-white text-lg leading-tight">
+                          {p.name}
+                        </h3>
+                        <button
+                          onClick={() => toggleWishlist(p)}
+                          className={`text-lg ${wished ? "text-pink-500" : "text-gray-500 hover:text-pink-400"}`}
+                        >
+                          <i
+                            className={wished ? "fas fa-heart" : "far fa-heart"}
+                          ></i>
+                        </button>
+                      </div>
+                      <span className="text-xs text-emerald-400/80 bg-emerald-900/20 px-2 py-0.5 rounded self-start mt-1">
+                        {p.category}
+                      </span>
+                      <p className="text-sm text-gray-400 mt-2 line-clamp-2">
+                        {p.shortDesc}
+                      </p>
+                      <div className="mt-3 flex items-center justify-between">
+                        <span className="mono-text text-amber-300 font-semibold text-sm">
+                          {formatCrypto(p.price, p.crypto)}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          <i className="fas fa-star text-yellow-500 text-xs"></i>{" "}
+                          {p.rating}
+                        </span>
+                      </div>
+                      <div className="flex gap-2 mt-3">
+                        <button
+                          onClick={() => setShowQuickview(p)}
+                          className="flex-1 bg-gray-800/60 hover:bg-gray-700 border border-gray-600 text-gray-200 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1"
+                        >
+                          <i className="fas fa-info-circle"></i> Quick View
+                        </button>
+                        <button
+                          onClick={() => addToCart(p)}
+                          className="flex-1 bg-emerald-900/50 hover:bg-emerald-800/60 border border-emerald-700/50 text-white py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1"
+                        >
+                          <i className="fas fa-cart-plus"></i> Add
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {filteredProducts.length === 0 && (
+                <p className="text-center text-gray-500 mt-10 mono-text">
+                  No tools found in this category.
+                </p>
+              )}
+            </main>
+
+            {/* Contact Section */}
+            <section
+              id="contact-section"
+              className="border-t border-gray-800 py-12 px-4 md:px-8"
+            >
+              <div className="max-w-3xl mx-auto">
+                <div className="text-center mb-8">
+                  <i className="fas fa-user-secret text-5xl text-purple-400 mb-3"></i>
+                  <h2 className="text-3xl font-bold mono-text text-white">
+                    Request a Tool
+                  </h2>
+                  <p className="text-gray-400 mt-2">
+                    Can't find what you need? Describe it and we'll source it.
+                  </p>
+                </div>
+                <div className="glass-panel rounded-2xl p-6 border border-gray-700">
+                  <form onSubmit={handleContactSubmit} className="space-y-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 block mb-1">
+                          Reason *
+                        </label>
+                        <select name="reason" className="w-full">
+                          <option value="Special Request - Tool not listed">
+                            Special Request - Tool not listed
+                          </option>
+                          <option value="Custom development inquiry">
+                            Custom development inquiry
+                          </option>
+                          <option value="Bulk purchase / Partnership">
+                            Bulk purchase / Partnership
+                          </option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 block mb-1">
+                          Your Email *
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          required
+                          placeholder="contact@anonmail.com"
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-400 block mb-1">
+                        Describe what you need *
+                      </label>
+                      <textarea
+                        name="description"
+                        required
+                        rows="4"
+                        placeholder="Tool name, features, target platform, budget range..."
+                        className="w-full resize-none"
+                      ></textarea>
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-400 block mb-1">
+                        Social Media / Session ID (optional)
+                      </label>
+                      <input
+                        type="text"
+                        name="social"
+                        placeholder="@telegram or Session ID"
+                        className="w-full"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full bg-purple-800/70 hover:bg-purple-700 text-white py-3 rounded-lg font-bold text-lg flex items-center justify-center gap-2"
+                    >
+                      <i className="fas fa-paper-plane"></i> Send Request
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="border-t border-gray-800 py-4 px-6 text-center text-xs text-gray-500 flex justify-between items-center flex-wrap gap-2">
+              <span>
+                <i className="fas fa-shield-haltered"></i> PGP only · No direct
+                contact
+              </span>
+              <a
+                href="#contact-section"
+                className="underline hover:text-purple-300"
+              >
+                Request a Tool
+              </a>
+              <span>
+                <i className="fab fa-bitcoin"></i> Crypto exclusive
+              </span>
+            </footer>
+
+            {/* Slide Panels */}
+            {showCartPanel && (
+              <div
+                className="fixed inset-0 z-40 flex justify-end"
+                onClick={() => setShowCartPanel(false)}
+              >
+                <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                <div
+                  className="relative w-full max-w-md bg-gray-900/95 backdrop-blur-xl border-l border-gray-700 h-full flex flex-col"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="p-5 border-b border-gray-800 flex justify-between">
+                    <h2 className="text-xl font-bold mono-text">
+                      <i className="fas fa-cart-shopping mr-2 text-emerald-400"></i>
+                      Cart ({cartItemCount})
+                    </h2>
+                    <button
+                      onClick={() => setShowCartPanel(false)}
+                      className="text-gray-400 hover:text-white text-2xl"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin">
+                    {cart.length === 0 ? (
+                      <p className="text-gray-500 text-center mt-10">
+                        Cart empty.
+                      </p>
+                    ) : (
+                      cart.map((i) => (
+                        <div
+                          key={i.id}
+                          className="flex items-center gap-3 bg-black/30 p-3 rounded-lg border border-gray-800"
+                        >
+                          <span className="text-2xl">{i.img}</span>
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-white">
+                              {i.name}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {formatCrypto(i.price, i.crypto)} x {i.qty}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => removeFromCart(i.id)}
+                            className="text-gray-500 hover:text-red-400"
+                          >
+                            <i className="fas fa-trash-alt"></i>
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  {cart.length > 0 && (
+                    <div className="p-4 border-t border-gray-800">
+                      <div className="flex justify-between text-sm mb-3">
+                        <span>Estimated:</span>
+                        <span className="mono-text text-amber-300 font-bold">
+                          {cart
+                            .reduce((a, i) => a + i.price * i.qty, 0)
+                            .toFixed(4)}{" "}
+                          crypto
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setShowCartPanel(false);
+                          setShowCheckout(true);
+                        }}
+                        className="w-full bg-emerald-700 hover:bg-emerald-600 text-white py-2.5 rounded-lg font-bold"
+                      >
+                        <i className="fas fa-lock mr-2"></i>Proceed to Payment
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            {showWishPanel && (
+              <div
+                className="fixed inset-0 z-40 flex justify-end"
+                onClick={() => setShowWishPanel(false)}
+              >
+                <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                <div
+                  className="relative w-full max-w-md bg-gray-900/95 backdrop-blur-xl border-l border-gray-700 h-full flex flex-col"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="p-5 border-b border-gray-800 flex justify-between">
+                    <h2 className="text-xl font-bold mono-text">
+                      <i className="fas fa-heart mr-2 text-pink-400"></i>
+                      Wishlist ({wishlist.length})
+                    </h2>
+                    <button
+                      onClick={() => setShowWishPanel(false)}
+                      className="text-gray-400 hover:text-white text-2xl"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin">
+                    {wishlist.length === 0 ? (
+                      <p className="text-gray-500 text-center mt-10">
+                        No items saved.
+                      </p>
+                    ) : (
+                      wishlist.map((i) => (
+                        <div
+                          key={i.id}
+                          className="flex items-center gap-3 bg-black/30 p-3 rounded-lg border border-gray-800"
+                        >
+                          <span className="text-2xl">{i.img}</span>
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-white">
+                              {i.name}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {formatCrypto(i.price, i.crypto)}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => toggleWishlist(i)}
+                            className="text-pink-500 hover:text-pink-300"
+                          >
+                            <i className="fas fa-heart-broken"></i>
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {showTerms && <TermsModal />}
+            {showQuickview && <QuickviewModal />}
+            {showCheckout && <CheckoutModal />}
+            {showSuccess && <SuccessModal />}
+          </div>
+        );
+      };
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<ShadowHaven />);
+    </script>
+  </body>
+</html>
