@@ -1,510 +1,2784 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-  <title>▷ SHADOWHAVEN MARKET | dark tools</title>
-  <script src="https://cdn.tailwindcss.com">
-  </script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
-    body {
-      background: #0a0c0f;
-      font-family: 'Inter', system-ui, sans-serif;
-      margin: 0;
-      min-height: 100vh;
-      color: #e5e7eb;
-      background-image: radial-gradient(rgba(30, 40, 55, 0.3) 1px, transparent 1px);
-      background-size: 30px 30px;
-    }
-    .mono-text {
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .glass-panel {
-      background: rgba(10, 15, 22, 0.8);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(70, 130, 180, 0.15);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    }
-    .neon-border {
-      border: 1px solid rgba(0, 255, 196, 0.2);
-      box-shadow: 0 0 10px rgba(0, 255, 196, 0.08);
-    }
-    .scrollbar-thin::-webkit-scrollbar {
-      width: 5px;
-    }
-    .scrollbar-thin::-webkit-scrollbar-track {
-      background: #0e1219;
-    }
-    .scrollbar-thin::-webkit-scrollbar-thumb {
-      background: #2a3a4a;
-      border-radius: 10px;
-    }
-    .modal-overlay {
-      background: rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(6px);
-    }
-    input,
-    textarea,
-    select {
-      background: rgba(20, 28, 38, 0.9);
-      border: 1px solid rgba(70, 130, 180, 0.25);
-      color: #e5e7eb;
-      border-radius: 0.5rem;
-      padding: 0.6rem 0.8rem;
-      outline: none;
-      transition: border 0.2s;
-    }
-    input:focus,
-    textarea:focus,
-    select:focus {
-      border-color: rgba(0, 230, 180, 0.6);
-      box-shadow: 0 0 8px rgba(0, 230, 180, 0.15);
-    }
-    .wallet-box {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 215, 0, 0.2);
-      border-radius: 0.75rem;
-      padding: 0.75rem;
-      margin-bottom: 0.75rem;
-      position: relative;
-    }
-    .copy-btn {
-      transition: all 0.2s;
-    }
-    .copy-btn:active {
-      transform: scale(0.95);
-    }
-    @keyframes ticker {
-      0% {
-        transform: translateX(0);
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
+    />
+    <title>▷ SHADOWHAVEN MARKET | dark tools</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap");
+      body {
+        background: #0a0c0f;
+        font-family: "Inter", system-ui, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        color: #e5e7eb;
+        background-image: radial-gradient(
+          rgba(30, 40, 55, 0.3) 1px,
+          transparent 1px
+        );
+        background-size: 30px 30px;
       }
-      100% {
-        transform: translateX(-50%);
+      .mono-text {
+        font-family: "JetBrains Mono", monospace;
       }
-    }
-    .ticker-wrapper {
-      overflow: hidden;
-      white-space: nowrap;
-    }
-    .ticker-content {
-      display: inline-block;
-      animation: ticker 35s linear infinite;
-    }
-    .loading-spinner {
-      display: inline-block;
-      width: 1rem;
-      height: 1rem;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: #fff;
-      animation: spin 0.6s linear infinite;
-    }
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
+      .glass-panel {
+        background: rgba(10, 15, 22, 0.8);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1px solid rgba(70, 130, 180, 0.15);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
       }
-    }
-  </style>
-</head>
-<body class="antialiased">
-  <div id="root"></div>
-
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js">
-  </script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js">
-  </script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js">
-  </script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js">
-  </script>
-
-  <script type="text/babel">
-    const { useState, useEffect, useCallback } = React;
-
-    // ---------- EmailJS Init ----------
-    (function() {
-      try {
-        emailjs.init("YOUR_PUBLIC_KEY");
-      } catch (e) {
-        console.warn("EmailJS not configured – offline mode.");
+      .neon-border {
+        border: 1px solid rgba(0, 255, 196, 0.2);
+        box-shadow: 0 0 10px rgba(0, 255, 196, 0.08);
       }
-    })();
+      .scrollbar-thin::-webkit-scrollbar {
+        width: 5px;
+      }
+      .scrollbar-thin::-webkit-scrollbar-track {
+        background: #0e1219;
+      }
+      .scrollbar-thin::-webkit-scrollbar-thumb {
+        background: #2a3a4a;
+        border-radius: 10px;
+      }
+      .modal-overlay {
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(6px);
+      }
+      input,
+      textarea,
+      select {
+        background: rgba(20, 28, 38, 0.9);
+        border: 1px solid rgba(70, 130, 180, 0.25);
+        color: #e5e7eb;
+        border-radius: 0.5rem;
+        padding: 0.6rem 0.8rem;
+        outline: none;
+        transition: border 0.2s;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: rgba(0, 230, 180, 0.6);
+        box-shadow: 0 0 8px rgba(0, 230, 180, 0.15);
+      }
+      .wallet-box {
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        position: relative;
+      }
+      .copy-btn {
+        transition: all 0.2s;
+      }
+      .copy-btn:active {
+        transform: scale(0.95);
+      }
+      @keyframes ticker {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+      .ticker-wrapper {
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .ticker-content {
+        display: inline-block;
+        animation: ticker 35s linear infinite;
+      }
+      .loading-spinner {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 0.6s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div id="root"></div>
 
-    // ---------- Product Database (includes Email Leads category) ----------
-    const PRODUCTS = [
-      // REMOTE ACCESS (RATs)
-      { id: 1, name: "BlackPhantom RAT", category: "Remote Access", price: 0.084, crypto: "BTC", shortDesc: "FUD crypted RAT, polymorphic engine, reverse proxy.", rating: 4.8, img: "🕳️", fullDesc: "BlackPhantom RAT is a fully undetectable remote access trojan designed for persistent control over target machines. Features include keylogging, screen capture, file exfiltration, reverse proxy, and encrypted C2 communication. Bypasses Windows Defender and major AVs through polymorphic code injection. Includes builder with customizable install vectors and anti-VM detection." },
-      { id: 2, name: "DarkCrystal RAT", category: "Remote Access", price: 0.062, crypto: "ETH", shortDesc: "Modular RAT with plugin support & webcam grab.", rating: 4.6, img: "🦎", fullDesc: "Modular architecture allows custom plugin development. Features webcam grab, audio capture, persistence via WMI, and registry manipulation. Encrypted configuration stored in alternate data streams. Compatible with Windows 10/11 and Server editions." },
-      { id: 3, name: "VenomRAT+", category: "Remote Access", price: 0.095, crypto: "BTC", shortDesc: "HVNC + reverse proxy + browser credential dumper.", rating: 4.7, img: "🐍", fullDesc: "Hidden Virtual Network Computing for stealthy desktop control. Includes SOCKS5 proxy, browser credential dumper, and cryptocurrency wallet extractor. Bypasses UAC via fodhelper.exe technique. Monthly stub updates to maintain FUD status." },
-      { id: 4, name: "AsyncRAT Mod", category: "Remote Access", price: 0.045, crypto: "ETH", shortDesc: "AES-256 encryption, anti-VM, USB spreader.", rating: 4.3, img: "🐀", fullDesc: "Modified AsyncRAT with AES-256 encryption for configuration and communication. Anti-VM detection prevents analysis in sandboxes. USB spreader module infects removable drives. Includes keylogger with offline storage and email exfiltration." },
-      { id: 5, name: "NjRAT Gold", category: "Remote Access", price: 0.038, crypto: "BTC", shortDesc: "Process hollowing, registry persistence, encrypted config.", rating: 4.2, img: "🦅", fullDesc: "Updated NjRAT with process hollowing into legitimate processes, registry persistence via Active Setup, and encrypted configuration files. Includes remote shell, file manager, and process killer. Lightweight stub (~50KB)." },
-      { id: 6, name: "QuasarRAT EX", category: "Remote Access", price: 0.071, crypto: "ETH", shortDesc: "Enterprise RAT framework, IPv6 & Tor support.", rating: 4.9, img: "💻", fullDesc: "Full-featured RAT with task manager, file explorer, registry editor, and remote shell. Supports IPv6 and Tor for anonymized C2. Includes certificate manager for signing payloads. Reverse proxy with custom SSL pinning." },
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+    ></script>
 
-      // CREDENTIAL HARVESTING
-      { id: 7, name: "EtherStealth Grabber", category: "Credential Harvesting", price: 0.032, crypto: "ETH", shortDesc: "Multi-chain wallet drainer + session cookie stealer.", rating: 4.5, img: "🦊", fullDesc: "Targets browser-based cryptocurrency wallets (MetaMask, TrustWallet, Phantom) and exchanges. Extracts saved credentials, session cookies, and autofill data. The grabber module hooks into Web3 injection to approve malicious transactions. Delivered via obfuscated JS payload." },
-      { id: 8, name: "RedLine Stealer", category: "Credential Harvesting", price: 0.028, crypto: "BTC", shortDesc: "Browser & FTP credential stealer, VPN config grabber.", rating: 4.6, img: "🔴", fullDesc: "Harvests saved passwords, cookies, credit cards from Chromium and Firefox browsers. Also grabs VPN configurations, FTP credentials from FileZilla, and Discord tokens. Exfiltrates via Telegram bot API or custom webhook." },
-      { id: 9, name: "Vidar Infostealer", category: "Credential Harvesting", price: 0.041, crypto: "ETH", shortDesc: "2FA bypass via session tokens, wallet extraction.", rating: 4.7, img: "🎭", fullDesc: "Bypasses two-factor authentication by stealing authenticated session tokens. Extracts desktop cryptocurrency wallets (Exodus, Electrum, Atomic) and Telegram sessions. Includes desktop screenshot capture and geo-IP lookup." },
-      { id: 10, name: "Raccoon Stealer v2", category: "Credential Harvesting", price: 0.055, crypto: "BTC", shortDesc: "Cloud-based stealer with web panel, 60+ app support.", rating: 4.4, img: "🦝", fullDesc: "SaaS credential stealer with web-based management panel. Auto-updating grabber modules for 60+ applications including browsers, email clients, and VPNs. Includes traffic analysis and logging with search functionality." },
-      { id: 11, name: "AzorUlt Sentinel", category: "Credential Harvesting", price: 0.067, crypto: "ETH", shortDesc: "Banking trojan with web injects + info stealer.", rating: 4.8, img: "🏦", fullDesc: "Targets banking portals with custom web injects for real-time credential interception. Also functions as a general info stealer with exfiltration over DNS tunneling. Includes man-in-the-browser attack modules for Chrome and Firefox." },
+    <script type="text/babel">
+      const { useState, useEffect, useCallback } = React;
 
-      // EXPLOIT SCRIPTS
-      { id: 12, name: "SQLi Inferno Map", category: "Exploit Scripts", price: 0.019, crypto: "BTC", shortDesc: "Automated SQL injection, multithreaded, proxy rotation.", rating: 4.6, img: "🗂️", fullDesc: "Detects and exploits SQL injection vulnerabilities. Supports MySQL, MSSQL, PostgreSQL, and Oracle. Features include database enumeration, table dumping, file read/write, and OS command execution via stacked queries. Multithreaded with automatic proxy rotation." },
-      { id: 13, name: "XSS Hunter Pro", category: "Exploit Scripts", price: 0.023, crypto: "ETH", shortDesc: "Blind XSS detection, DOM-based, WAF bypass payloads.", rating: 4.5, img: "🎯", fullDesc: "Automated XSS scanning with DOM-based and stored XSS detection. Includes payload generator with WAF bypass techniques. Integrates with collaborative XSS servers for blind XSS confirmation." },
-      { id: 14, name: "RFI/LFI Scanner", category: "Exploit Scripts", price: 0.017, crypto: "BTC", shortDesc: "Remote & local file inclusion, PHP wrapper support.", rating: 4.3, img: "📂", fullDesc: "Scans for file inclusion vulnerabilities. Supports PHP wrappers (php://filter, data://), log poisoning, and /proc/self/environ techniques. Includes null byte injection and path truncation attacks." },
-      { id: 15, name: "Command Injection Kit", category: "Exploit Scripts", price: 0.026, crypto: "ETH", shortDesc: "OS command injection, reverse shell payloads.", rating: 4.7, img: "💉", fullDesc: "Detects blind and verbose command injection vulnerabilities. Includes reverse shell payloads for Windows (PowerShell) and Linux (Bash/Netcat). Supports time-based detection and out-of-band exfiltration via DNS." },
-      { id: 16, name: "XXE Exploiter", category: "Exploit Scripts", price: 0.031, crypto: "BTC", shortDesc: "XML External Entity attack, SSRF chaining.", rating: 4.4, img: "📄", fullDesc: "Automated XXE detection with out-of-band exfiltration via FTP/HTTP. Includes SSRF chaining module to pivot into internal networks. Supports parameter entities and CDATA wrapping." },
-
-      // ANONYMITY
-      { id: 17, name: "PhantomVPN Configs", category: "Anonymity", price: 0.011, crypto: "ETH", shortDesc: "WireGuard obfuscated, multi-hop, no logs.", rating: 4.9, img: "🔐", fullDesc: "Pre-configured WireGuard profiles routed through multi-hop obfuscated servers. No logs policy verified by independent audit. Includes killswitch, DNS leak protection, and split tunneling. Servers located in privacy-friendly jurisdictions. Configs updated weekly." },
-      { id: 18, name: "Tor Bridge Kit", category: "Anonymity", price: 0.009, crypto: "BTC", shortDesc: "Obfs4 bridges for censored regions, DPI bypass.", rating: 4.6, img: "🧅", fullDesc: "Pre-configured Tor bridges with obfs4 and meek transports. Bypasses Deep Packet Inspection and national firewalls. Includes automatic bridge rotation and connection troubleshooting scripts." },
-      { id: 19, name: "MAC Changer Pro", category: "Anonymity", price: 0.006, crypto: "ETH", shortDesc: "Spoof MAC on all interfaces, auto vendor lookup.", rating: 4.4, img: "🖧", fullDesc: "Randomizes MAC addresses on boot for all network interfaces. Supports Windows, Linux, and macOS with automatic vendor OUI lookup to generate realistic addresses. Includes persistence scripts." },
-      { id: 20, name: "DNSCrypt Proxy", category: "Anonymity", price: 0.004, crypto: "BTC", shortDesc: "Encrypted DNS with DoH/DoT, malware blocking.", rating: 4.7, img: "🔒", fullDesc: "Encrypts all DNS queries using DNSCrypt, DNS-over-HTTPS, or DNS-over-TLS. Blocks tracking, malware, and advertising domains using regularly updated blocklists. Includes caching for performance." },
-
-      // FINANCIAL OBFUSCATION
-      { id: 21, name: "CryptoMixer API", category: "Financial Obfuscation", price: 0.065, crypto: "BTC", shortDesc: "High-throughput tumbler, CoinJoin, instant settlement.", rating: 4.4, img: "🌀", fullDesc: "API access to a high-throughput cryptocurrency mixing service. Supports Bitcoin and Ethereum. Uses CoinJoin and zero-knowledge proofs for untraceable transactions. Minimum mix 0.01 BTC, instant settlement after 3 confirmations. No logs retained." },
-      { id: 22, name: "TornadoCash CLI", category: "Financial Obfuscation", price: 0.037, crypto: "ETH", shortDesc: "Command-line interface for Tornado Cash privacy pools.", rating: 4.3, img: "🌪️", fullDesc: "Script to interact with Tornado Cash smart contracts from the command line. Supports ETH and ERC-20 token deposits and withdrawals with customizable anonymity sets." },
-
-      // EMAIL LEADS (NEW CATEGORY)
-      { id: 23, name: "Starter Email Pack", category: "Email Leads", price: 0.012, crypto: "BTC", shortDesc: "50,000 verified emails, B2C mix.", rating: 4.0, img: "📧", fullDesc: "50,000 verified email addresses sourced from public profiles and data brokers. Mix of consumer (B2C) emails. Cleaned for duplicates and invalid formats. Delivered as CSV. Suitable for broad marketing campaigns." },
-      { id: 24, name: "Business Prospector 30K", category: "Email Leads", price: 0.023, crypto: "ETH", shortDesc: "30,000 B2B emails with company info.", rating: 4.3, img: "🏢", fullDesc: "30,000 business email addresses including decision-makers and executives. Each entry contains name, company, position, and LinkedIn profile URL. Sourced from business directories and corporate websites. High deliverability rate." },
-      { id: 25, name: "Mega Lead Dump 90K", category: "Email Leads", price: 0.038, crypto: "BTC", shortDesc: "90,000 mixed emails, geo-targeted US/UK.", rating: 4.1, img: "📦", fullDesc: "90,000 email addresses geographically targeted to United States and United Kingdom. Includes consumer and small business emails. Recently verified (within 30 days). Ideal for high-volume outreach campaigns." },
-      { id: 26, name: "Crypto Investor Leads 15K", category: "Email Leads", price: 0.045, crypto: "ETH", shortDesc: "15,000 crypto enthusiast emails.", rating: 4.6, img: "₿", fullDesc: "15,000 emails of individuals interested in cryptocurrency and blockchain technology. Sourced from crypto forums, exchange leaks, and newsletter subscriptions. High engagement rate for crypto-related offers." },
-      { id: 27, name: "Healthcare Professionals 40K", category: "Email Leads", price: 0.031, crypto: "BTC", shortDesc: "40,000 healthcare sector emails.", rating: 4.4, img: "🏥", fullDesc: "40,000 email addresses of healthcare professionals including doctors, nurses, and administrators. Sourced from medical directories and hospital websites. Niche target for pharmaceutical or medical device marketing." },
-      { id: 28, name: "Ecommerce Buyer List 60K", category: "Email Leads", price: 0.028, crypto: "ETH", shortDesc: "60,000 online shopper emails.", rating: 4.2, img: "🛒", fullDesc: "60,000 emails of active online shoppers. Segmented by purchase categories (electronics, fashion, home goods). High conversion potential for ecommerce promotions. Verified within 15 days." },
-
-      // EXPLOIT ACQUISITION
-      { id: 29, name: "ZeroDay Broker Access", category: "Exploit Acquisition", price: 0.29, crypto: "BTC", shortDesc: "Curated private 0day list, monthly updated catalog.", rating: 4.7, img: "💣", fullDesc: "Access to a vetted broker network offering private zero-day exploits for Windows, Linux, iOS, and Android. Includes detailed vulnerability analysis, proof-of-concept code, and delivery vectors. Monthly subscription grants updated catalog." },
-      { id: 30, name: "ExploitDB Premium", category: "Exploit Acquisition", price: 0.18, crypto: "ETH", shortDesc: "Verified exploits with PoC, CVE-2020 to CVE-2025.", rating: 4.8, img: "📚", fullDesc: "Curated database of working exploits with proof-of-concept code. Covers CVEs from 2020 through 2025. Each entry includes environment setup, usage instructions, and affected version matrix." },
-      { id: 31, name: "Bug Bounty Intel", category: "Exploit Acquisition", price: 0.22, crypto: "BTC", shortDesc: "Leaked private bug reports, critical vulnerabilities.", rating: 4.6, img: "🐛", fullDesc: "Collection of leaked bug bounty reports with reproduction steps. Includes critical vulnerabilities in major platforms, API endpoints, and authentication bypass techniques." },
-
-      // PHISHING
-      { id: 32, name: "ClonePhish Kit", category: "Phishing", price: 0.022, crypto: "ETH", shortDesc: "AI-generated phishing pages, MFA interception.", rating: 4.3, img: "🎣", fullDesc: "ClonePhish uses AI to replicate target login pages with pixel-perfect accuracy. Includes reverse proxy for real-time credential capture, MFA token interception, and session hijacking. Anti-bot detection and geolocation targeting." },
-      { id: 33, name: "EvilGophish", category: "Phishing", price: 0.034, crypto: "BTC", shortDesc: "Gophish fork with landing page cloning, automation.", rating: 4.6, img: "📧", fullDesc: "Modified Gophish with automatic landing page cloning, email campaign scheduling, and real-time credential capture dashboard. Includes bypass for Microsoft Safe Links and URL rewriting." },
-      { id: 34, name: "SMSCaster", category: "Phishing", price: 0.028, crypto: "ETH", shortDesc: "Bulk SMS phishing platform, spoofed sender IDs.", rating: 4.2, img: "📱", fullDesc: "Bulk SMS sender with spoofed alphanumeric sender IDs. Templates for banking, delivery, and tax scams. Includes link shortener with click tracking and geo-redirection." },
-      { id: 35, name: "Vishing AI Bot", category: "Phishing", price: 0.051, crypto: "BTC", shortDesc: "AI voice phishing, natural conversation, multi-language.", rating: 4.4, img: "🤖", fullDesc: "Text-to-speech voice phishing bot powered by large language models. Maintains natural conversation flow for social engineering. Supports multiple languages and regional accents. Includes call recording and transcription." },
-
-      // NETWORK TOOLS
-      { id: 36, name: "DDoS-Stresser VIP", category: "Network Tools", price: 0.045, crypto: "ETH", shortDesc: "L7/L4 attack panel, 100+ Gbps, Cloudflare bypass.", rating: 4.2, img: "⚡", fullDesc: "Cloud-based stress testing panel with Layer 7 (HTTP/HTTPS) and Layer 4 (SYN, UDP, ICMP) amplification. 100+ Gbps capacity. Bypasses Cloudflare UAM and DDoS-GUARD. 1-hour attack slots with target geolocation." },
-      { id: 37, name: "Port Scanner Elite", category: "Network Tools", price: 0.013, crypto: "BTC", shortDesc: "Stealth SYN scanner, decoy & idle scan techniques.", rating: 4.5, img: "🔍", fullDesc: "Multi-threaded port scanner with SYN stealth, decoy scanning, and idle scan techniques. Service version detection and OS fingerprinting. Outputs to multiple formats (XML, JSON, grepable)." },
-      { id: 38, name: "Packet Sniffer Pro", category: "Network Tools", price: 0.019, crypto: "ETH", shortDesc: "Deep packet inspection, ARP spoofing, session hijack.", rating: 4.7, img: "📡", fullDesc: "Captures and analyzes live network traffic. Supports ARP spoofing for MITM attacks, DNS poisoning, and TCP session hijacking. Includes protocol dissectors for HTTP, FTP, SMTP, and custom protocols." },
-      { id: 39, name: "Botnet C2 Panel", category: "Network Tools", price: 0.12, crypto: "BTC", shortDesc: "Web-based C2 dashboard, HTTP/DNS tunneling.", rating: 4.1, img: "🕸️", fullDesc: "Web-based command and control panel for managing distributed botnet nodes. Supports HTTP, HTTPS, and DNS tunneling with encrypted communications. Includes task scheduler and geo-distribution map." },
-      { id: 40, name: "WiFi Cracker Suite", category: "Network Tools", price: 0.036, crypto: "ETH", shortDesc: "WPA3/WPA2 cracking, PMKID attack, handshake capture.", rating: 4.4, img: "📶", fullDesc: "Hashcat-based WiFi cracking toolkit with custom wordlists and rule sets. PMKID attack for WPA3 transition mode. Includes handshake capture and deauthentication tools. GPU-accelerated with multi-device support." },
-    ];
-
-    const CATEGORIES = ["All", ...new Set(PRODUCTS.map(p => p.category))];
-
-    // ---------- Wallet Addresses (BTC & ETH only) ----------
-    const WALLETS = {
-      BTC: { address: "15hLEAL4SWJLJgNUwTnWo8Xmy54U41ZG7r", network: "Bitcoin Network" },
-      ETH: { address: "0x14325a3d0b6af8689836f7a0f3f8acb51411af60", network: "Ethereum (ERC-20)" }
-    };
-
-    // ---------- Trust Ticker ----------
-    const TICKER_MESSAGES = [
-      "🔒 PGP signed communications available • ",
-      "⭐ 4.7/5 average vendor rating across 12,000+ transactions • ",
-      "🛡️ Escrow protection on all orders above 0.05 BTC • ",
-      "💬 24/7 encrypted support via Session messenger • ",
-      "✅ Multi-sig wallets for large transactions • ",
-      "🚫 No KYC/AML – privacy by design • ",
-      "🔄 Instant delivery upon payment confirmation • ",
-      "🌍 Servers in privacy-friendly jurisdictions • "
-    ];
-
-    const formatCrypto = (val, symbol) => `${val.toFixed(3)} ${symbol}`;
-
-    const useLocalStorage = (key, initialValue) => {
-      const [storedValue, setStoredValue] = useState(() => {
-        try { const item = window.localStorage.getItem(key); return item ? JSON.parse(item) : initialValue; } catch (e) { return initialValue; }
-      });
-      const setValue = (value) => {
+      // ---------- EmailJS Init ----------
+      (function () {
         try {
-          const valueToStore = value instanceof Function ? value(storedValue) : value;
-          setStoredValue(valueToStore);
-          window.localStorage.setItem(key, JSON.stringify(valueToStore));
-        } catch (e) { console.error("localStorage error", e); }
-      };
-      return [storedValue, setValue];
-    };
+          emailjs.init("70Q1bWdEPbUw-dkJG");
+        } catch (e) {
+          console.warn("EmailJS not configured – offline mode.");
+        }
+      })();
 
-    const ShadowHaven = () => {
-      const [cart, setCart] = useLocalStorage("shadow_cart", []);
-      const [wishlist, setWishlist] = useLocalStorage("shadow_wishlist", []);
-      const [selectedCategory, setSelectedCategory] = useState("All");
-      const [showCartPanel, setShowCartPanel] = useState(false);
-      const [showWishPanel, setShowWishPanel] = useState(false);
-      const [showTerms, setShowTerms] = useState(false);
-      const [showCheckout, setShowCheckout] = useState(false);
-      const [showSuccess, setShowSuccess] = useState(false);
-      const [showQuickview, setShowQuickview] = useState(null);
-      const [showDisclaimer, setShowDisclaimer] = useState(true);
-      const [notification, setNotification] = useState(null);
-      const [checkoutAgreed, setCheckoutAgreed] = useState(false);
-      const [paymentLoading, setPaymentLoading] = useState(false);
-      const [copiedAddress, setCopiedAddress] = useState(null);
+      // ---------- Crypto Price Constants (approximate USD equivalents) ----------
+      // BTC ~ $42,000 | ETH ~ $2,500 (these are reference rates for conversion)
+      const BTC_USD_RATE = 42000;
+      const ETH_USD_RATE = 2500;
 
-      const filteredProducts = selectedCategory === "All" ? PRODUCTS : PRODUCTS.filter(p => p.category === selectedCategory);
-
-      const addToCart = useCallback((p) => {
-        setCart(prev => { const ex = prev.find(i => i.id === p.id); if (ex) return prev.map(i => i.id === p.id ? {...i, qty: i.qty+1} : i); return [...prev, {...p, qty:1}]; });
-        setNotification(`✔ Added ${p.name} to cart`);
-      }, []);
-      const removeFromCart = useCallback((id) => setCart(prev => prev.filter(i => i.id !== id)), []);
-      const clearCart = useCallback(() => setCart([]), []);
-      const toggleWishlist = useCallback((p) => {
-        setWishlist(prev => {
-          if (prev.find(i => i.id === p.id)) { setNotification(`Removed ${p.name} from wishlist`); return prev.filter(i => i.id !== p.id); }
-          else { setNotification(`❤ Added ${p.name} to wishlist`); return [...prev, p]; }
-        });
-      }, []);
-      const isInWishlist = (id) => wishlist.some(i => i.id === id);
-      const cartItemCount = cart.reduce((s,i) => s + i.qty, 0);
-
-      useEffect(() => { if (notification) { const t = setTimeout(() => setNotification(null), 2500); return () => clearTimeout(t); } }, [notification]);
-      useEffect(() => { if (showCheckout) setCheckoutAgreed(false); }, [showCheckout]);
-
-      const copyToClipboard = (text, coin) => {
-        navigator.clipboard.writeText(text).then(() => {
-          setCopiedAddress(coin);
-          setTimeout(() => setCopiedAddress(null), 2000);
-        }).catch(() => {
-          setNotification("⚠ Failed to copy address");
-        });
+      // Helper: convert USD amount to crypto price
+      const usdToCrypto = (usdAmount, cryptoSymbol) => {
+        if (cryptoSymbol === "BTC") return usdAmount / BTC_USD_RATE;
+        if (cryptoSymbol === "ETH") return usdAmount / ETH_USD_RATE;
+        return usdAmount / BTC_USD_RATE;
       };
 
-      const handleCheckoutSubmit = async (e) => {
-        e.preventDefault();
-        setPaymentLoading(true);
-        const form = e.target; const email = form.email.value.trim(); const social = form.social.value.trim();
-        if (!email) { setNotification("Email required for payment confirmation."); setPaymentLoading(false); return; }
+      // ---------- Product Database (15+ products per category) ----------
+      // Price Distribution:
+      // 50%: $400 - $700 (Tier 1)
+      // 30%: $800 - $1,300 (Tier 2)
+      // 20%: $1,600 - $3,500 (Tier 3) -- max $3,500
+      const PRODUCTS = [
+        // ==========================================
+        // REMOTE ACCESS (RATs) - 15 products
+        // ==========================================
+        // Tier 3 (20% = 3 products): $1,600-$3,500
+        {
+          id: 1,
+          name: "BlackPhantom RAT",
+          category: "Remote Access",
+          price: usdToCrypto(3500, "BTC"),
+          crypto: "BTC",
+          shortDesc: "FUD crypted RAT, polymorphic engine, reverse proxy.",
+          rating: 4.8,
+          img: "🕳️",
+          fullDesc:
+            "BlackPhantom RAT is a fully undetectable remote access trojan designed for persistent control over target machines. Features include keylogging, screen capture, file exfiltration, reverse proxy, and encrypted C2 communication. Bypasses Windows Defender and major AVs through polymorphic code injection. Includes builder with customizable install vectors and anti-VM detection.",
+        },
+        {
+          id: 2,
+          name: "VenomRAT+",
+          category: "Remote Access",
+          price: usdToCrypto(2800, "BTC"),
+          crypto: "BTC",
+          shortDesc: "HVNC + reverse proxy + browser credential dumper.",
+          rating: 4.7,
+          img: "🐍",
+          fullDesc:
+            "Hidden Virtual Network Computing for stealthy desktop control. Includes SOCKS5 proxy, browser credential dumper, and cryptocurrency wallet extractor. Bypasses UAC via fodhelper.exe technique. Monthly stub updates to maintain FUD status.",
+        },
+        {
+          id: 3,
+          name: "QuasarRAT EX",
+          category: "Remote Access",
+          price: usdToCrypto(1950, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Enterprise RAT framework, IPv6 & Tor support.",
+          rating: 4.9,
+          img: "💻",
+          fullDesc:
+            "Full-featured RAT with task manager, file explorer, registry editor, and remote shell. Supports IPv6 and Tor for anonymized C2. Includes certificate manager for signing payloads. Reverse proxy with custom SSL pinning.",
+        },
+        // Tier 2 (30% = 5 products): $800-$1,300
+        {
+          id: 4,
+          name: "DarkCrystal RAT",
+          category: "Remote Access",
+          price: usdToCrypto(850, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Modular RAT with plugin support & webcam grab.",
+          rating: 4.6,
+          img: "🦎",
+          fullDesc:
+            "Modular architecture allows custom plugin development. Features webcam grab, audio capture, persistence via WMI, and registry manipulation. Encrypted configuration stored in alternate data streams. Compatible with Windows 10/11 and Server editions.",
+        },
+        {
+          id: 5,
+          name: "AsyncRAT Mod",
+          category: "Remote Access",
+          price: usdToCrypto(1100, "BTC"),
+          crypto: "BTC",
+          shortDesc: "AES-256 encryption, anti-VM, USB spreader.",
+          rating: 4.3,
+          img: "🐀",
+          fullDesc:
+            "Modified AsyncRAT with AES-256 encryption for configuration and communication. Anti-VM detection prevents analysis in sandboxes. USB spreader module infects removable drives. Includes keylogger with offline storage and email exfiltration.",
+        },
+        {
+          id: 6,
+          name: "NjRAT Gold",
+          category: "Remote Access",
+          price: usdToCrypto(950, "ETH"),
+          crypto: "ETH",
+          shortDesc:
+            "Process hollowing, registry persistence, encrypted config.",
+          rating: 4.2,
+          img: "🦅",
+          fullDesc:
+            "Updated NjRAT with process hollowing into legitimate processes, registry persistence via Active Setup, and encrypted configuration files. Includes remote shell, file manager, and process killer. Lightweight stub (~50KB).",
+        },
+        {
+          id: 7,
+          name: "PhantomCore RAT",
+          category: "Remote Access",
+          price: usdToCrypto(1050, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Kernel-level RAT, driver-based stealth, ring-0 access.",
+          rating: 4.5,
+          img: "👻",
+          fullDesc:
+            "Kernel-mode remote access trojan operating at ring-0 privilege level. Driver-based stealth with DKOM techniques. Hides processes, files, and network connections from user-mode AV. Includes kernel keylogger and direct memory access.",
+        },
+        {
+          id: 8,
+          name: "NightStalker Lite",
+          category: "Remote Access",
+          price: usdToCrypto(820, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Stealth C2 via DNS-over-HTTPS, proxy chain.",
+          rating: 4.1,
+          img: "🦉",
+          fullDesc:
+            "Lightweight RAT using DNS-over-HTTPS for C2 communication. Multi-hop proxy chain support with SOCKS5 and HTTP proxies. Minimal footprint (~30KB) with reflective DLL injection. Ideal for targeted deployments.",
+        },
+        // Tier 1 (50% = 7 products): $400-$700
+        {
+          id: 9,
+          name: "PixelGhost Agent",
+          category: "Remote Access",
+          price: usdToCrypto(450, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Basic RAT with screen capture and keylogger.",
+          rating: 4.0,
+          img: "👁️",
+          fullDesc:
+            "Entry-level remote access tool with essential features: remote desktop viewing, keylogger, file browser, and process list. Simple stub builder. Suitable for beginners learning RAT operations. Monthly updates to maintain basic FUD.",
+        },
+        {
+          id: 10,
+          name: "SilentWatcher SE",
+          category: "Remote Access",
+          price: usdToCrypto(580, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Surveillance-focused RAT, microphone & webcam access.",
+          rating: 4.4,
+          img: "🎤",
+          fullDesc:
+            "Specialized surveillance RAT with emphasis on audio and video capture. Remote microphone activation, webcam streaming, ambient audio recording, and screenshot scheduler. Exfiltrates via encrypted FTP.",
+        },
+        {
+          id: 11,
+          name: "ThinClient Ghost",
+          category: "Remote Access",
+          price: usdToCrypto(420, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Ultra-lightweight RAT, 22KB payload, minimal footprint.",
+          rating: 4.2,
+          img: "💨",
+          fullDesc:
+            "Minimalist RAT with 22KB payload. Essential remote shell, file transfer, and screenshot capability. Perfect for low-bandwidth environments. Process injection into svchost.exe for stealth.",
+        },
+        {
+          id: 12,
+          name: "ChromeRAT Basic",
+          category: "Remote Access",
+          price: usdToCrypto(520, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Browser-based RAT, Chrome extension vector.",
+          rating: 4.1,
+          img: "🌐",
+          fullDesc:
+            "RAT delivered via malicious Chrome extension. Browser-based C2 panel. Accesses all browser-stored data, active sessions, and form data. Persists through extension auto-reinstall policy manipulation.",
+        },
+        {
+          id: 13,
+          name: "MythicAgent Core",
+          category: "Remote Access",
+          price: usdToCrypto(650, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Mythic C2 compatible agent, multi-platform.",
+          rating: 4.6,
+          img: "🏰",
+          fullDesc:
+            "Agent compatible with the Mythic C2 framework. Supports Windows, Linux, and macOS. Custom payload generation with various communication profiles (HTTP, HTTPS, WebSocket, DNS). Docker-based C2 infrastructure.",
+        },
+        {
+          id: 14,
+          name: "ShadowLink RAT",
+          category: "Remote Access",
+          price: usdToCrypto(480, "ETH"),
+          crypto: "ETH",
+          shortDesc: "P2P RAT network, no central C2 server needed.",
+          rating: 4.3,
+          img: "🔗",
+          fullDesc:
+            "Decentralized RAT using P2P networking. No central C2 server — each node can relay commands. Uses DHT for node discovery. Encrypted communications with perfect forward secrecy. Resilient to takedowns.",
+        },
+        {
+          id: 15,
+          name: "FrozenOrbit RAT",
+          category: "Remote Access",
+          price: usdToCrypto(680, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Persistence via WMI event subscriptions & COM hijacking.",
+          rating: 4.5,
+          img: "❄️",
+          fullDesc:
+            "Advanced persistence mechanisms using WMI permanent event subscriptions and COM object hijacking. Registry-free persistence. Includes memory-only execution capability. Anti-forensic features with secure deletion of artifacts.",
+        },
 
-        const cartSummary = cart.map(i => `${i.name} x${i.qty} (${formatCrypto(i.price, i.crypto)})`).join(", ");
-        const total = cart.reduce((a,i) => a + i.price*i.qty, 0).toFixed(4);
-        const params = {
-          user_email: email, social_media: social || "Not provided",
-          cart_items: cartSummary, total_crypto: total,
-          btc_wallet: WALLETS.BTC.address, eth_wallet: WALLETS.ETH.address
+        // ==========================================
+        // CREDENTIAL HARVESTING - 15 products
+        // ==========================================
+        // Tier 3 (20% = 3 products): $1,600-$3,500
+        {
+          id: 16,
+          name: "EtherStealth Grabber Pro",
+          category: "Credential Harvesting",
+          price: usdToCrypto(3100, "ETH"),
+          crypto: "ETH",
+          shortDesc:
+            "Multi-chain wallet drainer + session cookie stealer, DeFi exploits.",
+          rating: 4.9,
+          img: "🦊",
+          fullDesc:
+            "Advanced multi-chain wallet drainer supporting 50+ EVM chains. Session cookie hijacking for centralized exchanges. Automated DeFi exploit scanner for vulnerable smart contract interactions. Real-time clipboard manipulation for address swapping.",
+        },
+        {
+          id: 17,
+          name: "AzorUlt Sentinel Pro",
+          category: "Credential Harvesting",
+          price: usdToCrypto(2400, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Banking trojan with AI-driven web injects.",
+          rating: 4.8,
+          img: "🏦",
+          fullDesc:
+            "Advanced banking trojan using machine learning for dynamic web inject generation. Targets 200+ financial institutions globally. Real-time man-in-the-browser with session manipulation. Includes multi-factor authentication bypass via session token extraction.",
+        },
+        {
+          id: 18,
+          name: "MetaStealer Enterprise",
+          category: "Credential Harvesting",
+          price: usdToCrypto(1900, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Corporate credential harvester, SSO/Okta/AzureAD focus.",
+          rating: 4.7,
+          img: "🏢",
+          fullDesc:
+            "Enterprise-focused credential stealer targeting Single Sign-On portals, Okta, Azure AD, and corporate VPNs. Harvests SAML assertions and OAuth tokens. Includes Active Directory enumeration module for lateral movement intelligence.",
+        },
+        // Tier 2 (30% = 5 products): $800-$1,300
+        {
+          id: 19,
+          name: "RedLine Stealer Pro",
+          category: "Credential Harvesting",
+          price: usdToCrypto(880, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Browser & FTP credential stealer, VPN config grabber.",
+          rating: 4.6,
+          img: "🔴",
+          fullDesc:
+            "Harvests saved passwords, cookies, credit cards from Chromium and Firefox browsers. Also grabs VPN configurations, FTP credentials from FileZilla, and Discord tokens. Exfiltrates via Telegram bot API or custom webhook.",
+        },
+        {
+          id: 20,
+          name: "Vidar Infostealer v3",
+          category: "Credential Harvesting",
+          price: usdToCrypto(1200, "ETH"),
+          crypto: "ETH",
+          shortDesc: "2FA bypass via session tokens, wallet extraction.",
+          rating: 4.7,
+          img: "🎭",
+          fullDesc:
+            "Bypasses two-factor authentication by stealing authenticated session tokens. Extracts desktop cryptocurrency wallets (Exodus, Electrum, Atomic) and Telegram sessions. Includes desktop screenshot capture and geo-IP lookup.",
+        },
+        {
+          id: 21,
+          name: "Raccoon Stealer v3",
+          category: "Credential Harvesting",
+          price: usdToCrypto(980, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Cloud-based stealer with web panel, 60+ app support.",
+          rating: 4.4,
+          img: "🦝",
+          fullDesc:
+            "SaaS credential stealer with web-based management panel. Auto-updating grabber modules for 60+ applications including browsers, email clients, and VPNs. Includes traffic analysis and logging with search functionality.",
+        },
+        {
+          id: 22,
+          name: "CookieMonster Elite",
+          category: "Credential Harvesting",
+          price: usdToCrypto(850, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Session hijacking specialist, 20+ browser support.",
+          rating: 4.3,
+          img: "🍪",
+          fullDesc:
+            "Specialized session cookie extractor for 20+ browsers. Decrypts encrypted cookie stores. Includes real-time session validation to verify cookie freshness before exfiltration. Automated login to hijacked sessions.",
+        },
+        {
+          id: 23,
+          name: "CryptoDrainer Suite",
+          category: "Credential Harvesting",
+          price: usdToCrypto(1100, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Cryptocurrency wallet extractor, 30+ wallet support.",
+          rating: 4.5,
+          img: "💎",
+          fullDesc:
+            "Extracts cryptocurrency wallets from desktop and browser extensions. Supports 30+ wallets including MetaMask, TrustWallet, Exodus, Atomic, and Ledger Live. Private key and seed phrase extraction. Instant balance checker and auto-transfer module.",
+        },
+        // Tier 1 (50% = 7 products): $400-$700
+        {
+          id: 24,
+          name: "LiteStealer Basic",
+          category: "Credential Harvesting",
+          price: usdToCrypto(430, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Chrome/Firefox password extractor, simple & effective.",
+          rating: 4.1,
+          img: "🔑",
+          fullDesc:
+            "Simple browser credential extractor for Chrome and Firefox. Dumps saved passwords, bookmarks, and browsing history. Lightweight executable, easy deployment. CSV output for easy parsing. Good starter stealer.",
+        },
+        {
+          id: 25,
+          name: "TokenGrab Lite",
+          category: "Credential Harvesting",
+          price: usdToCrypto(560, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Discord & Telegram token grabber, webhook delivery.",
+          rating: 4.2,
+          img: "💬",
+          fullDesc:
+            "Extracts Discord and Telegram session tokens. Delivers tokens via webhook for real-time access. Includes token validator and account information scraper. Small footprint, easy to deploy via social engineering.",
+        },
+        {
+          id: 26,
+          name: "KeyLog Master",
+          category: "Credential Harvesting",
+          price: usdToCrypto(410, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Advanced keylogger with clipboard monitor & screenshots.",
+          rating: 4.0,
+          img: "⌨️",
+          fullDesc:
+            "Comprehensive keylogger capturing keystrokes, clipboard contents, and periodic screenshots. Organizes data by active window. Email or FTP exfiltration. Hidden from task manager. Install as Windows service.",
+        },
+        {
+          id: 27,
+          name: "CloudExtract SMB",
+          category: "Credential Harvesting",
+          price: usdToCrypto(620, "ETH"),
+          crypto: "ETH",
+          shortDesc:
+            "Cloud storage credential extractor (Dropbox, GDrive, OneDrive).",
+          rating: 4.4,
+          img: "☁️",
+          fullDesc:
+            "Extracts saved credentials and session tokens for cloud storage services. Dropbox, Google Drive, OneDrive, and Mega support. Downloads file listings and sample contents for victim profiling.",
+        },
+        {
+          id: 28,
+          name: "MailSnatch Pro",
+          category: "Credential Harvesting",
+          price: usdToCrypto(540, "BTC"),
+          crypto: "BTC",
+          shortDesc:
+            "Email client credential extractor (Outlook, Thunderbird).",
+          rating: 4.3,
+          img: "📬",
+          fullDesc:
+            "Targets desktop email clients including Outlook, Thunderbird, and Mailbird. Extracts account credentials, SMTP/IMAP settings, and stored emails. Includes contact list harvesting for phishing preparation.",
+        },
+        {
+          id: 29,
+          name: "PassSniffer WiFi",
+          category: "Credential Harvesting",
+          price: usdToCrypto(490, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Saved WiFi password extractor + network profiler.",
+          rating: 4.2,
+          img: "📶",
+          fullDesc:
+            "Extracts all saved WiFi passwords from Windows. Creates network profile map with SSIDs, passwords, and security types. Useful for physical penetration testing and network pivoting preparation.",
+        },
+        {
+          id: 30,
+          name: "FormGrabber JS",
+          category: "Credential Harvesting",
+          price: usdToCrypto(670, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Browser form grabber, intercepts POST data in real-time.",
+          rating: 4.6,
+          img: "📝",
+          fullDesc:
+            "Injects into browser processes to intercept form submissions before encryption. Captures login credentials, credit card details, and personal information as they're submitted. Works on HTTPS sites transparently.",
+        },
+
+        // ==========================================
+        // EXPLOIT SCRIPTS - 15 products
+        // ==========================================
+        // Tier 3 (20% = 3 products): $1,600-$3,500
+        {
+          id: 31,
+          name: "ZeroDay Broker Access",
+          category: "Exploit Scripts",
+          price: usdToCrypto(3500, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Curated private 0day list, monthly updated catalog.",
+          rating: 4.7,
+          img: "💣",
+          fullDesc:
+            "Access to a vetted broker network offering private zero-day exploits for Windows, Linux, iOS, and Android. Includes detailed vulnerability analysis, proof-of-concept code, and delivery vectors. Monthly subscription grants updated catalog.",
+        },
+        {
+          id: 32,
+          name: "ExploitDB Premium Elite",
+          category: "Exploit Scripts",
+          price: usdToCrypto(2100, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Verified exploits with PoC, CVE-2020 to CVE-2026.",
+          rating: 4.8,
+          img: "📚",
+          fullDesc:
+            "Curated database of working exploits with proof-of-concept code. Covers CVEs from 2020 through 2026. Each entry includes environment setup, usage instructions, and affected version matrix.",
+        },
+        {
+          id: 33,
+          name: "Bug Bounty Intel Pro",
+          category: "Exploit Scripts",
+          price: usdToCrypto(1800, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Leaked private bug reports, critical vulnerabilities.",
+          rating: 4.6,
+          img: "🐛",
+          fullDesc:
+            "Collection of leaked bug bounty reports with reproduction steps. Includes critical vulnerabilities in major platforms, API endpoints, and authentication bypass techniques. Updated weekly with fresh intel.",
+        },
+        // Tier 2 (30% = 5 products): $800-$1,300
+        {
+          id: 34,
+          name: "SQLi Inferno Map Pro",
+          category: "Exploit Scripts",
+          price: usdToCrypto(900, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Automated SQL injection, multithreaded, proxy rotation.",
+          rating: 4.6,
+          img: "🗂️",
+          fullDesc:
+            "Detects and exploits SQL injection vulnerabilities. Supports MySQL, MSSQL, PostgreSQL, and Oracle. Features include database enumeration, table dumping, file read/write, and OS command execution via stacked queries. Multithreaded with automatic proxy rotation.",
+        },
+        {
+          id: 35,
+          name: "XSS Hunter Pro Elite",
+          category: "Exploit Scripts",
+          price: usdToCrypto(1100, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Blind XSS detection, DOM-based, WAF bypass payloads.",
+          rating: 4.5,
+          img: "🎯",
+          fullDesc:
+            "Automated XSS scanning with DOM-based and stored XSS detection. Includes payload generator with WAF bypass techniques. Integrates with collaborative XSS servers for blind XSS confirmation.",
+        },
+        {
+          id: 36,
+          name: "Command Injection Kit Pro",
+          category: "Exploit Scripts",
+          price: usdToCrypto(850, "ETH"),
+          crypto: "ETH",
+          shortDesc: "OS command injection, reverse shell payloads.",
+          rating: 4.7,
+          img: "💉",
+          fullDesc:
+            "Detects blind and verbose command injection vulnerabilities. Includes reverse shell payloads for Windows (PowerShell) and Linux (Bash/Netcat). Supports time-based detection and out-of-band exfiltration via DNS.",
+        },
+        {
+          id: 37,
+          name: "XXE Exploiter Pro",
+          category: "Exploit Scripts",
+          price: usdToCrypto(950, "BTC"),
+          crypto: "BTC",
+          shortDesc: "XML External Entity attack, SSRF chaining.",
+          rating: 4.4,
+          img: "📄",
+          fullDesc:
+            "Automated XXE detection with out-of-band exfiltration via FTP/HTTP. Includes SSRF chaining module to pivot into internal networks. Supports parameter entities and CDATA wrapping.",
+        },
+        {
+          id: 38,
+          name: "CSRF Arsenal",
+          category: "Exploit Scripts",
+          price: usdToCrypto(800, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Cross-Site Request Forgery toolkit, auto-PoC generator.",
+          rating: 4.3,
+          img: "🎪",
+          fullDesc:
+            "Automated CSRF vulnerability scanner and exploit generator. Creates proof-of-concept HTML pages for confirmed vulnerabilities. Supports token bypass techniques including token fixation and NULL value submission.",
+        },
+        // Tier 1 (50% = 7 products): $400-$700
+        {
+          id: 39,
+          name: "RFI/LFI Scanner",
+          category: "Exploit Scripts",
+          price: usdToCrypto(450, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Remote & local file inclusion, PHP wrapper support.",
+          rating: 4.3,
+          img: "📂",
+          fullDesc:
+            "Scans for file inclusion vulnerabilities. Supports PHP wrappers (php://filter, data://), log poisoning, and /proc/self/environ techniques. Includes null byte injection and path truncation attacks.",
+        },
+        {
+          id: 40,
+          name: "Subdomain Enumerator",
+          category: "Exploit Scripts",
+          price: usdToCrypto(480, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Multi-source subdomain discovery, brute-force module.",
+          rating: 4.4,
+          img: "🔎",
+          fullDesc:
+            "Discovers subdomains using certificate transparency, search engines, DNS brute-force, and passive DNS databases. Multi-threaded with custom wordlist support. Outputs to CSV with IP resolution.",
+        },
+        {
+          id: 41,
+          name: "DirBuster Turbo",
+          category: "Exploit Scripts",
+          price: usdToCrypto(420, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Directory & file brute-forcer, recursive scanning.",
+          rating: 4.2,
+          img: "📁",
+          fullDesc:
+            "High-speed directory and file brute-forcing tool. Recursive scanning with custom extensions list. Supports HTTP/HTTPS with proxy rotation. Includes intelligent 404 detection to reduce false positives.",
+        },
+        {
+          id: 42,
+          name: "WordPress Exploit Kit",
+          category: "Exploit Scripts",
+          price: usdToCrypto(650, "ETH"),
+          crypto: "ETH",
+          shortDesc: "WordPress vulnerability scanner, auto-exploit 50+ CVEs.",
+          rating: 4.5,
+          img: "🔌",
+          fullDesc:
+            "Specialized WordPress vulnerability scanner covering 50+ known CVEs. Automatic exploitation of vulnerable plugins and themes. Includes wp-admin brute-force module and XML-RPC amplification testing.",
+        },
+        {
+          id: 43,
+          name: "JNDI Injection Kit",
+          category: "Exploit Scripts",
+          price: usdToCrypto(580, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Log4Shell & JNDI exploitation toolkit.",
+          rating: 4.6,
+          img: "☕",
+          fullDesc:
+            "Complete JNDI injection testing toolkit. Includes LDAP referral server, RMI server, and DNS callback handler. Payload generation for Log4Shell and related vulnerabilities. Bypasses common WAF rules.",
+        },
+        {
+          id: 44,
+          name: "API Fuzzer Lite",
+          category: "Exploit Scripts",
+          price: usdToCrypto(530, "ETH"),
+          crypto: "ETH",
+          shortDesc: "REST/GraphQL API fuzzer, OpenAPI parser.",
+          rating: 4.3,
+          img: "🔄",
+          fullDesc:
+            "Automated API endpoint fuzzer supporting REST and GraphQL. Parses OpenAPI/Swagger specs for intelligent fuzzing. Tests for injection, overflow, auth bypass, and rate limiting issues.",
+        },
+        {
+          id: 45,
+          name: "WebSocket Tester",
+          category: "Exploit Scripts",
+          price: usdToCrypto(490, "BTC"),
+          crypto: "BTC",
+          shortDesc: "WebSocket security testing, frame injection, hijacking.",
+          rating: 4.1,
+          img: "🔌",
+          fullDesc:
+            "Tests WebSocket implementations for security flaws. Frame injection, cross-site WebSocket hijacking, and message tampering. Supports custom headers and authentication token testing.",
+        },
+
+        // ==========================================
+        // ANONYMITY - 15 products
+        // ==========================================
+        // Tier 3 (20% = 3 products): $1,600-$3,500
+        {
+          id: 46,
+          name: "QuantumVPN Mesh",
+          category: "Anonymity",
+          price: usdToCrypto(2800, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Decentralized VPN mesh, blockchain routing, no logs.",
+          rating: 4.9,
+          img: "🔐",
+          fullDesc:
+            "Decentralized VPN network using blockchain-based routing. Nodes worldwide contribute bandwidth for crypto rewards. Military-grade encryption with perfect forward secrecy. Zero-knowledge authentication. No central authority.",
+        },
+        {
+          id: 47,
+          name: "DarkTunnel Enterprise",
+          category: "Anonymity",
+          price: usdToCrypto(2200, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Multi-hop obfuscation tunnel, 7+ layers, DPI immune.",
+          rating: 4.8,
+          img: "🕳️",
+          fullDesc:
+            "Enterprise-grade obfuscation tunnel with 7+ hop routing. Each hop uses different obfuscation protocol. Immune to Deep Packet Inspection. Supports TCP, UDP, and ICMP tunneling. Includes traffic morphing and packet timing randomization.",
+        },
+        {
+          id: 48,
+          name: "PhantomNet Access",
+          category: "Anonymity",
+          price: usdToCrypto(1750, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Private darknet access node, dedicated bandwidth.",
+          rating: 4.7,
+          img: "👤",
+          fullDesc:
+            "Dedicated darknet access node with guaranteed bandwidth. Pre-configured with Tor, I2P, and Freenet. Includes hardened OS image for virtual machine deployment. Automatic bridge rotation and guard node selection.",
+        },
+        // Tier 2 (30% = 5 products): $800-$1,300
+        {
+          id: 49,
+          name: "PhantomVPN Configs Pro",
+          category: "Anonymity",
+          price: usdToCrypto(950, "ETH"),
+          crypto: "ETH",
+          shortDesc: "WireGuard obfuscated, multi-hop, no logs.",
+          rating: 4.9,
+          img: "🔒",
+          fullDesc:
+            "Pre-configured WireGuard profiles routed through multi-hop obfuscated servers. No logs policy verified by independent audit. Includes killswitch, DNS leak protection, and split tunneling. Servers located in privacy-friendly jurisdictions. Configs updated weekly.",
+        },
+        {
+          id: 50,
+          name: "Tor Bridge Kit Pro",
+          category: "Anonymity",
+          price: usdToCrypto(880, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Obfs4 bridges for censored regions, DPI bypass.",
+          rating: 4.6,
+          img: "🧅",
+          fullDesc:
+            "Pre-configured Tor bridges with obfs4 and meek transports. Bypasses Deep Packet Inspection and national firewalls. Includes automatic bridge rotation and connection troubleshooting scripts.",
+        },
+        {
+          id: 51,
+          name: "SecureOS Live USB",
+          category: "Anonymity",
+          price: usdToCrypto(1100, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Bootable privacy OS, RAM-only, Tor-by-default.",
+          rating: 4.7,
+          img: "💿",
+          fullDesc:
+            "Bootable Linux distribution focused on anonymity. All operations in RAM, nothing written to disk. Tor routing for all traffic by default. Includes encrypted communication suite, secure file deletion, and MAC spoofing on boot.",
+        },
+        {
+          id: 52,
+          name: "VPN Chain Builder",
+          category: "Anonymity",
+          price: usdToCrypto(820, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Automated multi-VPN chaining tool, 5+ providers.",
+          rating: 4.5,
+          img: "⛓️",
+          fullDesc:
+            "Automatically chains multiple VPN connections for enhanced anonymity. Supports 5+ major VPN providers. Intelligent server selection by jurisdiction. Includes connection monitoring and automatic reconnection on failure.",
+        },
+        {
+          id: 53,
+          name: "BurnerPhone Kit",
+          category: "Anonymity",
+          price: usdToCrypto(1050, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Virtual burner phone numbers, 50+ countries.",
+          rating: 4.4,
+          img: "📱",
+          fullDesc:
+            "Virtual phone number service with numbers in 50+ countries. SMS verification capable. Numbers auto-expire after configurable period. Web-based management with Tor access. No personal information required.",
+        },
+        // Tier 1 (50% = 7 products): $400-$700
+        {
+          id: 54,
+          name: "MAC Changer Pro",
+          category: "Anonymity",
+          price: usdToCrypto(430, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Spoof MAC on all interfaces, auto vendor lookup.",
+          rating: 4.4,
+          img: "🖧",
+          fullDesc:
+            "Randomizes MAC addresses on boot for all network interfaces. Supports Windows, Linux, and macOS with automatic vendor OUI lookup to generate realistic addresses. Includes persistence scripts.",
+        },
+        {
+          id: 55,
+          name: "DNSCrypt Proxy Pro",
+          category: "Anonymity",
+          price: usdToCrypto(480, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Encrypted DNS with DoH/DoT, malware blocking.",
+          rating: 4.7,
+          img: "🔒",
+          fullDesc:
+            "Encrypts all DNS queries using DNSCrypt, DNS-over-HTTPS, or DNS-over-TLS. Blocks tracking, malware, and advertising domains using regularly updated blocklists. Includes caching for performance.",
+        },
+        {
+          id: 56,
+          name: "Browser Fingerprint Shield",
+          category: "Anonymity",
+          price: usdToCrypto(560, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Anti-fingerprinting tool, canvas & WebGL spoofing.",
+          rating: 4.3,
+          img: "🛡️",
+          fullDesc:
+            "Prevents browser fingerprinting by randomizing canvas, WebGL, and audio context fingerprints. Spoofs user agent, screen resolution, and font lists. Blocks known tracking scripts and fingerprinting libraries.",
+        },
+        {
+          id: 57,
+          name: "Metadata Scrubber",
+          category: "Anonymity",
+          price: usdToCrypto(410, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Remove EXIF/metadata from all file types, batch mode.",
+          rating: 4.5,
+          img: "🧹",
+          fullDesc:
+            "Removes metadata from images, documents, PDFs, and audio files. Supports batch processing. Strips EXIF, XMP, and proprietary metadata formats. Preview before scrubbing. Maintains original file quality.",
+        },
+        {
+          id: 58,
+          name: "Proxy Rotator",
+          category: "Anonymity",
+          price: usdToCrypto(620, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Automatic SOCKS5 proxy rotation, 1000+ pool.",
+          rating: 4.2,
+          img: "🔄",
+          fullDesc:
+            "Automatically rotates through a pool of 1000+ SOCKS5 proxies. Configurable rotation interval. Proxy health checking with dead proxy removal. Works at system level as a local proxy server.",
+        },
+        {
+          id: 59,
+          name: "DiskEncrypt Quick",
+          category: "Anonymity",
+          price: usdToCrypto(520, "BTC"),
+          crypto: "BTC",
+          shortDesc: "One-click disk encryption, hidden volumes support.",
+          rating: 4.6,
+          img: "💽",
+          fullDesc:
+            "Quick disk encryption tool using AES-256. Supports hidden volumes with plausible deniability. Pre-boot authentication. Works on Windows and Linux. Emergency decryption key option.",
+        },
+        {
+          id: 60,
+          name: "BurnAfterRead Messenger",
+          category: "Anonymity",
+          price: usdToCrypto(680, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Self-destructing messages, P2P, no servers.",
+          rating: 4.8,
+          img: "🔥",
+          fullDesc:
+            "Peer-to-peer messaging with self-destructing messages. Messages encrypted end-to-end and auto-delete after reading. No central server, direct P2P connections. Supports text, images, and files up to 100MB.",
+        },
+
+        // ==========================================
+        // FINANCIAL OBFUSCATION - 15 products
+        // ==========================================
+        // Tier 3 (20% = 3 products): $1,600-$3,500
+        {
+          id: 61,
+          name: "DarkMixer Enterprise",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(3200, "BTC"),
+          crypto: "BTC",
+          shortDesc: "High-volume crypto mixer, CoinJoin, zero-knowledge.",
+          rating: 4.7,
+          img: "🌀",
+          fullDesc:
+            "Enterprise-grade cryptocurrency mixing service. Supports BTC, ETH, XMR, and 20+ altcoins. Uses CoinJoin and zero-knowledge proofs. Minimum mix 0.01 BTC. No logs, no KYC. Instant settlement with multi-hop mixing.",
+        },
+        {
+          id: 62,
+          name: "TornadoCash CLI Pro",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(2100, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Advanced CLI for Tornado Cash, multi-pool support.",
+          rating: 4.6,
+          img: "🌪️",
+          fullDesc:
+            "Enhanced command-line interface for Tornado Cash privacy pools. Supports all ETH denominations and ERC-20 tokens. Automated withdrawal scheduling with randomized timing and amounts. On-chain privacy scoring.",
+        },
+        {
+          id: 63,
+          name: "XMR Bridge Pro",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(1800, "BTC"),
+          crypto: "BTC",
+          shortDesc: "BTC/ETH to Monero bridge, atomic swaps, no tracking.",
+          rating: 4.8,
+          img: "🦅",
+          fullDesc:
+            "Privacy bridge converting BTC/ETH to Monero and back using atomic swaps. Breaks on-chain transaction trails. Multiple intermediate wallets for enhanced privacy. Automated with configurable delay and amount randomization.",
+        },
+        // Tier 2 (30% = 5 products): $800-$1,300
+        {
+          id: 64,
+          name: "CoinJoin Scheduler",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(950, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Automated CoinJoin scheduling, randomized timing.",
+          rating: 4.4,
+          img: "⏰",
+          fullDesc:
+            "Schedules automated CoinJoin transactions at randomized intervals. Supports Wasabi and JoinMarket. Configurable anonymity set targets. Fee optimization for minimum cost mixing. Notification when mixing targets reached.",
+        },
+        {
+          id: 65,
+          name: "MultiSig Obfuscator",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(1100, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Multi-signature wallet obfuscation, key distribution.",
+          rating: 4.5,
+          img: "🔐",
+          fullDesc:
+            "Creates obfuscated multi-signature wallet setups. Distributes keys across multiple locations/services. Time-locked transactions. Plausible deniability with decoy wallets. Compatible with Electrum and Specter.",
+        },
+        {
+          id: 66,
+          name: "Fee Optimizer",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(820, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Transaction fee obfuscation, avoids timing analysis.",
+          rating: 4.3,
+          img: "📊",
+          fullDesc:
+            "Analyzes mempool to optimize transaction fees while avoiding timing-based transaction analysis. Randomizes fee rates within statistical norms. Batch transaction splitting for reduced linkability.",
+        },
+        {
+          id: 67,
+          name: "StealthAddress Generator",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(880, "ETH"),
+          crypto: "ETH",
+          shortDesc:
+            "Stealth address creation, payment privacy on public chains.",
+          rating: 4.6,
+          img: "🎭",
+          fullDesc:
+            "Generates stealth addresses for receiving cryptocurrency privately on public blockchains. Compatible with Bitcoin and Ethereum. View key for auditing without spending. Easy integration with existing wallets.",
+        },
+        {
+          id: 68,
+          name: "DEX Privacy Router",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(1050, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Routes DEX trades through privacy pools, MEV protection.",
+          rating: 4.4,
+          img: "🦎",
+          fullDesc:
+            "Routes decentralized exchange trades through privacy pools. Protects against MEV bots and sandwich attacks. Splits large orders across multiple pools. Supports Uniswap, SushiSwap, and Curve.",
+        },
+        // Tier 1 (50% = 7 products): $400-$700
+        {
+          id: 69,
+          name: "WalletDecoy Maker",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(450, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Creates decoy wallets with plausible balances.",
+          rating: 4.2,
+          img: "🪤",
+          fullDesc:
+            "Generates decoy cryptocurrency wallets with plausible transaction histories. Useful for plausible deniability. Includes realistic transaction patterns. Multiple decoy levels with separate plausible stories.",
+        },
+        {
+          id: 70,
+          name: "MixTester Basic",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(520, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Transaction mixing effectiveness tester.",
+          rating: 4.1,
+          img: "🧪",
+          fullDesc:
+            "Tests the effectiveness of mixing services by analyzing transaction graphs. Identifies potential de-anonymization vectors. Provides privacy score for mixed coins. Recommendations for improving mix quality.",
+        },
+        {
+          id: 71,
+          name: "AddressRotator",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(480, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Automatic wallet address rotation per transaction.",
+          rating: 4.3,
+          img: "🔄",
+          fullDesc:
+            "Automatically generates new receiving addresses for each transaction. HD wallet compatible. Prevents address reuse and transaction graph analysis. Supports Bitcoin and Ethereum. Simple API integration.",
+        },
+        {
+          id: 72,
+          name: "PrivacyScore Checker",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(590, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Wallet privacy audit tool, risk assessment.",
+          rating: 4.5,
+          img: "📋",
+          fullDesc:
+            "Audits cryptocurrency wallets for privacy vulnerabilities. Checks address reuse, KYC exchange links, and transaction patterns. Generates detailed privacy report with remediation steps. Supports BTC and ETH.",
+        },
+        {
+          id: 73,
+          name: "DustCleaner Tool",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(420, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Consolidates dust UTXOs privately.",
+          rating: 4.0,
+          img: "🧹",
+          fullDesc:
+            "Consolidates small UTXOs (dust) without revealing wallet structure. Avoids creating change addresses linked to main wallet. Reduces future transaction fees and improves privacy by eliminating dust-based tracking.",
+        },
+        {
+          id: 74,
+          name: "CrossChain Bridge Basic",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(650, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Simple cross-chain swap tool, 10+ chains.",
+          rating: 4.2,
+          img: "🌉",
+          fullDesc:
+            "Basic cross-chain swapping tool supporting 10+ blockchains. Non-custodial with atomic swap support. Randomized bridge selection for privacy. Suitable for breaking cross-chain transaction analysis.",
+        },
+        {
+          id: 75,
+          name: "FakeExchange Simulator",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(680, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Generates fake exchange transaction records.",
+          rating: 4.4,
+          img: "🏦",
+          fullDesc:
+            "Creates realistic fake exchange transaction records for tax and compliance purposes. Supports major exchange formats (Binance, Coinbase, Kraken). Customizable trading patterns and volumes. PDF export.",
+        },
+
+        // ==========================================
+        // EMAIL LEADS - 15 products
+        // ==========================================
+        // Tier 3 (20% = 3 products): $1,600-$3,500
+        {
+          id: 76,
+          name: "Enterprise Lead DB 500K",
+          category: "Email Leads",
+          price: usdToCrypto(2900, "BTC"),
+          crypto: "BTC",
+          shortDesc: "500,000 C-level executive emails, global coverage.",
+          rating: 4.8,
+          img: "🏢",
+          fullDesc:
+            "Curated database of 500,000 C-level executive emails. Global coverage across 50+ countries. Includes name, title, company, revenue, employee count, and direct phone. Monthly verified and updated. CSV and CRM-ready formats.",
+        },
+        {
+          id: 77,
+          name: "Investor Leads Platinum",
+          category: "Email Leads",
+          price: usdToCrypto(2200, "ETH"),
+          crypto: "ETH",
+          shortDesc: "High-net-worth investor leads, accredited verified.",
+          rating: 4.7,
+          img: "💎",
+          fullDesc:
+            "Leads of accredited and high-net-worth investors. Verified investment history and portfolio interests. Includes angel investors, VCs, and private equity contacts. 100K+ records with quarterly updates.",
+        },
+        {
+          id: 78,
+          name: "Government Contacts Global",
+          category: "Email Leads",
+          price: usdToCrypto(1750, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Government official emails, procurement officers.",
+          rating: 4.5,
+          img: "🏛️",
+          fullDesc:
+            "Government procurement officers and decision-makers from 30+ countries. Department-specific targeting. Includes agency name, position, direct line, and email. Ideal for B2G marketing. 200K+ verified contacts.",
+        },
+        // Tier 2 (30% = 5 products): $800-$1,300
+        {
+          id: 79,
+          name: "Business Prospector 50K",
+          category: "Email Leads",
+          price: usdToCrypto(920, "ETH"),
+          crypto: "ETH",
+          shortDesc: "50,000 B2B emails with company info.",
+          rating: 4.3,
+          img: "📊",
+          fullDesc:
+            "50,000 business email addresses including decision-makers and executives. Each entry contains name, company, position, and LinkedIn profile URL. Sourced from business directories and corporate websites. High deliverability rate.",
+        },
+        {
+          id: 80,
+          name: "Crypto Investor Leads 25K",
+          category: "Email Leads",
+          price: usdToCrypto(1150, "ETH"),
+          crypto: "ETH",
+          shortDesc: "25,000 crypto enthusiast emails, NFT buyers.",
+          rating: 4.6,
+          img: "₿",
+          fullDesc:
+            "25,000 emails of cryptocurrency investors and NFT buyers. Sourced from blockchain events, exchange databases, and NFT marketplace registrations. High engagement rate for crypto-related offers. Verified quarterly.",
+        },
+        {
+          id: 81,
+          name: "Healthcare Professionals 60K",
+          category: "Email Leads",
+          price: usdToCrypto(880, "BTC"),
+          crypto: "BTC",
+          shortDesc: "60,000 healthcare sector emails, specialties tagged.",
+          rating: 4.4,
+          img: "🏥",
+          fullDesc:
+            "60,000 email addresses of healthcare professionals including doctors, nurses, and administrators. Specialty and subspecialty tagged. Sourced from medical directories and hospital websites. Niche target for pharma/device marketing.",
+        },
+        {
+          id: 82,
+          name: "RealEstate Agent DB 80K",
+          category: "Email Leads",
+          price: usdToCrypto(980, "ETH"),
+          crypto: "ETH",
+          shortDesc: "80,000 real estate agent emails, US/Canada.",
+          rating: 4.2,
+          img: "🏠",
+          fullDesc:
+            "Real estate agents and brokers across US and Canada. Includes brokerage name, MLS ID, and market area. Ideal for mortgage, insurance, and prop-tech marketing. Monthly updated with new license data.",
+        },
+        {
+          id: 83,
+          name: "TechDecision Makers 40K",
+          category: "Email Leads",
+          price: usdToCrypto(1080, "BTC"),
+          crypto: "BTC",
+          shortDesc: "40,000 IT decision-makers, CTO/CIO/IT Director.",
+          rating: 4.5,
+          img: "💻",
+          fullDesc:
+            "IT budget holders and technology decision-makers. CTOs, CIOs, IT Directors, and Infrastructure Managers. Technology stack information included where available. High-value B2B tech marketing list.",
+        },
+        // Tier 1 (50% = 7 products): $400-$700
+        {
+          id: 84,
+          name: "Starter Email Pack 50K",
+          category: "Email Leads",
+          price: usdToCrypto(450, "BTC"),
+          crypto: "BTC",
+          shortDesc: "50,000 verified emails, B2C mix.",
+          rating: 4.0,
+          img: "📧",
+          fullDesc:
+            "50,000 verified email addresses sourced from public profiles and data brokers. Mix of consumer (B2C) emails. Cleaned for duplicates and invalid formats. Delivered as CSV. Suitable for broad marketing campaigns.",
+        },
+        {
+          id: 85,
+          name: "Mega Lead Dump 90K",
+          category: "Email Leads",
+          price: usdToCrypto(580, "BTC"),
+          crypto: "BTC",
+          shortDesc: "90,000 mixed emails, geo-targeted US/UK.",
+          rating: 4.1,
+          img: "📦",
+          fullDesc:
+            "90,000 email addresses geographically targeted to United States and United Kingdom. Includes consumer and small business emails. Recently verified (within 30 days). Ideal for high-volume outreach campaigns.",
+        },
+        {
+          id: 86,
+          name: "Ecommerce Buyer List 60K",
+          category: "Email Leads",
+          price: usdToCrypto(490, "ETH"),
+          crypto: "ETH",
+          shortDesc: "60,000 online shopper emails.",
+          rating: 4.2,
+          img: "🛒",
+          fullDesc:
+            "60,000 emails of active online shoppers. Segmented by purchase categories (electronics, fashion, home goods). High conversion potential for ecommerce promotions. Verified within 15 days.",
+        },
+        {
+          id: 87,
+          name: "SmallBusiness Owners 45K",
+          category: "Email Leads",
+          price: usdToCrypto(520, "BTC"),
+          crypto: "BTC",
+          shortDesc: "45,000 small business owner emails, SIC coded.",
+          rating: 4.3,
+          img: "🏪",
+          fullDesc:
+            "Small business owners and entrepreneurs. SIC/NAICS industry coded. Includes business name, revenue range, and employee count. Great for B2B services and SaaS marketing.",
+        },
+        {
+          id: 88,
+          name: "Student & .edu Emails 70K",
+          category: "Email Leads",
+          price: usdToCrypto(430, "ETH"),
+          crypto: "ETH",
+          shortDesc: "70,000 .edu email addresses, student demographics.",
+          rating: 3.9,
+          img: "🎓",
+          fullDesc:
+            "University and college email addresses (.edu domains). Students, faculty, and staff. Segmented by institution type and field of study. High engagement for edu-focused offers and student services.",
+        },
+        {
+          id: 89,
+          name: "LocalBusiness Leads 55K",
+          category: "Email Leads",
+          price: usdToCrypto(470, "BTC"),
+          crypto: "BTC",
+          shortDesc: "55,000 local business emails, Google Maps sourced.",
+          rating: 4.1,
+          img: "📍",
+          fullDesc:
+            "Local business emails scraped from Google Maps and Yelp. Includes business category, address, phone, and rating. Ideal for local marketing services and B2B local outreach. Region-filterable delivery.",
+        },
+        {
+          id: 90,
+          name: "JobSeeker Leads 100K",
+          category: "Email Leads",
+          price: usdToCrypto(640, "ETH"),
+          crypto: "ETH",
+          shortDesc: "100,000 job seeker emails, industry tagged.",
+          rating: 4.0,
+          img: "💼",
+          fullDesc:
+            "Active job seekers across multiple industries. Sourced from job boards and professional networks. Includes desired position, industry experience, and location. Good for recruitment and career services marketing.",
+        },
+
+        // ==========================================
+        // EXPLOIT ACQUISITION - 15 products
+        // ==========================================
+        // Tier 3 (20% = 3 products): $1,600-$3,500
+        {
+          id: 91,
+          name: "0day Concierge Service",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(3500, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Personal 0day broker, custom vulnerability sourcing.",
+          rating: 4.9,
+          img: "🎯",
+          fullDesc:
+            "Dedicated 0day broker providing personalized vulnerability sourcing. Access to private collections. Custom targeting available. Includes vulnerability analysis, weaponization guidance, and delivery vector recommendations. NDA-guaranteed confidentiality.",
+        },
+        {
+          id: 92,
+          name: "Mobile0day Pack",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(2600, "ETH"),
+          crypto: "ETH",
+          shortDesc: "iOS + Android 0day bundle, kernel & userland.",
+          rating: 4.7,
+          img: "📱",
+          fullDesc:
+            "Collection of mobile zero-day exploits for iOS (up to 17.x) and Android (up to 14.x). Kernel and userland exploits included. Jailbreak/root capability. Full documentation and weaponization support.",
+        },
+        {
+          id: 93,
+          name: "Browser0day Arsenal",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(1900, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Chrome/Safari/Firefox 0days, sandbox escape.",
+          rating: 4.8,
+          img: "🌐",
+          fullDesc:
+            "Collection of browser zero-day exploits including sandbox escapes. Targets Chrome, Safari, and Firefox. Drive-by delivery vectors included. Renderer and sandbox escape chains. Updated monthly with new discoveries.",
+        },
+        // Tier 2 (30% = 5 products): $800-$1,300
+        {
+          id: 94,
+          name: "IoT Exploit Collection",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(980, "ETH"),
+          crypto: "ETH",
+          shortDesc: "IoT device exploits, routers/cameras/smart devices.",
+          rating: 4.4,
+          img: "📡",
+          fullDesc:
+            "Collection of exploits for IoT devices including routers, IP cameras, smart home devices, and industrial controllers. Firmware extraction scripts, default credential lists, and known vulnerability exploits. 50+ devices covered.",
+        },
+        {
+          id: 95,
+          name: "Windows PrivEsc Pack",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(850, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Windows privilege escalation exploits, Win7-Win11.",
+          rating: 4.5,
+          img: "🪟",
+          fullDesc:
+            "Collection of Windows privilege escalation exploits covering Windows 7 through Windows 11. Includes both known CVEs and lesser-known techniques. Service misconfiguration exploiters, DLL hijacking, and token manipulation.",
+        },
+        {
+          id: 96,
+          name: "Linux PrivEsc Suite",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(820, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Linux privilege escalation, kernel & SUID exploits.",
+          rating: 4.3,
+          img: "🐧",
+          fullDesc:
+            "Linux privilege escalation exploits collection. Kernel exploits, SUID binary exploitation, capabilities abuse, and cron job hijacking. Covers major distributions. Includes automated enumeration and exploitation script.",
+        },
+        {
+          id: 97,
+          name: "WebApp Vuln Database",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(1100, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Curated webapp vulnerabilities, 200+ CVEs with PoC.",
+          rating: 4.6,
+          img: "🔍",
+          fullDesc:
+            "Database of 200+ web application vulnerabilities with verified proof-of-concept code. Covering major CMS, frameworks, and custom applications. Each entry includes vulnerable version range and exploitation steps.",
+        },
+        {
+          id: 98,
+          name: "SCADA/ICS Exploit Pack",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(1200, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Industrial control system exploits, Modbus/DNP3.",
+          rating: 4.2,
+          img: "⚙️",
+          fullDesc:
+            "Exploits for industrial control systems and SCADA devices. Protocol-specific attacks for Modbus, DNP3, and PROFINET. PLC exploitation and HMI access. For security research in OT environments.",
+        },
+        // Tier 1 (50% = 7 products): $400-$700
+        {
+          id: 99,
+          name: "CVE Weekly Digest",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(480, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Weekly CVE summary with exploitation analysis.",
+          rating: 4.1,
+          img: "📰",
+          fullDesc:
+            "Weekly digest of newly published CVEs with exploitation analysis. Includes attack vector assessment, affected system inventory, and risk scoring. Curated by security researchers. Email delivery every Monday.",
+        },
+        {
+          id: 100,
+          name: "ExploitPack Lite",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(560, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Basic exploit pack, 20+ reliable exploits, easy GUI.",
+          rating: 4.0,
+          img: "📦",
+          fullDesc:
+            "Entry-level exploit pack with 20+ reliable exploits. Simple GUI for target selection and exploitation. Covers common CMS and server vulnerabilities. Auto-update feature for new exploits. Good for learning exploitation.",
+        },
+        {
+          id: 101,
+          name: "Patch Tuesday Analyzer",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(430, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Microsoft Patch Tuesday diffing tool, find unpatched.",
+          rating: 4.4,
+          img: "🔧",
+          fullDesc:
+            "Automated binary diffing tool for Microsoft Patch Tuesday updates. Identifies patched vulnerabilities and finds unpatched equivalents. Generates vulnerability summaries and attack surface analysis.",
+        },
+        {
+          id: 102,
+          name: "ExploitForums Scraper",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(510, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Monitors exploit forums for new PoCs and 0days.",
+          rating: 4.2,
+          img: "🕷️",
+          fullDesc:
+            "Automated scraper monitoring dark web exploit forums and marketplaces. Alerts on new proof-of-concept posts and zero-day advertisements. NLP-powered relevance filtering. Daily summary reports.",
+        },
+        {
+          id: 103,
+          name: "VulnFeed Aggregator",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(450, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Multi-source vulnerability feed aggregator.",
+          rating: 4.3,
+          img: "📡",
+          fullDesc:
+            "Aggregates vulnerability data from NVD, ExploitDB, and 10+ other sources. Unified search interface. Real-time alerts for new vulnerabilities matching watchlist criteria. API access for integration.",
+        },
+        {
+          id: 104,
+          name: "GitHub Exploit Monitor",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(620, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Monitors GitHub for newly uploaded exploits and PoCs.",
+          rating: 4.5,
+          img: "🐙",
+          fullDesc:
+            "Real-time monitoring of GitHub repositories for exploit and PoC uploads. Keyword and CVE-based detection. Automatic cloning and analysis of promising repositories. Daily digest of new findings.",
+        },
+        {
+          id: 105,
+          name: "Darknet Intel Brief",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(680, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Weekly darknet intelligence briefing, exploit trends.",
+          rating: 4.6,
+          img: "🕵️",
+          fullDesc:
+            "Weekly intelligence briefing covering darknet exploit market trends. Pricing analysis, new seller profiles, and emerging threat actors. Includes verified vendor ratings and scam alerts. PDF report delivery.",
+        },
+
+        // ==========================================
+        // PHISHING - 15 products
+        // ==========================================
+        // Tier 3 (20% = 3 products): $1,600-$3,500
+        {
+          id: 106,
+          name: "DeepPhish AI Platform",
+          category: "Phishing",
+          price: usdToCrypto(3300, "ETH"),
+          crypto: "ETH",
+          shortDesc: "AI-powered phishing platform, behavioral targeting.",
+          rating: 4.9,
+          img: "🧠",
+          fullDesc:
+            "Advanced AI phishing platform using machine learning for hyper-personalized campaigns. Behavioral analysis of targets for optimal timing and messaging. Deepfake voice integration for vishing. Multi-vector campaigns across email, SMS, and social media.",
+        },
+        {
+          id: 107,
+          name: "PhishNet Enterprise",
+          category: "Phishing",
+          price: usdToCrypto(2400, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Full phishing infrastructure, C2, templates, automation.",
+          rating: 4.7,
+          img: "🌐",
+          fullDesc:
+            "Complete phishing infrastructure including C2 servers, 200+ email/SMS templates, domain generation, and automated campaign management. MFA bypass through real-time proxy. Team collaboration features for large operations.",
+        },
+        {
+          id: 108,
+          name: "VoiceClone Phisher",
+          category: "Phishing",
+          price: usdToCrypto(1900, "ETH"),
+          crypto: "ETH",
+          shortDesc:
+            "AI voice cloning for vishing, real-time speech synthesis.",
+          rating: 4.6,
+          img: "🎙️",
+          fullDesc:
+            "AI voice cloning system for vishing campaigns. Clone any voice from 30-second sample. Real-time speech synthesis with emotional inflection. Multi-language support. Integration with auto-dialer for large-scale vishing operations.",
+        },
+        // Tier 2 (30% = 5 products): $800-$1,300
+        {
+          id: 109,
+          name: "ClonePhish Kit Pro",
+          category: "Phishing",
+          price: usdToCrypto(980, "ETH"),
+          crypto: "ETH",
+          shortDesc: "AI-generated phishing pages, MFA interception.",
+          rating: 4.3,
+          img: "🎣",
+          fullDesc:
+            "ClonePhish uses AI to replicate target login pages with pixel-perfect accuracy. Includes reverse proxy for real-time credential capture, MFA token interception, and session hijacking. Anti-bot detection and geolocation targeting.",
+        },
+        {
+          id: 110,
+          name: "EvilGophish Pro",
+          category: "Phishing",
+          price: usdToCrypto(850, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Gophish fork with landing page cloning, automation.",
+          rating: 4.6,
+          img: "📧",
+          fullDesc:
+            "Modified Gophish with automatic landing page cloning, email campaign scheduling, and real-time credential capture dashboard. Includes bypass for Microsoft Safe Links and URL rewriting.",
+        },
+        {
+          id: 111,
+          name: "SMSCaster Pro",
+          category: "Phishing",
+          price: usdToCrypto(880, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Bulk SMS phishing platform, spoofed sender IDs.",
+          rating: 4.2,
+          img: "📱",
+          fullDesc:
+            "Bulk SMS sender with spoofed alphanumeric sender IDs. Templates for banking, delivery, and tax scams. Includes link shortener with click tracking and geo-redirection.",
+        },
+        {
+          id: 112,
+          name: "Vishing AI Bot Pro",
+          category: "Phishing",
+          price: usdToCrypto(1100, "BTC"),
+          crypto: "BTC",
+          shortDesc: "AI voice phishing, natural conversation, multi-language.",
+          rating: 4.4,
+          img: "🤖",
+          fullDesc:
+            "Text-to-speech voice phishing bot powered by large language models. Maintains natural conversation flow for social engineering. Supports multiple languages and regional accents. Includes call recording and transcription.",
+        },
+        {
+          id: 113,
+          name: "QRPhish Generator",
+          category: "Phishing",
+          price: usdToCrypto(920, "ETH"),
+          crypto: "ETH",
+          shortDesc: "QR code phishing generator, dynamic redirects.",
+          rating: 4.1,
+          img: "📱",
+          fullDesc:
+            "Generates malicious QR codes for phishing campaigns. Dynamic redirect based on user agent and location. Multiple redirect chain to evade URL scanners. QR code branding customization for believability.",
+        },
+        // Tier 1 (50% = 7 products): $400-$700
+        {
+          id: 114,
+          name: "PageClone Basic",
+          category: "Phishing",
+          price: usdToCrypto(480, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Simple phishing page cloner, 50+ templates included.",
+          rating: 4.0,
+          img: "📋",
+          fullDesc:
+            "Basic phishing page cloning tool with 50+ pre-built templates. One-click clone of target login pages. Simple web-based management. Email delivery of captured credentials. Good starter phishing kit.",
+        },
+        {
+          id: 115,
+          name: "EmailSpoofer Lite",
+          category: "Phishing",
+          price: usdToCrypto(430, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Email spoofing tool, SPF/DKIM bypass techniques.",
+          rating: 4.2,
+          img: "✉️",
+          fullDesc:
+            "Email spoofing tool with techniques to bypass SPF and DKIM checks. Sender ID customization. HTML email builder included. Tested against major email providers. Delivery success rate analytics.",
+        },
+        {
+          id: 116,
+          name: "PhishTemplate Pack",
+          category: "Phishing",
+          price: usdToCrypto(520, "BTC"),
+          crypto: "BTC",
+          shortDesc: "100+ phishing email templates, major brands covered.",
+          rating: 4.3,
+          img: "📨",
+          fullDesc:
+            "Collection of 100+ phishing email templates covering major brands (Microsoft, Google, Apple, banks, social media). HTML formatted with images. Customizable merge fields. Regularly updated with current campaigns.",
+        },
+        {
+          id: 117,
+          name: "URL Obfuscator",
+          category: "Phishing",
+          price: usdToCrypto(450, "ETH"),
+          crypto: "ETH",
+          shortDesc: "URL obfuscation tool, bypass link scanners.",
+          rating: 4.1,
+          img: "🔗",
+          fullDesc:
+            "URL obfuscation tool for phishing links. Multiple techniques: punycode, URL shortener chaining, redirect chains, and JavaScript-based redirection. Tests URLs against major link scanners and email filters.",
+        },
+        {
+          id: 118,
+          name: "Credential Validator",
+          category: "Phishing",
+          price: usdToCrypto(560, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Real-time credential validation, auto-login test.",
+          rating: 4.4,
+          img: "✅",
+          fullDesc:
+            "Validates captured credentials in real-time by attempting login to target service. Instant feedback on credential quality. Flags accounts with MFA enabled. Exports validated credentials separately from invalid ones.",
+        },
+        {
+          id: 119,
+          name: "SocialMedia Phish Kit",
+          category: "Phishing",
+          price: usdToCrypto(610, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Social media phishing templates, FB/IG/LinkedIn/Twitter.",
+          rating: 4.5,
+          img: "👥",
+          fullDesc:
+            "Specialized social media phishing kit. Templates for Facebook, Instagram, LinkedIn, and Twitter/X. Account recovery and verification-themed templates. Mobile-responsive designs. Session cookie capture after login.",
+        },
+        {
+          id: 120,
+          name: "PhishCampaign Tracker",
+          category: "Phishing",
+          price: usdToCrypto(490, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Campaign analytics, open/click rates, geo-tracking.",
+          rating: 4.2,
+          img: "📈",
+          fullDesc:
+            "Phishing campaign analytics dashboard. Tracks email opens, link clicks, credential submissions, and session hijacks. Geolocation tracking of victims. Conversion funnel analytics. Export reports for campaign optimization.",
+        },
+
+        // ==========================================
+        // NETWORK TOOLS - 15 products
+        // ==========================================
+        // Tier 3 (20% = 3 products): $1,600-$3,500
+        {
+          id: 121,
+          name: "Botnet C2 Enterprise",
+          category: "Network Tools",
+          price: usdToCrypto(3500, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Enterprise C2 infrastructure, 10K+ node management.",
+          rating: 4.6,
+          img: "🕸️",
+          fullDesc:
+            "Enterprise-grade C2 infrastructure capable of managing 10,000+ nodes. Web-based dashboard with real-time node monitoring. Multi-protocol support (HTTP, HTTPS, DNS, WebSocket, ICMP). Automated failover and load balancing. Geo-distributed node map.",
+        },
+        {
+          id: 122,
+          name: "DDoS-Stresser VIP Pro",
+          category: "Network Tools",
+          price: usdToCrypto(2200, "ETH"),
+          crypto: "ETH",
+          shortDesc: "L7/L4 attack panel, 500+ Gbps, multi-vector.",
+          rating: 4.5,
+          img: "⚡",
+          fullDesc:
+            "Professional stress testing panel with 500+ Gbps capacity. Multi-vector attacks: HTTP flood, SYN flood, UDP amplification, DNS amplification. Bypasses Cloudflare, Akamai, and AWS Shield. API access for automated testing. Dedicated attack servers.",
+        },
+        {
+          id: 123,
+          name: "NetSniper Elite",
+          category: "Network Tools",
+          price: usdToCrypto(1800, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Advanced MITM framework, full network control.",
+          rating: 4.8,
+          img: "🎯",
+          fullDesc:
+            "Comprehensive man-in-the-middle framework. ARP spoofing, DNS poisoning, DHCP spoofing, and SSL stripping. Session hijacking with automatic credential extraction. Traffic modification and injection. Plugin architecture for custom modules.",
+        },
+        // Tier 2 (30% = 5 products): $800-$1,300
+        {
+          id: 124,
+          name: "Port Scanner Elite Pro",
+          category: "Network Tools",
+          price: usdToCrypto(850, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Stealth SYN scanner, decoy & idle scan techniques.",
+          rating: 4.5,
+          img: "🔍",
+          fullDesc:
+            "Multi-threaded port scanner with SYN stealth, decoy scanning, and idle scan techniques. Service version detection and OS fingerprinting. Outputs to multiple formats (XML, JSON, grepable).",
+        },
+        {
+          id: 125,
+          name: "Packet Sniffer Pro",
+          category: "Network Tools",
+          price: usdToCrypto(980, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Deep packet inspection, ARP spoofing, session hijack.",
+          rating: 4.7,
+          img: "📡",
+          fullDesc:
+            "Captures and analyzes live network traffic. Supports ARP spoofing for MITM attacks, DNS poisoning, and TCP session hijacking. Includes protocol dissectors for HTTP, FTP, SMTP, and custom protocols.",
+        },
+        {
+          id: 126,
+          name: "WiFi Cracker Suite Pro",
+          category: "Network Tools",
+          price: usdToCrypto(920, "ETH"),
+          crypto: "ETH",
+          shortDesc: "WPA3/WPA2 cracking, PMKID attack, handshake capture.",
+          rating: 4.4,
+          img: "📶",
+          fullDesc:
+            "Hashcat-based WiFi cracking toolkit with custom wordlists and rule sets. PMKID attack for WPA3 transition mode. Includes handshake capture and deauthentication tools. GPU-accelerated with multi-device support.",
+        },
+        {
+          id: 127,
+          name: "TunnelMaster Pro",
+          category: "Network Tools",
+          price: usdToCrypto(1050, "BTC"),
+          crypto: "BTC",
+          shortDesc: "SSH/DNS/ICMP tunneling toolkit, firewall bypass.",
+          rating: 4.3,
+          img: "🕳️",
+          fullDesc:
+            "Multi-protocol tunneling toolkit for bypassing firewalls and network restrictions. SSH tunneling, DNS tunneling, and ICMP tunneling. Traffic obfuscation to mimic legitimate protocols. Auto-reconnection and failover.",
+        },
+        {
+          id: 128,
+          name: "NetFlow Analyzer",
+          category: "Network Tools",
+          price: usdToCrypto(880, "ETH"),
+          crypto: "ETH",
+          shortDesc:
+            "Network flow analysis, anomaly detection, traffic mapping.",
+          rating: 4.6,
+          img: "📊",
+          fullDesc:
+            "Network flow analysis tool for mapping network topology and traffic patterns. Anomaly detection for security monitoring. Identifies bottleneck points and exfiltration paths. Visual network graph generation.",
+        },
+        // Tier 1 (50% = 7 products): $400-$700
+        {
+          id: 129,
+          name: "PingSweeper Basic",
+          category: "Network Tools",
+          price: usdToCrypto(420, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Network discovery tool, ICMP/ARP/TCP ping sweep.",
+          rating: 4.0,
+          img: "🏓",
+          fullDesc:
+            "Network discovery and host enumeration tool. Multi-protocol ping sweep (ICMP, ARP, TCP SYN). Fast scanning with adjustable timing. CIDR notation support. Exports live host list with MAC addresses and hostnames.",
+        },
+        {
+          id: 130,
+          name: "BandwidthMonitor",
+          category: "Network Tools",
+          price: usdToCrypto(480, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Network bandwidth monitor, per-process tracking.",
+          rating: 4.2,
+          img: "📉",
+          fullDesc:
+            "Monitors network bandwidth usage per process and per connection. Real-time traffic graphs. Identifies bandwidth-heavy applications and suspicious connections. Historical data logging for trend analysis.",
+        },
+        {
+          id: 131,
+          name: "TraceRoute Advanced",
+          category: "Network Tools",
+          price: usdToCrypto(450, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Advanced traceroute with protocol options, geo-IP.",
+          rating: 4.1,
+          img: "🗺️",
+          fullDesc:
+            "Advanced traceroute tool supporting TCP, UDP, ICMP, and DNS protocols. Geo-IP lookup for each hop. ASN identification. Path visualization on world map. Detects routing anomalies and filtering.",
+        },
+        {
+          id: 132,
+          name: "WakeOnLAN Manager",
+          category: "Network Tools",
+          price: usdToCrypto(400, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Remote wake-on-LAN, scheduled power management.",
+          rating: 4.0,
+          img: "🔌",
+          fullDesc:
+            "Wake-on-LAN tool for remote network device power management. Scheduled wake and shutdown. Subnet broadcast support. Device inventory with MAC address database. Integration with network monitoring tools.",
+        },
+        {
+          id: 133,
+          name: "NetShare Enumerator",
+          category: "Network Tools",
+          price: usdToCrypto(530, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Network share scanner, permissions audit.",
+          rating: 4.3,
+          img: "📂",
+          fullDesc:
+            "Scans network for open shares (SMB/CIFS, NFS, FTP). Enumerates share permissions and accessible files. Identifies misconfigured shares with sensitive data. Reports share access audit for security assessment.",
+        },
+        {
+          id: 134,
+          name: "FirewallTester Lite",
+          category: "Network Tools",
+          price: usdToCrypto(580, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Firewall rule tester, port knocking, stealth scan.",
+          rating: 4.4,
+          img: "🧱",
+          fullDesc:
+            "Tests firewall rules and configurations. Port knocking sequences, stealth scan techniques, and rule enumeration. Identifies overly permissive rules and configuration weaknesses. Remediation recommendations.",
+        },
+        {
+          id: 135,
+          name: "MACFlood Defender",
+          category: "Network Tools",
+          price: usdToCrypto(640, "BTC"),
+          crypto: "BTC",
+          shortDesc: "MAC flooding detection, switch security tester.",
+          rating: 4.2,
+          img: "🛡️",
+          fullDesc:
+            "Tests switch security against MAC flooding attacks. CAM table overflow testing. VLAN hopping detection. Identifies switches vulnerable to MAC flooding. Mitigation configuration recommendations.",
+        },
+      ];
+
+      const CATEGORIES = ["All", ...new Set(PRODUCTS.map((p) => p.category))];
+
+      // ---------- Wallet Addresses (BTC & ETH only) ----------
+      const WALLETS = {
+        BTC: {
+          address: "15hLEAL4SWJLJgNUwTnWo8Xmy54U41ZG7r",
+          network: "Bitcoin Network",
+        },
+        ETH: {
+          address: "0x14325a3d0b6af8689836f7a0f3f8acb51411af60",
+          network: "Ethereum (ERC-20)",
+        },
+      };
+
+      // ---------- Trust Ticker ----------
+      const TICKER_MESSAGES = [
+        "🔒 PGP signed communications available • ",
+        "⭐ 4.7/5 average vendor rating across 12,000+ transactions • ",
+        "🛡️ Escrow protection on all orders above 0.05 BTC • ",
+        "💬 24/7 encrypted support via Session messenger • ",
+        "✅ Multi-sig wallets for large transactions • ",
+        "🚫 No KYC/AML – privacy by design • ",
+        "🔄 Instant delivery upon payment confirmation • ",
+        "🌍 Servers in privacy-friendly jurisdictions • ",
+      ];
+
+      const formatCrypto = (val, symbol) => `${val.toFixed(4)} ${symbol}`;
+
+      const useLocalStorage = (key, initialValue) => {
+        const [storedValue, setStoredValue] = useState(() => {
+          try {
+            const item = window.localStorage.getItem(key);
+            return item ? JSON.parse(item) : initialValue;
+          } catch (e) {
+            return initialValue;
+          }
+        });
+        const setValue = (value) => {
+          try {
+            const valueToStore =
+              value instanceof Function ? value(storedValue) : value;
+            setStoredValue(valueToStore);
+            window.localStorage.setItem(key, JSON.stringify(valueToStore));
+          } catch (e) {
+            console.error("localStorage error", e);
+          }
+        };
+        return [storedValue, setValue];
+      };
+
+      const ShadowHaven = () => {
+        const [cart, setCart] = useLocalStorage("shadow_cart", []);
+        const [wishlist, setWishlist] = useLocalStorage("shadow_wishlist", []);
+        const [selectedCategory, setSelectedCategory] = useState("All");
+        const [showCartPanel, setShowCartPanel] = useState(false);
+        const [showWishPanel, setShowWishPanel] = useState(false);
+        const [showTerms, setShowTerms] = useState(false);
+        const [showCheckout, setShowCheckout] = useState(false);
+        const [showSuccess, setShowSuccess] = useState(false);
+        const [showQuickview, setShowQuickview] = useState(null);
+        const [showDisclaimer, setShowDisclaimer] = useState(true);
+        const [notification, setNotification] = useState(null);
+        const [checkoutAgreed, setCheckoutAgreed] = useState(false);
+        const [paymentLoading, setPaymentLoading] = useState(false);
+        const [copiedAddress, setCopiedAddress] = useState(null);
+        const [emailJSConfigured, setEmailJSConfigured] = useState(true);
+
+        // Check if EmailJS is configured
+        useEffect(() => {
+          try {
+            const publicKey = emailjs.init("70Q1bWdEPbUw-dkJG");
+            if (publicKey) setEmailJSConfigured(true);
+          } catch (e) {
+            setEmailJSConfigured(false);
+          }
+        }, []);
+
+        const filteredProducts =
+          selectedCategory === "All"
+            ? PRODUCTS
+            : PRODUCTS.filter((p) => p.category === selectedCategory);
+
+        const addToCart = useCallback((p) => {
+          setCart((prev) => {
+            const ex = prev.find((i) => i.id === p.id);
+            if (ex)
+              return prev.map((i) =>
+                i.id === p.id ? { ...i, qty: i.qty + 1 } : i,
+              );
+            return [...prev, { ...p, qty: 1 }];
+          });
+          setNotification(`✔ Added ${p.name} to cart`);
+        }, []);
+        const removeFromCart = useCallback(
+          (id) => setCart((prev) => prev.filter((i) => i.id !== id)),
+          [],
+        );
+        const clearCart = useCallback(() => setCart([]), []);
+        const toggleWishlist = useCallback((p) => {
+          setWishlist((prev) => {
+            if (prev.find((i) => i.id === p.id)) {
+              setNotification(`Removed ${p.name} from wishlist`);
+              return prev.filter((i) => i.id !== p.id);
+            } else {
+              setNotification(`❤ Added ${p.name} to wishlist`);
+              return [...prev, p];
+            }
+          });
+        }, []);
+        const isInWishlist = (id) => wishlist.some((i) => i.id === id);
+        const cartItemCount = cart.reduce((s, i) => s + i.qty, 0);
+
+        useEffect(() => {
+          if (notification) {
+            const t = setTimeout(() => setNotification(null), 2500);
+            return () => clearTimeout(t);
+          }
+        }, [notification]);
+        useEffect(() => {
+          if (showCheckout) setCheckoutAgreed(false);
+        }, [showCheckout]);
+
+        const copyToClipboard = (text, coin) => {
+          navigator.clipboard
+            .writeText(text)
+            .then(() => {
+              setCopiedAddress(coin);
+              setTimeout(() => setCopiedAddress(null), 2000);
+            })
+            .catch(() => {
+              setNotification("⚠ Failed to copy address");
+            });
         };
 
-        try {
-          await emailjs.send("YOUR_SERVICE_ID", "YOUR_CHECKOUT_TEMPLATE_ID", params);
-        } catch (err) {
-          console.warn("EmailJS send failed (continuing to success modal):", err);
-        }
+        const handleCheckoutSubmit = async (e) => {
+          e.preventDefault();
+          setPaymentLoading(true);
 
-        setPaymentLoading(false);
-        setShowCheckout(false);
-        setShowSuccess(true);
-        clearCart();
-      };
+          const form = e.target;
+          const email = form.email.value.trim();
+          const social = form.social.value.trim();
 
-      const handleContactSubmit = async (e) => {
-        e.preventDefault();
-        const form = e.target; const reason = form.reason.value; const desc = form.description.value.trim();
-        const email = form.email.value.trim(); const social = form.social.value.trim();
-        if (!desc || !email) { setNotification("Description and email are required."); return; }
-        const params = { reason, description: desc, user_email: email, social_media: social || "N/A" };
-        try { await emailjs.send("YOUR_SERVICE_ID", "YOUR_CONTACT_TEMPLATE_ID", params); setNotification("✔ Request submitted. We'll reach out if we can source it."); form.reset(); }
-        catch (err) { setNotification("✔ Request received (offline mode). We'll review it."); form.reset(); }
-      };
+          if (!email) {
+            setNotification("Email required for payment confirmation.");
+            setPaymentLoading(false);
+            return;
+          }
 
-      const handleContinueShopping = () => {
-        setShowSuccess(false);
-        clearCart();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      };
+          const cartSummary = cart
+            .map(
+              (i) => `${i.name} x${i.qty} (${formatCrypto(i.price, i.crypto)})`,
+            )
+            .join(", ");
+          const total = cart
+            .reduce((a, i) => a + i.price * i.qty, 0)
+            .toFixed(4);
 
-      // ---------- MODALS ----------
-      const DisclaimerModal = () => (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
-          <div className="glass-panel rounded-2xl max-w-lg w-full p-6 border border-red-700/50 text-center" onClick={e => e.stopPropagation()}>
-            <i className="fas fa-exclamation-triangle text-5xl text-red-400 mb-4"></i>
-            <h2 className="text-xl font-bold text-white mb-3">Educational Purposes Only</h2>
-            <p className="text-gray-300 text-sm mb-4">All tools and materials listed on ShadowHaven are intended strictly for educational and research purposes. The vendors and platform operators do not condone illegal activities. By proceeding, you acknowledge that you are responsible for complying with all applicable laws in your jurisdiction.</p>
-            <button onClick={() => setShowDisclaimer(false)} className="bg-red-700/70 hover:bg-red-600 text-white py-2.5 px-8 rounded-lg font-bold transition">
-              I Understand, Proceed
-            </button>
-          </div>
-        </div>
-      );
+          const params = {
+            user_email: email,
+            social_media: social || "Not provided",
+            cart_items: cartSummary,
+            total_crypto: total,
+            btc_wallet: WALLETS.BTC.address,
+            eth_wallet: WALLETS.ETH.address,
+            order_date: new Date().toISOString(),
+            order_id:
+              "SH-" + Math.random().toString(36).substring(2, 10).toUpperCase(),
+          };
 
-      const TermsModal = () => (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" onClick={() => setShowTerms(false)}>
-          <div className="glass-panel rounded-2xl max-w-2xl w-full p-6 border border-gray-700 max-h-[85vh] overflow-y-auto scrollbar-thin" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between mb-4"><h2 className="text-xl font-bold mono-text text-emerald-400"><i className="fas fa-skull mr-2"></i>Terms & Operational Silence</h2><button onClick={() => setShowTerms(false)} className="text-gray-400 hover:text-white text-2xl">&times;</button></div>
-            <div className="space-y-3 text-sm text-gray-300"><p><span className="text-emerald-300 font-semibold">1.</span> No physical address. Crypto only (BTC/ETH).</p><p><span className="text-emerald-300 font-semibold">2.</span> All sales final. No refunds.</p><p><span className="text-emerald-300 font-semibold">3.</span> We don't store IPs or personal data. PGP disputes only.</p><p className="text-red-400/80 italic mt-4"><i className="fas fa-exclamation-triangle"></i> Educational purposes only.</p></div>
-            <button onClick={() => setShowTerms(false)} className="mt-6 w-full bg-gray-800 hover:bg-gray-700 py-2 rounded-lg">I understand</button>
-          </div>
-        </div>
-      );
+          // Attempt EmailJS send, but don't block on failure
+          if (emailJSConfigured) {
+            try {
+              await emailjs.send("service_ftsgdxc", "template_j9utqpr", params);
+              console.log("Checkout email sent successfully");
+            } catch (err) {
+              console.warn(
+                "EmailJS send failed (continuing to success modal):",
+                err,
+              );
+              // Store failed notification for retry
+              try {
+                const pendingOrders = JSON.parse(
+                  localStorage.getItem("shadow_pending_orders") || "[]",
+                );
+                pendingOrders.push({ params, timestamp: Date.now() });
+                localStorage.setItem(
+                  "shadow_pending_orders",
+                  JSON.stringify(pendingOrders),
+                );
+              } catch (storageErr) {
+                console.warn("Could not store pending order:", storageErr);
+              }
+            }
+          } else {
+            console.log("EmailJS not configured. Order stored locally.");
+            // Store order locally when EmailJS is not configured
+            try {
+              const offlineOrders = JSON.parse(
+                localStorage.getItem("shadow_offline_orders") || "[]",
+              );
+              offlineOrders.push({ params, timestamp: Date.now() });
+              localStorage.setItem(
+                "shadow_offline_orders",
+                JSON.stringify(offlineOrders),
+              );
+            } catch (storageErr) {
+              console.warn("Could not store offline order:", storageErr);
+            }
+          }
 
-      const QuickviewModal = () => {
-        if (!showQuickview) return null; const p = showQuickview;
-        return (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" onClick={() => setShowQuickview(null)}>
-            <div className="glass-panel rounded-2xl max-w-lg w-full p-6 border border-emerald-800/40 max-h-[85vh] overflow-y-auto scrollbar-thin" onClick={e => e.stopPropagation()}>
-              <div className="flex justify-between items-start mb-3"><div className="flex items-center gap-3"><span className="text-4xl">{p.img}</span><div><h3 className="text-xl font-bold text-white">{p.name}</h3><span className="text-xs text-emerald-400 bg-emerald-900/30 px-2 py-0.5 rounded">{p.category}</span></div></div><button onClick={() => setShowQuickview(null)} className="text-gray-400 hover:text-white text-2xl">&times;</button></div>
-              <div className="bg-black/30 p-4 rounded-xl border border-gray-700 mb-4"><p className="text-sm text-gray-300 leading-relaxed whitespace-pre-line">{p.fullDesc}</p></div>
-              <div className="flex justify-between items-center"><span className="mono-text text-amber-300 font-bold">{formatCrypto(p.price, p.crypto)}</span><span className="text-xs text-gray-400"><i className="fas fa-star text-yellow-500"></i> {p.rating}</span></div>
-              <button onClick={() => { addToCart(p); setShowQuickview(null); }} className="mt-4 w-full bg-emerald-800/70 hover:bg-emerald-700 text-white py-2 rounded-lg"><i className="fas fa-cart-plus mr-2"></i>Add to Cart</button>
+          setPaymentLoading(false);
+          setShowCheckout(false);
+          setShowSuccess(true);
+          clearCart();
+        };
+
+        const handleContactSubmit = async (e) => {
+          e.preventDefault();
+          const form = e.target;
+          const reason = form.reason.value;
+          const desc = form.description.value.trim();
+          const email = form.email.value.trim();
+          const social = form.social.value.trim();
+
+          if (!desc || !email) {
+            setNotification("Description and email are required.");
+            return;
+          }
+
+          const params = {
+            reason: reason,
+            description: desc,
+            user_email: email,
+            social_media: social || "N/A",
+            request_date: new Date().toISOString(),
+            request_id:
+              "REQ-" + Math.random().toString(36).substring(2, 8).toUpperCase(),
+          };
+
+          if (emailJSConfigured) {
+            try {
+              await emailjs.send("service_ftsgdxc", "template_9zb2oex", params);
+              setNotification(
+                "✔ Request submitted. We'll reach out if we can source it.",
+              );
+              form.reset();
+            } catch (err) {
+              console.warn("Contact form EmailJS failed:", err);
+              setNotification(
+                "✔ Request received (offline mode). We'll review it.",
+              );
+              form.reset();
+            }
+          } else {
+            setNotification(
+              "✔ Request received (offline mode). We'll review it.",
+            );
+            form.reset();
+          }
+        };
+
+        const handleContinueShopping = () => {
+          setShowSuccess(false);
+          clearCart();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        // ---------- MODALS ----------
+        const DisclaimerModal = () => (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
+            <div
+              className="glass-panel rounded-2xl max-w-lg w-full p-6 border border-red-700/50 text-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <i className="fas fa-exclamation-triangle text-5xl text-red-400 mb-4"></i>
+              <h2 className="text-xl font-bold text-white mb-3">
+                Educational Purposes Only
+              </h2>
+              <p className="text-gray-300 text-sm mb-4">
+                All tools and materials listed on ShadowHaven are intended
+                strictly for educational and research purposes. The vendors and
+                platform operators do not condone illegal activities. By
+                proceeding, you acknowledge that you are responsible for
+                complying with all applicable laws in your jurisdiction.
+              </p>
+              <button
+                onClick={() => setShowDisclaimer(false)}
+                className="bg-red-700/70 hover:bg-red-600 text-white py-2.5 px-8 rounded-lg font-bold transition"
+              >
+                I Understand, Proceed
+              </button>
             </div>
+          </div>
+        );
+
+        const TermsModal = () => (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay"
+            onClick={() => setShowTerms(false)}
+          >
+            <div
+              className="glass-panel rounded-2xl max-w-2xl w-full p-6 border border-gray-700 max-h-[85vh] overflow-y-auto scrollbar-thin"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between mb-4">
+                <h2 className="text-xl font-bold mono-text text-emerald-400">
+                  <i className="fas fa-skull mr-2"></i>Terms & Operational
+                  Silence
+                </h2>
+                <button
+                  onClick={() => setShowTerms(false)}
+                  className="text-gray-400 hover:text-white text-2xl"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="space-y-3 text-sm text-gray-300">
+                <p>
+                  <span className="text-emerald-300 font-semibold">1.</span> No
+                  physical address. Crypto only (BTC/ETH).
+                </p>
+                <p>
+                  <span className="text-emerald-300 font-semibold">2.</span> All
+                  sales final. No refunds.
+                </p>
+                <p>
+                  <span className="text-emerald-300 font-semibold">3.</span> We
+                  don't store IPs or personal data. PGP disputes only.
+                </p>
+                <p className="text-red-400/80 italic mt-4">
+                  <i className="fas fa-exclamation-triangle"></i> Educational
+                  purposes only.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowTerms(false)}
+                className="mt-6 w-full bg-gray-800 hover:bg-gray-700 py-2 rounded-lg"
+              >
+                I understand
+              </button>
+            </div>
+          </div>
+        );
+
+        const QuickviewModal = () => {
+          if (!showQuickview) return null;
+          const p = showQuickview;
+          return (
+            <div
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay"
+              onClick={() => setShowQuickview(null)}
+            >
+              <div
+                className="glass-panel rounded-2xl max-w-lg w-full p-6 border border-emerald-800/40 max-h-[85vh] overflow-y-auto scrollbar-thin"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-4xl">{p.img}</span>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">{p.name}</h3>
+                      <span className="text-xs text-emerald-400 bg-emerald-900/30 px-2 py-0.5 rounded">
+                        {p.category}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowQuickview(null)}
+                    className="text-gray-400 hover:text-white text-2xl"
+                  >
+                    &times;
+                  </button>
+                </div>
+                <div className="bg-black/30 p-4 rounded-xl border border-gray-700 mb-4">
+                  <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-line">
+                    {p.fullDesc}
+                  </p>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="mono-text text-amber-300 font-bold">
+                    {formatCrypto(p.price, p.crypto)}
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    <i className="fas fa-star text-yellow-500"></i> {p.rating}
+                  </span>
+                </div>
+                <button
+                  onClick={() => {
+                    addToCart(p);
+                    setShowQuickview(null);
+                  }}
+                  className="mt-4 w-full bg-emerald-800/70 hover:bg-emerald-700 text-white py-2 rounded-lg"
+                >
+                  <i className="fas fa-cart-plus mr-2"></i>Add to Cart
+                </button>
+              </div>
+            </div>
+          );
+        };
+
+        const CheckoutModal = () => (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay"
+            onClick={() => setShowCheckout(false)}
+          >
+            <div
+              className="glass-panel rounded-2xl max-w-xl w-full p-6 border border-gray-700 max-h-[90vh] overflow-y-auto scrollbar-thin"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between mb-4">
+                <h2 className="text-xl font-bold mono-text text-amber-300">
+                  <i className="fab fa-bitcoin mr-2"></i>Crypto Checkout
+                </h2>
+                <button
+                  onClick={() => setShowCheckout(false)}
+                  className="text-gray-400 hover:text-white text-2xl"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="space-y-3 mb-5">
+                {Object.entries(WALLETS).map(([coin, data]) => (
+                  <div key={coin} className="wallet-box">
+                    <div className="flex justify-between items-center text-xs text-gray-400 mb-1">
+                      <span className="font-bold text-amber-200">{coin}</span>
+                      <span>{data.network}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <p className="mono-text text-sm text-emerald-300 break-all select-all bg-black/30 p-2 rounded flex-1">
+                        {data.address}
+                      </p>
+                      <button
+                        onClick={() => copyToClipboard(data.address, coin)}
+                        className="copy-btn bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg text-xs flex items-center gap-1"
+                      >
+                        {copiedAddress === coin ? (
+                          <>
+                            <i className="fas fa-check text-green-400"></i>{" "}
+                            Copied
+                          </>
+                        ) : (
+                          <>
+                            <i className="far fa-copy"></i> Copy
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <form onSubmit={handleCheckoutSubmit} className="space-y-4">
+                <div>
+                  <label className="text-xs text-gray-400 block mb-1">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    placeholder="you@proton.me"
+                    className="w-full"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-400 block mb-1">
+                    Social Media / Session ID (optional)
+                  </label>
+                  <input
+                    type="text"
+                    name="social"
+                    placeholder="@telegram or Tox ID"
+                    className="w-full"
+                  />
+                </div>
+                <label className="flex items-start gap-2 text-sm text-gray-300 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={checkoutAgreed}
+                    onChange={(e) => setCheckoutAgreed(e.target.checked)}
+                    className="mt-1 accent-emerald-500"
+                  />
+                  <span>
+                    I agree to the{" "}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowCheckout(false);
+                        setTimeout(() => setShowTerms(true), 100);
+                      }}
+                      className="text-emerald-400 underline"
+                    >
+                      terms
+                    </button>
+                    . Non-refundable.
+                  </span>
+                </label>
+                <button
+                  type="submit"
+                  disabled={
+                    !checkoutAgreed || cart.length === 0 || paymentLoading
+                  }
+                  className={`w-full py-2.5 rounded-lg font-bold flex items-center justify-center gap-2 transition ${checkoutAgreed && cart.length > 0 && !paymentLoading ? "bg-emerald-700 hover:bg-emerald-600 text-white" : "bg-gray-700 text-gray-500 cursor-not-allowed"}`}
+                >
+                  {paymentLoading ? (
+                    <>
+                      <span className="loading-spinner"></span> Processing...
+                    </>
+                  ) : (
+                    <>
+                      <i className="fas fa-check-circle"></i> I've made my
+                      payment
+                    </>
+                  )}
+                </button>
+              </form>
+            </div>
+          </div>
+        );
+
+        const SuccessModal = () => (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay"
+            onClick={handleContinueShopping}
+          >
+            <div
+              className="glass-panel rounded-2xl max-w-md w-full p-6 text-center border border-emerald-700"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <i className="fas fa-check-circle text-5xl text-emerald-400 mb-3"></i>
+              <h3 className="text-xl font-bold text-white mb-2">
+                Payment Submitted
+              </h3>
+              <p className="text-gray-300 text-sm mb-4">
+                Your purchase will be validated upon payment confirmation. Check
+                your email for details.
+              </p>
+              <button
+                onClick={handleContinueShopping}
+                className="bg-emerald-700 hover:bg-emerald-600 text-white py-2 px-6 rounded-lg font-medium transition"
+              >
+                Continue Shopping
+              </button>
+            </div>
+          </div>
+        );
+
+        return (
+          <div className="min-h-screen flex flex-col relative">
+            {/* Disclaimer Popup */}
+            {showDisclaimer && <DisclaimerModal />}
+
+            {notification && (
+              <div className="fixed top-5 right-5 z-40 bg-black/80 backdrop-blur-md border border-emerald-700 text-emerald-300 px-5 py-3 rounded-lg shadow-2xl mono-text text-sm flex items-center gap-2">
+                <i className="fas fa-terminal"></i> {notification}
+              </div>
+            )}
+
+            {/* Trust Ticker */}
+            <div className="bg-black/60 border-b border-gray-800 py-2 ticker-wrapper">
+              <div className="ticker-content text-xs text-emerald-400/80 mono-text flex gap-8">
+                {[...TICKER_MESSAGES, ...TICKER_MESSAGES].map((msg, i) => (
+                  <span key={i} className="inline-block">
+                    {msg}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Header */}
+            <header className="glass-panel sticky top-0 z-30 border-b border-gray-800 px-4 md:px-8 py-3 flex items-center justify-between flex-wrap gap-3">
+              <div className="flex items-center gap-3">
+                <i className="fas fa-spider text-3xl text-emerald-500" />
+                <h1 className="text-2xl md:text-3xl font-bold mono-text text-white">
+                  SHADOW<span className="text-emerald-400">HAVEN</span>
+                </h1>
+              </div>
+              <div className="flex items-center gap-3 md:gap-5">
+                <button
+                  onClick={() => setShowWishPanel(true)}
+                  className="relative text-gray-300 hover:text-pink-400 text-xl"
+                >
+                  <i className="far fa-heart"></i>
+                  {wishlist.length > 0 && (
+                    <span className="absolute -top-2 -right-3 bg-pink-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {wishlist.length}
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowCartPanel(true)}
+                  className="relative text-gray-300 hover:text-emerald-400 text-xl"
+                >
+                  <i className="fas fa-shopping-cart"></i>
+                  {cartItemCount > 0 && (
+                    <span className="absolute -top-2 -right-3 bg-emerald-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {cartItemCount}
+                    </span>
+                  )}
+                </button>
+                <button
+                  onClick={() => setShowTerms(true)}
+                  className="text-xs text-gray-400 hover:text-white underline hidden sm:inline"
+                >
+                  Terms
+                </button>
+              </div>
+            </header>
+
+            {/* Category Filter */}
+            <div className="px-4 md:px-8 py-4 flex flex-wrap gap-2">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-4 py-1.5 rounded-full text-xs font-medium transition border ${selectedCategory === cat ? "bg-emerald-900/60 border-emerald-500 text-emerald-200" : "border-gray-700 text-gray-400 hover:border-gray-500"}`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            {/* Product Grid */}
+            <main className="flex-grow px-4 md:px-8 pb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {filteredProducts.map((p) => {
+                  const wished = isInWishlist(p.id);
+                  return (
+                    <div
+                      key={p.id}
+                      className="glass-panel neon-border rounded-xl p-4 flex flex-col hover:border-emerald-500/40 transition-all"
+                    >
+                      <div className="text-4xl mb-3 text-center opacity-80">
+                        {p.img}
+                      </div>
+                      <div className="flex justify-between items-start">
+                        <h3 className="font-bold text-white text-lg leading-tight">
+                          {p.name}
+                        </h3>
+                        <button
+                          onClick={() => toggleWishlist(p)}
+                          className={`text-lg ${wished ? "text-pink-500" : "text-gray-500 hover:text-pink-400"}`}
+                        >
+                          <i
+                            className={wished ? "fas fa-heart" : "far fa-heart"}
+                          ></i>
+                        </button>
+                      </div>
+                      <span className="text-xs text-emerald-400/80 bg-emerald-900/20 px-2 py-0.5 rounded self-start mt-1">
+                        {p.category}
+                      </span>
+                      <p className="text-sm text-gray-400 mt-2 line-clamp-2">
+                        {p.shortDesc}
+                      </p>
+                      <div className="mt-3 flex items-center justify-between">
+                        <span className="mono-text text-amber-300 font-semibold text-sm">
+                          {formatCrypto(p.price, p.crypto)}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          <i className="fas fa-star text-yellow-500 text-xs"></i>{" "}
+                          {p.rating}
+                        </span>
+                      </div>
+                      <div className="flex gap-2 mt-3">
+                        <button
+                          onClick={() => setShowQuickview(p)}
+                          className="flex-1 bg-gray-800/60 hover:bg-gray-700 border border-gray-600 text-gray-200 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1"
+                        >
+                          <i className="fas fa-info-circle"></i> Quick View
+                        </button>
+                        <button
+                          onClick={() => addToCart(p)}
+                          className="flex-1 bg-emerald-900/50 hover:bg-emerald-800/60 border border-emerald-700/50 text-white py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1"
+                        >
+                          <i className="fas fa-cart-plus"></i> Add
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {filteredProducts.length === 0 && (
+                <p className="text-center text-gray-500 mt-10 mono-text">
+                  No tools found in this category.
+                </p>
+              )}
+            </main>
+
+            {/* Contact Section */}
+            <section
+              id="contact-section"
+              className="border-t border-gray-800 py-12 px-4 md:px-8"
+            >
+              <div className="max-w-3xl mx-auto">
+                <div className="text-center mb-8">
+                  <i className="fas fa-user-secret text-5xl text-purple-400 mb-3"></i>
+                  <h2 className="text-3xl font-bold mono-text text-white">
+                    Request a Tool
+                  </h2>
+                  <p className="text-gray-400 mt-2">
+                    Can't find what you need? Describe it and we'll source it.
+                  </p>
+                </div>
+                <div className="glass-panel rounded-2xl p-6 border border-gray-700">
+                  <form onSubmit={handleContactSubmit} className="space-y-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-400 block mb-1">
+                          Reason *
+                        </label>
+                        <select name="reason" className="w-full">
+                          <option value="Special Request - Tool not listed">
+                            Special Request - Tool not listed
+                          </option>
+                          <option value="Custom development inquiry">
+                            Custom development inquiry
+                          </option>
+                          <option value="Bulk purchase / Partnership">
+                            Bulk purchase / Partnership
+                          </option>
+                          <option value="Other">Other</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs text-gray-400 block mb-1">
+                          Your Email *
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          required
+                          placeholder="contact@anonmail.com"
+                          className="w-full"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-400 block mb-1">
+                        Describe what you need *
+                      </label>
+                      <textarea
+                        name="description"
+                        required
+                        rows="4"
+                        placeholder="Tool name, features, target platform, budget range..."
+                        className="w-full resize-none"
+                      ></textarea>
+                    </div>
+                    <div>
+                      <label className="text-xs text-gray-400 block mb-1">
+                        Social Media / Session ID (optional)
+                      </label>
+                      <input
+                        type="text"
+                        name="social"
+                        placeholder="@telegram or Session ID"
+                        className="w-full"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full bg-purple-800/70 hover:bg-purple-700 text-white py-3 rounded-lg font-bold text-lg flex items-center justify-center gap-2"
+                    >
+                      <i className="fas fa-paper-plane"></i> Send Request
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="border-t border-gray-800 py-4 px-6 text-center text-xs text-gray-500 flex justify-between items-center flex-wrap gap-2">
+              <span>
+                <i className="fas fa-shield-haltered"></i> PGP only · No direct
+                contact
+              </span>
+              <a
+                href="#contact-section"
+                className="underline hover:text-purple-300"
+              >
+                Request a Tool
+              </a>
+              <span>
+                <i className="fab fa-bitcoin"></i> BTC/ETH exclusive
+              </span>
+            </footer>
+
+            {/* Slide Panels */}
+            {showCartPanel && (
+              <div
+                className="fixed inset-0 z-40 flex justify-end"
+                onClick={() => setShowCartPanel(false)}
+              >
+                <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                <div
+                  className="relative w-full max-w-md bg-gray-900/95 backdrop-blur-xl border-l border-gray-700 h-full flex flex-col"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="p-5 border-b border-gray-800 flex justify-between">
+                    <h2 className="text-xl font-bold mono-text">
+                      <i className="fas fa-cart-shopping mr-2 text-emerald-400"></i>
+                      Cart ({cartItemCount})
+                    </h2>
+                    <button
+                      onClick={() => setShowCartPanel(false)}
+                      className="text-gray-400 hover:text-white text-2xl"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin">
+                    {cart.length === 0 ? (
+                      <p className="text-gray-500 text-center mt-10">
+                        Cart empty.
+                      </p>
+                    ) : (
+                      cart.map((i) => (
+                        <div
+                          key={i.id}
+                          className="flex items-center gap-3 bg-black/30 p-3 rounded-lg border border-gray-800"
+                        >
+                          <span className="text-2xl">{i.img}</span>
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-white">
+                              {i.name}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {formatCrypto(i.price, i.crypto)} x {i.qty}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => removeFromCart(i.id)}
+                            className="text-gray-500 hover:text-red-400"
+                          >
+                            <i className="fas fa-trash-alt"></i>
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  {cart.length > 0 && (
+                    <div className="p-4 border-t border-gray-800">
+                      <div className="flex justify-between text-sm mb-3">
+                        <span>Estimated:</span>
+                        <span className="mono-text text-amber-300 font-bold">
+                          {cart
+                            .reduce((a, i) => a + i.price * i.qty, 0)
+                            .toFixed(4)}{" "}
+                          crypto
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setShowCartPanel(false);
+                          setShowCheckout(true);
+                        }}
+                        className="w-full bg-emerald-700 hover:bg-emerald-600 text-white py-2.5 rounded-lg font-bold"
+                      >
+                        <i className="fas fa-lock mr-2"></i>Proceed to Payment
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            {showWishPanel && (
+              <div
+                className="fixed inset-0 z-40 flex justify-end"
+                onClick={() => setShowWishPanel(false)}
+              >
+                <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+                <div
+                  className="relative w-full max-w-md bg-gray-900/95 backdrop-blur-xl border-l border-gray-700 h-full flex flex-col"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div className="p-5 border-b border-gray-800 flex justify-between">
+                    <h2 className="text-xl font-bold mono-text">
+                      <i className="fas fa-heart mr-2 text-pink-400"></i>
+                      Wishlist ({wishlist.length})
+                    </h2>
+                    <button
+                      onClick={() => setShowWishPanel(false)}
+                      className="text-gray-400 hover:text-white text-2xl"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin">
+                    {wishlist.length === 0 ? (
+                      <p className="text-gray-500 text-center mt-10">
+                        No items saved.
+                      </p>
+                    ) : (
+                      wishlist.map((i) => (
+                        <div
+                          key={i.id}
+                          className="flex items-center gap-3 bg-black/30 p-3 rounded-lg border border-gray-800"
+                        >
+                          <span className="text-2xl">{i.img}</span>
+                          <div className="flex-1">
+                            <p className="text-sm font-semibold text-white">
+                              {i.name}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {formatCrypto(i.price, i.crypto)}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => toggleWishlist(i)}
+                            className="text-pink-500 hover:text-pink-300"
+                          >
+                            <i className="fas fa-heart-broken"></i>
+                          </button>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {showTerms && <TermsModal />}
+            {showQuickview && <QuickviewModal />}
+            {showCheckout && <CheckoutModal />}
+            {showSuccess && <SuccessModal />}
           </div>
         );
       };
 
-      const CheckoutModal = () => (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" onClick={() => setShowCheckout(false)}>
-          <div className="glass-panel rounded-2xl max-w-xl w-full p-6 border border-gray-700 max-h-[90vh] overflow-y-auto scrollbar-thin" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between mb-4"><h2 className="text-xl font-bold mono-text text-amber-300"><i className="fab fa-bitcoin mr-2"></i>Crypto Checkout</h2><button onClick={() => setShowCheckout(false)} className="text-gray-400 hover:text-white text-2xl">&times;</button></div>
-            <div className="space-y-3 mb-5">
-              {Object.entries(WALLETS).map(([coin, data]) => (
-                <div key={coin} className="wallet-box">
-                  <div className="flex justify-between items-center text-xs text-gray-400 mb-1">
-                    <span className="font-bold text-amber-200">{coin}</span>
-                    <span>{data.network}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <p className="mono-text text-sm text-emerald-300 break-all select-all bg-black/30 p-2 rounded flex-1">{data.address}</p>
-                    <button onClick={() => copyToClipboard(data.address, coin)} className="copy-btn bg-gray-700 hover:bg-gray-600 text-white p-2 rounded-lg text-xs flex items-center gap-1">
-                      {copiedAddress === coin ? <><i className="fas fa-check text-green-400"></i> Copied</> : <><i className="far fa-copy"></i> Copy</>}
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <form onSubmit={handleCheckoutSubmit} className="space-y-4">
-              <div><label className="text-xs text-gray-400 block mb-1">Email Address *</label><input type="email" name="email" required placeholder="you@proton.me" className="w-full" /></div>
-              <div><label className="text-xs text-gray-400 block mb-1">Social Media / Session ID (optional)</label><input type="text" name="social" placeholder="@telegram or Tox ID" className="w-full" /></div>
-              <label className="flex items-start gap-2 text-sm text-gray-300 cursor-pointer"><input type="checkbox" checked={checkoutAgreed} onChange={e => setCheckoutAgreed(e.target.checked)} className="mt-1 accent-emerald-500" /><span>I agree to the <button type="button" onClick={() => { setShowCheckout(false); setTimeout(() => setShowTerms(true), 100); }} className="text-emerald-400 underline">terms</button>. Non-refundable.</span></label>
-              <button type="submit" disabled={!checkoutAgreed || cart.length===0 || paymentLoading} className={`w-full py-2.5 rounded-lg font-bold flex items-center justify-center gap-2 transition ${checkoutAgreed && cart.length>0 && !paymentLoading ? 'bg-emerald-700 hover:bg-emerald-600 text-white' : 'bg-gray-700 text-gray-500 cursor-not-allowed'}`}>
-                {paymentLoading ? <><span className="loading-spinner"></span> Processing...</> : <><i className="fas fa-check-circle"></i> I've made my payment</>}
-              </button>
-            </form>
-          </div>
-        </div>
-      );
-
-      const SuccessModal = () => (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay" onClick={handleContinueShopping}>
-          <div className="glass-panel rounded-2xl max-w-md w-full p-6 text-center border border-emerald-700" onClick={e => e.stopPropagation()}>
-            <i className="fas fa-check-circle text-5xl text-emerald-400 mb-3"></i>
-            <h3 className="text-xl font-bold text-white mb-2">Payment Submitted</h3>
-            <p className="text-gray-300 text-sm mb-4">Your purchase will be validated upon payment confirmation. Check your email for details.</p>
-            <button onClick={handleContinueShopping} className="bg-emerald-700 hover:bg-emerald-600 text-white py-2 px-6 rounded-lg font-medium transition">
-              Continue Shopping
-            </button>
-          </div>
-        </div>
-      );
-
-      return (
-        <div className="min-h-screen flex flex-col relative">
-          {/* Disclaimer Popup */}
-          {showDisclaimer && <DisclaimerModal />}
-
-          {notification && (<div className="fixed top-5 right-5 z-40 bg-black/80 backdrop-blur-md border border-emerald-700 text-emerald-300 px-5 py-3 rounded-lg shadow-2xl mono-text text-sm flex items-center gap-2"><i className="fas fa-terminal"></i> {notification}</div>)}
-
-          {/* Trust Ticker */}
-          <div className="bg-black/60 border-b border-gray-800 py-2 ticker-wrapper">
-            <div className="ticker-content text-xs text-emerald-400/80 mono-text flex gap-8">
-              {[...TICKER_MESSAGES, ...TICKER_MESSAGES].map((msg, i) => <span key={i} className="inline-block">{msg}</span>)}
-            </div>
-          </div>
-
-          {/* Header */}
-          <header className="glass-panel sticky top-0 z-30 border-b border-gray-800 px-4 md:px-8 py-3 flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-3"><i className="fas fa-spider text-3xl text-emerald-500" /><h1 className="text-2xl md:text-3xl font-bold mono-text text-white">SHADOW<span className="text-emerald-400">HAVEN</span></h1></div>
-            <div className="flex items-center gap-3 md:gap-5">
-              <button onClick={() => setShowWishPanel(true)} className="relative text-gray-300 hover:text-pink-400 text-xl"><i className="far fa-heart"></i>{wishlist.length>0 && <span className="absolute -top-2 -right-3 bg-pink-700 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{wishlist.length}</span>}</button>
-              <button onClick={() => setShowCartPanel(true)} className="relative text-gray-300 hover:text-emerald-400 text-xl"><i className="fas fa-shopping-cart"></i>{cartItemCount>0 && <span className="absolute -top-2 -right-3 bg-emerald-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">{cartItemCount}</span>}</button>
-              <button onClick={() => setShowTerms(true)} className="text-xs text-gray-400 hover:text-white underline hidden sm:inline">Terms</button>
-            </div>
-          </header>
-
-          {/* Category Filter */}
-          <div className="px-4 md:px-8 py-4 flex flex-wrap gap-2">
-            {CATEGORIES.map(cat => (<button key={cat} onClick={() => setSelectedCategory(cat)} className={`px-4 py-1.5 rounded-full text-xs font-medium transition border ${selectedCategory===cat ? 'bg-emerald-900/60 border-emerald-500 text-emerald-200' : 'border-gray-700 text-gray-400 hover:border-gray-500'}`}>{cat}</button>))}
-          </div>
-
-          {/* Product Grid */}
-          <main className="flex-grow px-4 md:px-8 pb-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-              {filteredProducts.map(p => { const wished = isInWishlist(p.id); return (
-                <div key={p.id} className="glass-panel neon-border rounded-xl p-4 flex flex-col hover:border-emerald-500/40 transition-all">
-                  <div className="text-4xl mb-3 text-center opacity-80">{p.img}</div>
-                  <div className="flex justify-between items-start"><h3 className="font-bold text-white text-lg leading-tight">{p.name}</h3><button onClick={() => toggleWishlist(p)} className={`text-lg ${wished ? 'text-pink-500' : 'text-gray-500 hover:text-pink-400'}`}><i className={wished ? 'fas fa-heart' : 'far fa-heart'}></i></button></div>
-                  <span className="text-xs text-emerald-400/80 bg-emerald-900/20 px-2 py-0.5 rounded self-start mt-1">{p.category}</span>
-                  <p className="text-sm text-gray-400 mt-2 line-clamp-2">{p.shortDesc}</p>
-                  <div className="mt-3 flex items-center justify-between"><span className="mono-text text-amber-300 font-semibold text-sm">{formatCrypto(p.price, p.crypto)}</span><span className="text-xs text-gray-500"><i className="fas fa-star text-yellow-500 text-xs"></i> {p.rating}</span></div>
-                  <div className="flex gap-2 mt-3">
-                    <button onClick={() => setShowQuickview(p)} className="flex-1 bg-gray-800/60 hover:bg-gray-700 border border-gray-600 text-gray-200 py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1"><i className="fas fa-info-circle"></i> Quick View</button>
-                    <button onClick={() => addToCart(p)} className="flex-1 bg-emerald-900/50 hover:bg-emerald-800/60 border border-emerald-700/50 text-white py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1"><i className="fas fa-cart-plus"></i> Add</button>
-                  </div>
-                </div>
-              )})}
-            </div>
-            {filteredProducts.length === 0 && <p className="text-center text-gray-500 mt-10 mono-text">No tools found in this category.</p>}
-          </main>
-
-          {/* Contact Section */}
-          <section id="contact-section" className="border-t border-gray-800 py-12 px-4 md:px-8">
-            <div className="max-w-3xl mx-auto">
-              <div className="text-center mb-8"><i className="fas fa-user-secret text-5xl text-purple-400 mb-3"></i><h2 className="text-3xl font-bold mono-text text-white">Request a Tool</h2><p className="text-gray-400 mt-2">Can't find what you need? Describe it and we'll source it.</p></div>
-              <div className="glass-panel rounded-2xl p-6 border border-gray-700">
-                <form onSubmit={handleContactSubmit} className="space-y-5">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label className="text-xs text-gray-400 block mb-1">Reason *</label><select name="reason" className="w-full"><option value="Special Request - Tool not listed">Special Request - Tool not listed</option><option value="Custom development inquiry">Custom development inquiry</option><option value="Bulk purchase / Partnership">Bulk purchase / Partnership</option><option value="Other">Other</option></select></div>
-                    <div><label className="text-xs text-gray-400 block mb-1">Your Email *</label><input type="email" name="email" required placeholder="contact@anonmail.com" className="w-full" /></div>
-                  </div>
-                  <div><label className="text-xs text-gray-400 block mb-1">Describe what you need *</label><textarea name="description" required rows="4" placeholder="Tool name, features, target platform, budget range..." className="w-full resize-none"></textarea></div>
-                  <div><label className="text-xs text-gray-400 block mb-1">Social Media / Session ID (optional)</label><input type="text" name="social" placeholder="@telegram or Session ID" className="w-full" /></div>
-                  <button type="submit" className="w-full bg-purple-800/70 hover:bg-purple-700 text-white py-3 rounded-lg font-bold text-lg flex items-center justify-center gap-2"><i className="fas fa-paper-plane"></i> Send Request</button>
-                </form>
-              </div>
-            </div>
-          </section>
-
-          {/* Footer */}
-          <footer className="border-t border-gray-800 py-4 px-6 text-center text-xs text-gray-500 flex justify-between items-center flex-wrap gap-2">
-            <span><i className="fas fa-shield-haltered"></i> PGP only · No direct contact</span>
-            <a href="#contact-section" className="underline hover:text-purple-300">Request a Tool</a>
-            <span><i className="fab fa-bitcoin"></i> BTC/ETH exclusive</span>
-          </footer>
-
-          {/* Slide Panels */}
-          {showCartPanel && (
-            <div className="fixed inset-0 z-40 flex justify-end" onClick={() => setShowCartPanel(false)}>
-              <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-              <div className="relative w-full max-w-md bg-gray-900/95 backdrop-blur-xl border-l border-gray-700 h-full flex flex-col" onClick={e => e.stopPropagation()}>
-                <div className="p-5 border-b border-gray-800 flex justify-between"><h2 className="text-xl font-bold mono-text"><i className="fas fa-cart-shopping mr-2 text-emerald-400"></i>Cart ({cartItemCount})</h2><button onClick={() => setShowCartPanel(false)} className="text-gray-400 hover:text-white text-2xl">&times;</button></div>
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin">{cart.length===0 ? <p className="text-gray-500 text-center mt-10">Cart empty.</p> : cart.map(i => (<div key={i.id} className="flex items-center gap-3 bg-black/30 p-3 rounded-lg border border-gray-800"><span className="text-2xl">{i.img}</span><div className="flex-1"><p className="text-sm font-semibold text-white">{i.name}</p><p className="text-xs text-gray-400">{formatCrypto(i.price, i.crypto)} x {i.qty}</p></div><button onClick={() => removeFromCart(i.id)} className="text-gray-500 hover:text-red-400"><i className="fas fa-trash-alt"></i></button></div>))}</div>
-                {cart.length>0 && (<div className="p-4 border-t border-gray-800"><div className="flex justify-between text-sm mb-3"><span>Estimated:</span><span className="mono-text text-amber-300 font-bold">{cart.reduce((a,i)=>a+i.price*i.qty,0).toFixed(4)} crypto</span></div><button onClick={()=>{setShowCartPanel(false); setShowCheckout(true);}} className="w-full bg-emerald-700 hover:bg-emerald-600 text-white py-2.5 rounded-lg font-bold"><i className="fas fa-lock mr-2"></i>Proceed to Payment</button></div>)}
-              </div>
-            </div>
-          )}
-          {showWishPanel && (
-            <div className="fixed inset-0 z-40 flex justify-end" onClick={() => setShowWishPanel(false)}>
-              <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-              <div className="relative w-full max-w-md bg-gray-900/95 backdrop-blur-xl border-l border-gray-700 h-full flex flex-col" onClick={e => e.stopPropagation()}>
-                <div className="p-5 border-b border-gray-800 flex justify-between"><h2 className="text-xl font-bold mono-text"><i className="fas fa-heart mr-2 text-pink-400"></i>Wishlist ({wishlist.length})</h2><button onClick={() => setShowWishPanel(false)} className="text-gray-400 hover:text-white text-2xl">&times;</button></div>
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin">{wishlist.length===0 ? <p className="text-gray-500 text-center mt-10">No items saved.</p> : wishlist.map(i => (<div key={i.id} className="flex items-center gap-3 bg-black/30 p-3 rounded-lg border border-gray-800"><span className="text-2xl">{i.img}</span><div className="flex-1"><p className="text-sm font-semibold text-white">{i.name}</p><p className="text-xs text-gray-400">{formatCrypto(i.price, i.crypto)}</p></div><button onClick={() => toggleWishlist(i)} className="text-pink-500 hover:text-pink-300"><i className="fas fa-heart-broken"></i></button></div>))}</div>
-              </div>
-            </div>
-          )}
-
-          {showTerms && <TermsModal />}
-          {showQuickview && <QuickviewModal />}
-          {showCheckout && <CheckoutModal />}
-          {showSuccess && <SuccessModal />}
-        </div>
-      );
-    };
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<ShadowHaven />);
-  </script>
-</body>
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<ShadowHaven />);
+    </script>
+  </body>
 </html>
