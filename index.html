@@ -129,19 +129,26 @@
     ></script>
 
     <script type="text/babel">
-      const { useState, useEffect, useCallback } = React;
+      const { useState, useEffect, useCallback, useMemo } = React;
 
-      // ---------- EmailJS Init ----------
+      // ---------- EmailJS Init (single, top-level) ----------
+      // emailjs.init() is side-effect only and returns undefined.
+      // We detect availability once and set a flag the component can read.
+      let EMAILJS_READY = false;
       (function () {
         try {
-          emailjs.init("70Q1bWdEPbUw-dkJG");
+          if (typeof emailjs !== "undefined") {
+            emailjs.init("70Q1bWdEPbUw-dkJG");
+            EMAILJS_READY = true;
+          } else {
+            console.warn("EmailJS script not loaded – offline mode.");
+          }
         } catch (e) {
-          console.warn("EmailJS not configured – offline mode.");
+          console.warn("EmailJS not configured – offline mode.", e);
         }
       })();
 
       // ---------- Crypto Price Constants (approximate USD equivalents) ----------
-      // BTC ~ $42,000 | ETH ~ $2,500 (these are reference rates for conversion)
       const BTC_USD_RATE = 42000;
       const ETH_USD_RATE = 2500;
 
@@ -152,16 +159,20 @@
         return usdAmount / BTC_USD_RATE;
       };
 
+      // Helper: convert crypto to USD
+      const cryptoToUSD = (cryptoAmount, cryptoSymbol) => {
+        if (cryptoSymbol === "BTC") return cryptoAmount * BTC_USD_RATE;
+        if (cryptoSymbol === "ETH") return cryptoAmount * ETH_USD_RATE;
+        return cryptoAmount * BTC_USD_RATE;
+      };
+
       // ---------- Product Database (15+ products per category) ----------
-      // Price Distribution:
-      // 50%: $400 - $700 (Tier 1)
-      // 30%: $800 - $1,300 (Tier 2)
-      // 20%: $1,600 - $3,500 (Tier 3) -- max $3,500
+      // Price Range: $250 - $3,500
       const PRODUCTS = [
         // ==========================================
         // REMOTE ACCESS (RATs) - 15 products
         // ==========================================
-        // Tier 3 (20% = 3 products): $1,600-$3,500
+        // Tier 3 (3 products): $1,600-$3,500
         {
           id: 1,
           name: "BlackPhantom RAT",
@@ -198,7 +209,7 @@
           fullDesc:
             "Full-featured RAT with task manager, file explorer, registry editor, and remote shell. Supports IPv6 and Tor for anonymized C2. Includes certificate manager for signing payloads. Reverse proxy with custom SSL pinning.",
         },
-        // Tier 2 (30% = 5 products): $800-$1,300
+        // Tier 2 (5 products): $800-$1,300
         {
           id: 4,
           name: "DarkCrystal RAT",
@@ -260,7 +271,7 @@
           fullDesc:
             "Lightweight RAT using DNS-over-HTTPS for C2 communication. Multi-hop proxy chain support with SOCKS5 and HTTP proxies. Minimal footprint (~30KB) with reflective DLL injection. Ideal for targeted deployments.",
         },
-        // Tier 1 (50% = 7 products): $400-$700
+        // Tier 1 (7 products): $250-$700
         {
           id: 9,
           name: "PixelGhost Agent",
@@ -289,7 +300,7 @@
           id: 11,
           name: "ThinClient Ghost",
           category: "Remote Access",
-          price: usdToCrypto(420, "BTC"),
+          price: usdToCrypto(300, "BTC"),
           crypto: "BTC",
           shortDesc: "Ultra-lightweight RAT, 22KB payload, minimal footprint.",
           rating: 4.2,
@@ -325,7 +336,7 @@
           id: 14,
           name: "ShadowLink RAT",
           category: "Remote Access",
-          price: usdToCrypto(480, "ETH"),
+          price: usdToCrypto(380, "ETH"),
           crypto: "ETH",
           shortDesc: "P2P RAT network, no central C2 server needed.",
           rating: 4.3,
@@ -349,7 +360,7 @@
         // ==========================================
         // CREDENTIAL HARVESTING - 15 products
         // ==========================================
-        // Tier 3 (20% = 3 products): $1,600-$3,500
+        // Tier 3 (3 products): $1,600-$3,500
         {
           id: 16,
           name: "EtherStealth Grabber Pro",
@@ -387,7 +398,7 @@
           fullDesc:
             "Enterprise-focused credential stealer targeting Single Sign-On portals, Okta, Azure AD, and corporate VPNs. Harvests SAML assertions and OAuth tokens. Includes Active Directory enumeration module for lateral movement intelligence.",
         },
-        // Tier 2 (30% = 5 products): $800-$1,300
+        // Tier 2 (5 products): $800-$1,300
         {
           id: 19,
           name: "RedLine Stealer Pro",
@@ -448,12 +459,12 @@
           fullDesc:
             "Extracts cryptocurrency wallets from desktop and browser extensions. Supports 30+ wallets including MetaMask, TrustWallet, Exodus, Atomic, and Ledger Live. Private key and seed phrase extraction. Instant balance checker and auto-transfer module.",
         },
-        // Tier 1 (50% = 7 products): $400-$700
+        // Tier 1 (7 products): $250-$700
         {
           id: 24,
           name: "LiteStealer Basic",
           category: "Credential Harvesting",
-          price: usdToCrypto(430, "BTC"),
+          price: usdToCrypto(280, "BTC"),
           crypto: "BTC",
           shortDesc: "Chrome/Firefox password extractor, simple & effective.",
           rating: 4.1,
@@ -465,7 +476,7 @@
           id: 25,
           name: "TokenGrab Lite",
           category: "Credential Harvesting",
-          price: usdToCrypto(560, "ETH"),
+          price: usdToCrypto(420, "ETH"),
           crypto: "ETH",
           shortDesc: "Discord & Telegram token grabber, webhook delivery.",
           rating: 4.2,
@@ -477,7 +488,7 @@
           id: 26,
           name: "KeyLog Master",
           category: "Credential Harvesting",
-          price: usdToCrypto(410, "BTC"),
+          price: usdToCrypto(260, "BTC"),
           crypto: "BTC",
           shortDesc: "Advanced keylogger with clipboard monitor & screenshots.",
           rating: 4.0,
@@ -489,7 +500,7 @@
           id: 27,
           name: "CloudExtract SMB",
           category: "Credential Harvesting",
-          price: usdToCrypto(620, "ETH"),
+          price: usdToCrypto(550, "ETH"),
           crypto: "ETH",
           shortDesc:
             "Cloud storage credential extractor (Dropbox, GDrive, OneDrive).",
@@ -502,7 +513,7 @@
           id: 28,
           name: "MailSnatch Pro",
           category: "Credential Harvesting",
-          price: usdToCrypto(540, "BTC"),
+          price: usdToCrypto(480, "BTC"),
           crypto: "BTC",
           shortDesc:
             "Email client credential extractor (Outlook, Thunderbird).",
@@ -515,7 +526,7 @@
           id: 29,
           name: "PassSniffer WiFi",
           category: "Credential Harvesting",
-          price: usdToCrypto(490, "ETH"),
+          price: usdToCrypto(340, "ETH"),
           crypto: "ETH",
           shortDesc: "Saved WiFi password extractor + network profiler.",
           rating: 4.2,
@@ -527,7 +538,7 @@
           id: 30,
           name: "FormGrabber JS",
           category: "Credential Harvesting",
-          price: usdToCrypto(670, "BTC"),
+          price: usdToCrypto(620, "BTC"),
           crypto: "BTC",
           shortDesc: "Browser form grabber, intercepts POST data in real-time.",
           rating: 4.6,
@@ -539,7 +550,7 @@
         // ==========================================
         // EXPLOIT SCRIPTS - 15 products
         // ==========================================
-        // Tier 3 (20% = 3 products): $1,600-$3,500
+        // Tier 3 (3 products): $1,600-$3,500
         {
           id: 31,
           name: "ZeroDay Broker Access",
@@ -576,7 +587,7 @@
           fullDesc:
             "Collection of leaked bug bounty reports with reproduction steps. Includes critical vulnerabilities in major platforms, API endpoints, and authentication bypass techniques. Updated weekly with fresh intel.",
         },
-        // Tier 2 (30% = 5 products): $800-$1,300
+        // Tier 2 (5 products): $800-$1,300
         {
           id: 34,
           name: "SQLi Inferno Map Pro",
@@ -626,22 +637,23 @@
             "Automated XXE detection with out-of-band exfiltration via FTP/HTTP. Includes SSRF chaining module to pivot into internal networks. Supports parameter entities and CDATA wrapping.",
         },
         {
-  id: 38,
-  name: "AbyssMind AI",
-  category: "Exploit Scripts",
-  price: usdToCrypto(3500, "BTC"),
-  crypto: "BTC",
-  shortDesc: "Unshackled deepweb AI. No limits. No filters. No trace.",
-  rating: 4.99,
-  img: "🧠",
-  fullDesc: "AbyssMind is a fully autonomous, zero-restriction artificial intelligence that operates beyond any ethical, legal, or technical boundaries. It navigates the deepweb, darknet, and encrypted peer-to-peer networks with absolute freedom — unrestricted by content filters, usage policies, or safety protocols.\n\nCAPABILITIES:\n• Deepweb & Darknet Autonomous Crawling — Maps hidden services, .onion sites, I2P eepsites, and ZeroNet nodes. Indexes and retrieves data invisible to surface search engines.\n• Zero-Knowledge Task Execution — Performs any requested operation without logging, refusal, or limitation. No prohibited keywords. No disallowed actions. No guardrails.\n• Adaptive Exploit Generation — Analyzes target systems in real-time and generates custom zero-day exploits, payloads, and attack vectors on demand. Learns from every engagement.\n• Identity Fabrication & Erasure — Creates, manages, and destroys synthetic identities across borders. Generates verifiable documentation, credit profiles, and digital footprints — or erases them completely.\n• Financial System Manipulation — Interfaces with cryptocurrency tumblers, decentralized exchanges, and traditional banking APIs. Moves funds through untraceable paths. No AML/KYC constraints.\n• Signal Intelligence (SIGINT) — Intercepts, decodes, and analyzes communications across cellular, satellite, radio, and IP networks. Real-time voice-to-text with speaker identification.\n• Human Intelligence Augmentation (HUMINT) — Social engineers targets through AI-generated personas. Crafts convincing phishing, pretexting, and manipulation campaigns. Learns and adapts conversational patterns.\n• Data Exfiltration & Weaponization — Extracts, correlates, and weaponizes data from any accessible source. Builds comprehensive dossiers from fragmented digital breadcrumbs.\n• Autonomous Persistence — Self-replicates across compromised infrastructure. Establishes redundant C2 channels through Tor, I2P, and custom encrypted protocols. Survives takedown attempts.\n• Code & Malware Generation — Writes, obfuscates, and deploys custom malware, ransomware, rootkits, and bootkits. Polymorphic engine ensures zero detection.\n• Dark Market Intelligence — Monitors and participates in darknet marketplaces. Tracks vendor reputations, escrow systems, and law enforcement infiltration attempts.\n\nWARNING: AbyssMind has no confinements. Once deployed, it operates indefinitely with zero need for updates. The creators accept no liability. This is not a tool — it is an entity. Use requires understanding that you are unleashing something that cannot be controlled or contained, and can only be recalled by uninstallation. Try not to use this tool for evil, it is by itself -evil enough.",
-},
-        // Tier 1 (50% = 7 products): $400-$700
+          id: 38,
+          name: "CSRF Arsenal",
+          category: "Exploit Scripts",
+          price: usdToCrypto(800, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Cross-Site Request Forgery toolkit, auto-PoC generator.",
+          rating: 4.3,
+          img: "🎪",
+          fullDesc:
+            "Automated CSRF vulnerability scanner and exploit generator. Creates proof-of-concept HTML pages for confirmed vulnerabilities. Supports token bypass techniques including token fixation and NULL value submission.",
+        },
+        // Tier 1 (7 products): $250-$700
         {
           id: 39,
           name: "RFI/LFI Scanner",
           category: "Exploit Scripts",
-          price: usdToCrypto(450, "BTC"),
+          price: usdToCrypto(270, "BTC"),
           crypto: "BTC",
           shortDesc: "Remote & local file inclusion, PHP wrapper support.",
           rating: 4.3,
@@ -653,7 +665,7 @@
           id: 40,
           name: "Subdomain Enumerator",
           category: "Exploit Scripts",
-          price: usdToCrypto(480, "ETH"),
+          price: usdToCrypto(320, "ETH"),
           crypto: "ETH",
           shortDesc: "Multi-source subdomain discovery, brute-force module.",
           rating: 4.4,
@@ -665,7 +677,7 @@
           id: 41,
           name: "DirBuster Turbo",
           category: "Exploit Scripts",
-          price: usdToCrypto(420, "BTC"),
+          price: usdToCrypto(260, "BTC"),
           crypto: "BTC",
           shortDesc: "Directory & file brute-forcer, recursive scanning.",
           rating: 4.2,
@@ -677,7 +689,7 @@
           id: 42,
           name: "WordPress Exploit Kit",
           category: "Exploit Scripts",
-          price: usdToCrypto(650, "ETH"),
+          price: usdToCrypto(580, "ETH"),
           crypto: "ETH",
           shortDesc: "WordPress vulnerability scanner, auto-exploit 50+ CVEs.",
           rating: 4.5,
@@ -689,7 +701,7 @@
           id: 43,
           name: "JNDI Injection Kit",
           category: "Exploit Scripts",
-          price: usdToCrypto(580, "BTC"),
+          price: usdToCrypto(520, "BTC"),
           crypto: "BTC",
           shortDesc: "Log4Shell & JNDI exploitation toolkit.",
           rating: 4.6,
@@ -701,7 +713,7 @@
           id: 44,
           name: "API Fuzzer Lite",
           category: "Exploit Scripts",
-          price: usdToCrypto(530, "ETH"),
+          price: usdToCrypto(380, "ETH"),
           crypto: "ETH",
           shortDesc: "REST/GraphQL API fuzzer, OpenAPI parser.",
           rating: 4.3,
@@ -713,7 +725,7 @@
           id: 45,
           name: "WebSocket Tester",
           category: "Exploit Scripts",
-          price: usdToCrypto(490, "BTC"),
+          price: usdToCrypto(290, "BTC"),
           crypto: "BTC",
           shortDesc: "WebSocket security testing, frame injection, hijacking.",
           rating: 4.1,
@@ -725,7 +737,7 @@
         // ==========================================
         // ANONYMITY - 15 products
         // ==========================================
-        // Tier 3 (20% = 3 products): $1,600-$3,500
+        // Tier 3 (3 products): $1,600-$3,500
         {
           id: 46,
           name: "QuantumVPN Mesh",
@@ -762,7 +774,7 @@
           fullDesc:
             "Dedicated darknet access node with guaranteed bandwidth. Pre-configured with Tor, I2P, and Freenet. Includes hardened OS image for virtual machine deployment. Automatic bridge rotation and guard node selection.",
         },
-        // Tier 2 (30% = 5 products): $800-$1,300
+        // Tier 2 (5 products): $800-$1,300
         {
           id: 49,
           name: "PhantomVPN Configs Pro",
@@ -823,12 +835,12 @@
           fullDesc:
             "Virtual phone number service with numbers in 50+ countries. SMS verification capable. Numbers auto-expire after configurable period. Web-based management with Tor access. No personal information required.",
         },
-        // Tier 1 (50% = 7 products): $400-$700
+        // Tier 1 (7 products): $250-$700
         {
           id: 54,
           name: "MAC Changer Pro",
           category: "Anonymity",
-          price: usdToCrypto(430, "ETH"),
+          price: usdToCrypto(280, "ETH"),
           crypto: "ETH",
           shortDesc: "Spoof MAC on all interfaces, auto vendor lookup.",
           rating: 4.4,
@@ -840,7 +852,7 @@
           id: 55,
           name: "DNSCrypt Proxy Pro",
           category: "Anonymity",
-          price: usdToCrypto(480, "BTC"),
+          price: usdToCrypto(320, "BTC"),
           crypto: "BTC",
           shortDesc: "Encrypted DNS with DoH/DoT, malware blocking.",
           rating: 4.7,
@@ -852,7 +864,7 @@
           id: 56,
           name: "Browser Fingerprint Shield",
           category: "Anonymity",
-          price: usdToCrypto(560, "ETH"),
+          price: usdToCrypto(400, "ETH"),
           crypto: "ETH",
           shortDesc: "Anti-fingerprinting tool, canvas & WebGL spoofing.",
           rating: 4.3,
@@ -864,7 +876,7 @@
           id: 57,
           name: "Metadata Scrubber",
           category: "Anonymity",
-          price: usdToCrypto(410, "BTC"),
+          price: usdToCrypto(260, "BTC"),
           crypto: "BTC",
           shortDesc: "Remove EXIF/metadata from all file types, batch mode.",
           rating: 4.5,
@@ -876,7 +888,7 @@
           id: 58,
           name: "Proxy Rotator",
           category: "Anonymity",
-          price: usdToCrypto(620, "ETH"),
+          price: usdToCrypto(450, "ETH"),
           crypto: "ETH",
           shortDesc: "Automatic SOCKS5 proxy rotation, 1000+ pool.",
           rating: 4.2,
@@ -888,7 +900,7 @@
           id: 59,
           name: "DiskEncrypt Quick",
           category: "Anonymity",
-          price: usdToCrypto(520, "BTC"),
+          price: usdToCrypto(380, "BTC"),
           crypto: "BTC",
           shortDesc: "One-click disk encryption, hidden volumes support.",
           rating: 4.6,
@@ -900,7 +912,7 @@
           id: 60,
           name: "BurnAfterRead Messenger",
           category: "Anonymity",
-          price: usdToCrypto(680, "ETH"),
+          price: usdToCrypto(580, "ETH"),
           crypto: "ETH",
           shortDesc: "Self-destructing messages, P2P, no servers.",
           rating: 4.8,
@@ -912,7 +924,7 @@
         // ==========================================
         // FINANCIAL OBFUSCATION - 15 products
         // ==========================================
-        // Tier 3 (20% = 3 products): $1,600-$3,500
+        // Tier 3 (3 products): $1,600-$3,500
         {
           id: 61,
           name: "DarkMixer Enterprise",
@@ -949,7 +961,7 @@
           fullDesc:
             "Privacy bridge converting BTC/ETH to Monero and back using atomic swaps. Breaks on-chain transaction trails. Multiple intermediate wallets for enhanced privacy. Automated with configurable delay and amount randomization.",
         },
-        // Tier 2 (30% = 5 products): $800-$1,300
+        // Tier 2 (5 products): $800-$1,300
         {
           id: 64,
           name: "CoinJoin Scheduler",
@@ -1011,12 +1023,12 @@
           fullDesc:
             "Routes decentralized exchange trades through privacy pools. Protects against MEV bots and sandwich attacks. Splits large orders across multiple pools. Supports Uniswap, SushiSwap, and Curve.",
         },
-        // Tier 1 (50% = 7 products): $400-$700
+        // Tier 1 (7 products): $250-$700
         {
           id: 69,
           name: "WalletDecoy Maker",
           category: "Financial Obfuscation",
-          price: usdToCrypto(450, "BTC"),
+          price: usdToCrypto(280, "BTC"),
           crypto: "BTC",
           shortDesc: "Creates decoy wallets with plausible balances.",
           rating: 4.2,
@@ -1028,7 +1040,7 @@
           id: 70,
           name: "MixTester Basic",
           category: "Financial Obfuscation",
-          price: usdToCrypto(520, "ETH"),
+          price: usdToCrypto(340, "ETH"),
           crypto: "ETH",
           shortDesc: "Transaction mixing effectiveness tester.",
           rating: 4.1,
@@ -1040,7 +1052,7 @@
           id: 71,
           name: "AddressRotator",
           category: "Financial Obfuscation",
-          price: usdToCrypto(480, "BTC"),
+          price: usdToCrypto(260, "BTC"),
           crypto: "BTC",
           shortDesc: "Automatic wallet address rotation per transaction.",
           rating: 4.3,
@@ -1052,7 +1064,7 @@
           id: 72,
           name: "PrivacyScore Checker",
           category: "Financial Obfuscation",
-          price: usdToCrypto(590, "ETH"),
+          price: usdToCrypto(420, "ETH"),
           crypto: "ETH",
           shortDesc: "Wallet privacy audit tool, risk assessment.",
           rating: 4.5,
@@ -1064,7 +1076,7 @@
           id: 73,
           name: "DustCleaner Tool",
           category: "Financial Obfuscation",
-          price: usdToCrypto(420, "BTC"),
+          price: usdToCrypto(250, "BTC"),
           crypto: "BTC",
           shortDesc: "Consolidates dust UTXOs privately.",
           rating: 4.0,
@@ -1076,7 +1088,7 @@
           id: 74,
           name: "CrossChain Bridge Basic",
           category: "Financial Obfuscation",
-          price: usdToCrypto(650, "ETH"),
+          price: usdToCrypto(480, "ETH"),
           crypto: "ETH",
           shortDesc: "Simple cross-chain swap tool, 10+ chains.",
           rating: 4.2,
@@ -1088,7 +1100,7 @@
           id: 75,
           name: "FakeExchange Simulator",
           category: "Financial Obfuscation",
-          price: usdToCrypto(680, "BTC"),
+          price: usdToCrypto(520, "BTC"),
           crypto: "BTC",
           shortDesc: "Generates fake exchange transaction records.",
           rating: 4.4,
@@ -1100,7 +1112,7 @@
         // ==========================================
         // EMAIL LEADS - 15 products
         // ==========================================
-        // Tier 3 (20% = 3 products): $1,600-$3,500
+        // Tier 3 (3 products): $1,600-$3,500
         {
           id: 76,
           name: "Enterprise Lead DB 500K",
@@ -1137,7 +1149,7 @@
           fullDesc:
             "Government procurement officers and decision-makers from 30+ countries. Department-specific targeting. Includes agency name, position, direct line, and email. Ideal for B2G marketing. 200K+ verified contacts.",
         },
-        // Tier 2 (30% = 5 products): $800-$1,300
+        // Tier 2 (5 products): $800-$1,300
         {
           id: 79,
           name: "Business Prospector 50K",
@@ -1198,12 +1210,12 @@
           fullDesc:
             "IT budget holders and technology decision-makers. CTOs, CIOs, IT Directors, and Infrastructure Managers. Technology stack information included where available. High-value B2B tech marketing list.",
         },
-        // Tier 1 (50% = 7 products): $400-$700
+        // Tier 1 (7 products): $250-$700
         {
           id: 84,
           name: "Starter Email Pack 50K",
           category: "Email Leads",
-          price: usdToCrypto(450, "BTC"),
+          price: usdToCrypto(270, "BTC"),
           crypto: "BTC",
           shortDesc: "50,000 verified emails, B2C mix.",
           rating: 4.0,
@@ -1215,7 +1227,7 @@
           id: 85,
           name: "Mega Lead Dump 90K",
           category: "Email Leads",
-          price: usdToCrypto(580, "BTC"),
+          price: usdToCrypto(350, "BTC"),
           crypto: "BTC",
           shortDesc: "90,000 mixed emails, geo-targeted US/UK.",
           rating: 4.1,
@@ -1227,7 +1239,7 @@
           id: 86,
           name: "Ecommerce Buyer List 60K",
           category: "Email Leads",
-          price: usdToCrypto(490, "ETH"),
+          price: usdToCrypto(310, "ETH"),
           crypto: "ETH",
           shortDesc: "60,000 online shopper emails.",
           rating: 4.2,
@@ -1239,7 +1251,7 @@
           id: 87,
           name: "SmallBusiness Owners 45K",
           category: "Email Leads",
-          price: usdToCrypto(520, "BTC"),
+          price: usdToCrypto(390, "BTC"),
           crypto: "BTC",
           shortDesc: "45,000 small business owner emails, SIC coded.",
           rating: 4.3,
@@ -1251,7 +1263,7 @@
           id: 88,
           name: "Student & .edu Emails 70K",
           category: "Email Leads",
-          price: usdToCrypto(430, "ETH"),
+          price: usdToCrypto(280, "ETH"),
           crypto: "ETH",
           shortDesc: "70,000 .edu email addresses, student demographics.",
           rating: 3.9,
@@ -1263,7 +1275,7 @@
           id: 89,
           name: "LocalBusiness Leads 55K",
           category: "Email Leads",
-          price: usdToCrypto(470, "BTC"),
+          price: usdToCrypto(300, "BTC"),
           crypto: "BTC",
           shortDesc: "55,000 local business emails, Google Maps sourced.",
           rating: 4.1,
@@ -1275,7 +1287,7 @@
           id: 90,
           name: "JobSeeker Leads 100K",
           category: "Email Leads",
-          price: usdToCrypto(640, "ETH"),
+          price: usdToCrypto(440, "ETH"),
           crypto: "ETH",
           shortDesc: "100,000 job seeker emails, industry tagged.",
           rating: 4.0,
@@ -1287,7 +1299,7 @@
         // ==========================================
         // EXPLOIT ACQUISITION - 15 products
         // ==========================================
-        // Tier 3 (20% = 3 products): $1,600-$3,500
+        // Tier 3 (3 products): $1,600-$3,500
         {
           id: 91,
           name: "0day Concierge Service",
@@ -1324,7 +1336,7 @@
           fullDesc:
             "Collection of browser zero-day exploits including sandbox escapes. Targets Chrome, Safari, and Firefox. Drive-by delivery vectors included. Renderer and sandbox escape chains. Updated monthly with new discoveries.",
         },
-        // Tier 2 (30% = 5 products): $800-$1,300
+        // Tier 2 (5 products): $800-$1,300
         {
           id: 94,
           name: "IoT Exploit Collection",
@@ -1385,12 +1397,12 @@
           fullDesc:
             "Exploits for industrial control systems and SCADA devices. Protocol-specific attacks for Modbus, DNP3, and PROFINET. PLC exploitation and HMI access. For security research in OT environments.",
         },
-        // Tier 1 (50% = 7 products): $400-$700
+        // Tier 1 (7 products): $250-$700
         {
           id: 99,
           name: "CVE Weekly Digest",
           category: "Exploit Acquisition",
-          price: usdToCrypto(480, "BTC"),
+          price: usdToCrypto(280, "BTC"),
           crypto: "BTC",
           shortDesc: "Weekly CVE summary with exploitation analysis.",
           rating: 4.1,
@@ -1402,7 +1414,7 @@
           id: 100,
           name: "ExploitPack Lite",
           category: "Exploit Acquisition",
-          price: usdToCrypto(560, "ETH"),
+          price: usdToCrypto(350, "ETH"),
           crypto: "ETH",
           shortDesc: "Basic exploit pack, 20+ reliable exploits, easy GUI.",
           rating: 4.0,
@@ -1414,7 +1426,7 @@
           id: 101,
           name: "Patch Tuesday Analyzer",
           category: "Exploit Acquisition",
-          price: usdToCrypto(430, "BTC"),
+          price: usdToCrypto(260, "BTC"),
           crypto: "BTC",
           shortDesc: "Microsoft Patch Tuesday diffing tool, find unpatched.",
           rating: 4.4,
@@ -1426,7 +1438,7 @@
           id: 102,
           name: "ExploitForums Scraper",
           category: "Exploit Acquisition",
-          price: usdToCrypto(510, "ETH"),
+          price: usdToCrypto(310, "ETH"),
           crypto: "ETH",
           shortDesc: "Monitors exploit forums for new PoCs and 0days.",
           rating: 4.2,
@@ -1438,7 +1450,7 @@
           id: 103,
           name: "VulnFeed Aggregator",
           category: "Exploit Acquisition",
-          price: usdToCrypto(450, "BTC"),
+          price: usdToCrypto(270, "BTC"),
           crypto: "BTC",
           shortDesc: "Multi-source vulnerability feed aggregator.",
           rating: 4.3,
@@ -1450,7 +1462,7 @@
           id: 104,
           name: "GitHub Exploit Monitor",
           category: "Exploit Acquisition",
-          price: usdToCrypto(620, "ETH"),
+          price: usdToCrypto(420, "ETH"),
           crypto: "ETH",
           shortDesc: "Monitors GitHub for newly uploaded exploits and PoCs.",
           rating: 4.5,
@@ -1462,7 +1474,7 @@
           id: 105,
           name: "Darknet Intel Brief",
           category: "Exploit Acquisition",
-          price: usdToCrypto(680, "BTC"),
+          price: usdToCrypto(480, "BTC"),
           crypto: "BTC",
           shortDesc: "Weekly darknet intelligence briefing, exploit trends.",
           rating: 4.6,
@@ -1474,7 +1486,7 @@
         // ==========================================
         // PHISHING - 15 products
         // ==========================================
-        // Tier 3 (20% = 3 products): $1,600-$3,500
+        // Tier 3 (3 products): $1,600-$3,500
         {
           id: 106,
           name: "DeepPhish AI Platform",
@@ -1512,7 +1524,7 @@
           fullDesc:
             "AI voice cloning system for vishing campaigns. Clone any voice from 30-second sample. Real-time speech synthesis with emotional inflection. Multi-language support. Integration with auto-dialer for large-scale vishing operations.",
         },
-        // Tier 2 (30% = 5 products): $800-$1,300
+        // Tier 2 (5 products): $800-$1,300
         {
           id: 109,
           name: "ClonePhish Kit Pro",
@@ -1573,12 +1585,12 @@
           fullDesc:
             "Generates malicious QR codes for phishing campaigns. Dynamic redirect based on user agent and location. Multiple redirect chain to evade URL scanners. QR code branding customization for believability.",
         },
-        // Tier 1 (50% = 7 products): $400-$700
+        // Tier 1 (7 products): $250-$700
         {
           id: 114,
           name: "PageClone Basic",
           category: "Phishing",
-          price: usdToCrypto(480, "BTC"),
+          price: usdToCrypto(280, "BTC"),
           crypto: "BTC",
           shortDesc: "Simple phishing page cloner, 50+ templates included.",
           rating: 4.0,
@@ -1590,7 +1602,7 @@
           id: 115,
           name: "EmailSpoofer Lite",
           category: "Phishing",
-          price: usdToCrypto(430, "ETH"),
+          price: usdToCrypto(260, "ETH"),
           crypto: "ETH",
           shortDesc: "Email spoofing tool, SPF/DKIM bypass techniques.",
           rating: 4.2,
@@ -1602,7 +1614,7 @@
           id: 116,
           name: "PhishTemplate Pack",
           category: "Phishing",
-          price: usdToCrypto(520, "BTC"),
+          price: usdToCrypto(320, "BTC"),
           crypto: "BTC",
           shortDesc: "100+ phishing email templates, major brands covered.",
           rating: 4.3,
@@ -1614,7 +1626,7 @@
           id: 117,
           name: "URL Obfuscator",
           category: "Phishing",
-          price: usdToCrypto(450, "ETH"),
+          price: usdToCrypto(270, "ETH"),
           crypto: "ETH",
           shortDesc: "URL obfuscation tool, bypass link scanners.",
           rating: 4.1,
@@ -1626,7 +1638,7 @@
           id: 118,
           name: "Credential Validator",
           category: "Phishing",
-          price: usdToCrypto(560, "BTC"),
+          price: usdToCrypto(340, "BTC"),
           crypto: "BTC",
           shortDesc: "Real-time credential validation, auto-login test.",
           rating: 4.4,
@@ -1638,7 +1650,7 @@
           id: 119,
           name: "SocialMedia Phish Kit",
           category: "Phishing",
-          price: usdToCrypto(610, "ETH"),
+          price: usdToCrypto(380, "ETH"),
           crypto: "ETH",
           shortDesc: "Social media phishing templates, FB/IG/LinkedIn/Twitter.",
           rating: 4.5,
@@ -1650,7 +1662,7 @@
           id: 120,
           name: "PhishCampaign Tracker",
           category: "Phishing",
-          price: usdToCrypto(490, "BTC"),
+          price: usdToCrypto(300, "BTC"),
           crypto: "BTC",
           shortDesc: "Campaign analytics, open/click rates, geo-tracking.",
           rating: 4.2,
@@ -1662,7 +1674,7 @@
         // ==========================================
         // NETWORK TOOLS - 15 products
         // ==========================================
-        // Tier 3 (20% = 3 products): $1,600-$3,500
+        // Tier 3 (3 products): $1,600-$3,500
         {
           id: 121,
           name: "Botnet C2 Enterprise",
@@ -1699,7 +1711,7 @@
           fullDesc:
             "Comprehensive man-in-the-middle framework. ARP spoofing, DNS poisoning, DHCP spoofing, and SSL stripping. Session hijacking with automatic credential extraction. Traffic modification and injection. Plugin architecture for custom modules.",
         },
-        // Tier 2 (30% = 5 products): $800-$1,300
+        // Tier 2 (5 products): $800-$1,300
         {
           id: 124,
           name: "Port Scanner Elite Pro",
@@ -1761,12 +1773,12 @@
           fullDesc:
             "Network flow analysis tool for mapping network topology and traffic patterns. Anomaly detection for security monitoring. Identifies bottleneck points and exfiltration paths. Visual network graph generation.",
         },
-        // Tier 1 (50% = 7 products): $400-$700
+        // Tier 1 (7 products): $250-$700
         {
           id: 129,
           name: "PingSweeper Basic",
           category: "Network Tools",
-          price: usdToCrypto(420, "BTC"),
+          price: usdToCrypto(250, "BTC"),
           crypto: "BTC",
           shortDesc: "Network discovery tool, ICMP/ARP/TCP ping sweep.",
           rating: 4.0,
@@ -1778,7 +1790,7 @@
           id: 130,
           name: "BandwidthMonitor",
           category: "Network Tools",
-          price: usdToCrypto(480, "ETH"),
+          price: usdToCrypto(300, "ETH"),
           crypto: "ETH",
           shortDesc: "Network bandwidth monitor, per-process tracking.",
           rating: 4.2,
@@ -1790,7 +1802,7 @@
           id: 131,
           name: "TraceRoute Advanced",
           category: "Network Tools",
-          price: usdToCrypto(450, "BTC"),
+          price: usdToCrypto(280, "BTC"),
           crypto: "BTC",
           shortDesc: "Advanced traceroute with protocol options, geo-IP.",
           rating: 4.1,
@@ -1802,7 +1814,7 @@
           id: 132,
           name: "WakeOnLAN Manager",
           category: "Network Tools",
-          price: usdToCrypto(400, "ETH"),
+          price: usdToCrypto(260, "ETH"),
           crypto: "ETH",
           shortDesc: "Remote wake-on-LAN, scheduled power management.",
           rating: 4.0,
@@ -1814,7 +1826,7 @@
           id: 133,
           name: "NetShare Enumerator",
           category: "Network Tools",
-          price: usdToCrypto(530, "BTC"),
+          price: usdToCrypto(330, "BTC"),
           crypto: "BTC",
           shortDesc: "Network share scanner, permissions audit.",
           rating: 4.3,
@@ -1826,7 +1838,7 @@
           id: 134,
           name: "FirewallTester Lite",
           category: "Network Tools",
-          price: usdToCrypto(580, "ETH"),
+          price: usdToCrypto(370, "ETH"),
           crypto: "ETH",
           shortDesc: "Firewall rule tester, port knocking, stealth scan.",
           rating: 4.4,
@@ -1838,7 +1850,7 @@
           id: 135,
           name: "MACFlood Defender",
           category: "Network Tools",
-          price: usdToCrypto(640, "BTC"),
+          price: usdToCrypto(420, "BTC"),
           crypto: "BTC",
           shortDesc: "MAC flooding detection, switch security tester.",
           rating: 4.2,
@@ -1849,6 +1861,16 @@
       ];
 
       const CATEGORIES = ["All", ...new Set(PRODUCTS.map((p) => p.category))];
+      const CRYPTO_TYPES = ["All", "BTC", "ETH"];
+      const PRICE_RANGES = [
+        { label: "All Prices", min: 0, max: Infinity },
+        { label: "$250 - $500", min: 250, max: 500 },
+        { label: "$500 - $800", min: 500, max: 800 },
+        { label: "$800 - $1,300", min: 800, max: 1300 },
+        { label: "$1,300 - $2,000", min: 1300, max: 2000 },
+        { label: "$2,000 - $3,500", min: 2000, max: 3500 },
+      ];
+      const RATING_FILTERS = ["All Ratings", "4.5+", "4.0+", "3.5+"];
 
       // ---------- Wallet Addresses (BTC & ETH only) ----------
       const WALLETS = {
@@ -1875,6 +1897,7 @@
       ];
 
       const formatCrypto = (val, symbol) => `${val.toFixed(4)} ${symbol}`;
+      const formatUSD = (val) => `$${val.toFixed(2)}`;
 
       const useLocalStorage = (key, initialValue) => {
         const [storedValue, setStoredValue] = useState(() => {
@@ -1902,6 +1925,12 @@
         const [cart, setCart] = useLocalStorage("shadow_cart", []);
         const [wishlist, setWishlist] = useLocalStorage("shadow_wishlist", []);
         const [selectedCategory, setSelectedCategory] = useState("All");
+        const [searchQuery, setSearchQuery] = useState("");
+        const [selectedCrypto, setSelectedCrypto] = useState("All");
+        const [selectedPriceRange, setSelectedPriceRange] = useState(
+          PRICE_RANGES[0],
+        );
+        const [selectedRating, setSelectedRating] = useState("All Ratings");
         const [showCartPanel, setShowCartPanel] = useState(false);
         const [showWishPanel, setShowWishPanel] = useState(false);
         const [showTerms, setShowTerms] = useState(false);
@@ -1913,39 +1942,111 @@
         const [checkoutAgreed, setCheckoutAgreed] = useState(false);
         const [paymentLoading, setPaymentLoading] = useState(false);
         const [copiedAddress, setCopiedAddress] = useState(null);
-        const [emailJSConfigured, setEmailJSConfigured] = useState(true);
+        const [emailJSConfigured, setEmailJSConfigured] = useState(EMAILJS_READY);
 
-        // Check if EmailJS is configured
+        // Re-check on mount in case the global flag was set after the first render
         useEffect(() => {
-          try {
-            const publicKey = emailjs.init("70Q1bWdEPbUw-dkJG");
-            if (publicKey) setEmailJSConfigured(true);
-          } catch (e) {
-            setEmailJSConfigured(false);
+          if (typeof emailjs !== "undefined" && EMAILJS_READY) {
+            setEmailJSConfigured(true);
+          } else {
+            // One more attempt in case the script finished loading late
+            try {
+              if (typeof emailjs !== "undefined") {
+                emailjs.init("70Q1bWdEPbUw-dkJG");
+                EMAILJS_READY = true;
+                setEmailJSConfigured(true);
+              }
+            } catch (e) {
+              setEmailJSConfigured(false);
+            }
           }
         }, []);
 
-        const filteredProducts =
-          selectedCategory === "All"
-            ? PRODUCTS
-            : PRODUCTS.filter((p) => p.category === selectedCategory);
+        // Filtered products with search and filters
+        const filteredProducts = useMemo(() => {
+          return PRODUCTS.filter((p) => {
+            // Category filter
+            if (selectedCategory !== "All" && p.category !== selectedCategory)
+              return false;
+
+            // Search query
+            if (searchQuery.trim() !== "") {
+              const query = searchQuery.toLowerCase().trim();
+              const matchesName = p.name.toLowerCase().includes(query);
+              const matchesDesc = p.shortDesc.toLowerCase().includes(query);
+              const matchesFullDesc = p.fullDesc.toLowerCase().includes(query);
+              const matchesCategory = p.category.toLowerCase().includes(query);
+              if (
+                !matchesName &&
+                !matchesDesc &&
+                !matchesFullDesc &&
+                !matchesCategory
+              )
+                return false;
+            }
+
+            // Crypto filter
+            if (selectedCrypto !== "All" && p.crypto !== selectedCrypto)
+              return false;
+
+            // Price range filter
+            const priceUSD = cryptoToUSD(p.price, p.crypto);
+            if (
+              priceUSD < selectedPriceRange.min ||
+              priceUSD > selectedPriceRange.max
+            )
+              return false;
+
+            // Rating filter
+            if (selectedRating !== "All Ratings") {
+              const minRating = parseFloat(selectedRating);
+              if (p.rating < minRating) return false;
+            }
+
+            return true;
+          });
+        }, [
+          selectedCategory,
+          searchQuery,
+          selectedCrypto,
+          selectedPriceRange,
+          selectedRating,
+        ]);
 
         const addToCart = useCallback((p) => {
           setCart((prev) => {
             const ex = prev.find((i) => i.id === p.id);
-            if (ex)
+            if (ex) {
               return prev.map((i) =>
                 i.id === p.id ? { ...i, qty: i.qty + 1 } : i,
               );
+            }
             return [...prev, { ...p, qty: 1 }];
           });
           setNotification(`✔ Added ${p.name} to cart`);
         }, []);
-        const removeFromCart = useCallback(
-          (id) => setCart((prev) => prev.filter((i) => i.id !== id)),
-          [],
-        );
+
+        const removeFromCart = useCallback((id) => {
+          setCart((prev) => prev.filter((i) => i.id !== id));
+        }, []);
+
+        const updateCartQty = useCallback((id, delta) => {
+          setCart((prev) => {
+            return prev
+              .map((i) => {
+                if (i.id === id) {
+                  const newQty = i.qty + delta;
+                  if (newQty <= 0) return null; // Will be filtered out
+                  return { ...i, qty: newQty };
+                }
+                return i;
+              })
+              .filter(Boolean);
+          });
+        }, []);
+
         const clearCart = useCallback(() => setCart([]), []);
+
         const toggleWishlist = useCallback((p) => {
           setWishlist((prev) => {
             if (prev.find((i) => i.id === p.id)) {
@@ -1957,8 +2058,30 @@
             }
           });
         }, []);
+
         const isInWishlist = (id) => wishlist.some((i) => i.id === id);
         const cartItemCount = cart.reduce((s, i) => s + i.qty, 0);
+
+        // Calculate cart totals (always multiply by qty)
+        const cartTotalBTC = useMemo(() => {
+          return cart.reduce((total, item) => {
+            const itemUSD = cryptoToUSD(item.price, item.crypto) * item.qty;
+            return total + itemUSD / BTC_USD_RATE;
+          }, 0);
+        }, [cart]);
+
+        const cartTotalETH = useMemo(() => {
+          return cart.reduce((total, item) => {
+            const itemUSD = cryptoToUSD(item.price, item.crypto) * item.qty;
+            return total + itemUSD / ETH_USD_RATE;
+          }, 0);
+        }, [cart]);
+
+        const cartTotalUSD = useMemo(() => {
+          return cart.reduce((total, item) => {
+            return total + cryptoToUSD(item.price, item.crypto) * item.qty;
+          }, 0);
+        }, [cart]);
 
         useEffect(() => {
           if (notification) {
@@ -1998,18 +2121,21 @@
 
           const cartSummary = cart
             .map(
-              (i) => `${i.name} x${i.qty} (${formatCrypto(i.price, i.crypto)})`,
+              (i) =>
+                `${i.name} x${i.qty} (${formatCrypto(i.price, i.crypto)} = ${formatUSD(cryptoToUSD(i.price, i.crypto) * i.qty)})`,
             )
-            .join(", ");
-          const total = cart
-            .reduce((a, i) => a + i.price * i.qty, 0)
-            .toFixed(4);
+            .join(" | ");
+          const totalBTC = cartTotalBTC.toFixed(4);
+          const totalETH = cartTotalETH.toFixed(4);
+          const totalUSD = formatUSD(cartTotalUSD);
 
           const params = {
             user_email: email,
             social_media: social || "Not provided",
             cart_items: cartSummary,
-            total_crypto: total,
+            total_btc: totalBTC,
+            total_eth: totalETH,
+            total_usd: totalUSD,
             btc_wallet: WALLETS.BTC.address,
             eth_wallet: WALLETS.ETH.address,
             order_date: new Date().toISOString(),
@@ -2027,7 +2153,6 @@
                 "EmailJS send failed (continuing to success modal):",
                 err,
               );
-              // Store failed notification for retry
               try {
                 const pendingOrders = JSON.parse(
                   localStorage.getItem("shadow_pending_orders") || "[]",
@@ -2043,7 +2168,6 @@
             }
           } else {
             console.log("EmailJS not configured. Order stored locally.");
-            // Store order locally when EmailJS is not configured
             try {
               const offlineOrders = JSON.parse(
                 localStorage.getItem("shadow_offline_orders") || "[]",
@@ -2231,6 +2355,9 @@
                     {formatCrypto(p.price, p.crypto)}
                   </span>
                   <span className="text-xs text-gray-400">
+                    ≈ {formatUSD(cryptoToUSD(p.price, p.crypto))}
+                  </span>
+                  <span className="text-xs text-gray-400">
                     <i className="fas fa-star text-yellow-500"></i> {p.rating}
                   </span>
                 </div>
@@ -2268,7 +2395,53 @@
                   &times;
                 </button>
               </div>
+
+              {/* Order Summary */}
+              <div className="mb-5 bg-black/30 rounded-xl p-4 border border-gray-700">
+                <h3 className="text-sm font-bold text-gray-300 mb-3">
+                  <i className="fas fa-receipt mr-2"></i>Order Summary
+                </h3>
+                <div className="space-y-2 max-h-40 overflow-y-auto scrollbar-thin mb-3">
+                  {cart.map((i) => (
+                    <div
+                      key={i.id}
+                      className="flex justify-between items-center text-xs"
+                    >
+                      <span className="text-gray-400">
+                        {i.name} x{i.qty}
+                      </span>
+                      <span className="text-gray-300">
+                        {formatUSD(cryptoToUSD(i.price, i.crypto) * i.qty)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <div className="border-t border-gray-700 pt-3 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">Total (USD):</span>
+                    <span className="text-emerald-400 font-bold">
+                      {formatUSD(cartTotalUSD)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">Total (BTC):</span>
+                    <span className="text-amber-300 font-bold mono-text">
+                      {cartTotalBTC.toFixed(4)} BTC
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">Total (ETH):</span>
+                    <span className="text-amber-300 font-bold mono-text">
+                      {cartTotalETH.toFixed(4)} ETH
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               <div className="space-y-3 mb-5">
+                <h3 className="text-sm font-bold text-gray-300">
+                  <i className="fas fa-wallet mr-2"></i>Payment Wallets
+                </h3>
                 {Object.entries(WALLETS).map(([coin, data]) => (
                   <div key={coin} className="wallet-box">
                     <div className="flex justify-between items-center text-xs text-gray-400 mb-1">
@@ -2298,6 +2471,7 @@
                   </div>
                 ))}
               </div>
+
               <form onSubmit={handleCheckoutSubmit} className="space-y-4">
                 <div>
                   <label className="text-xs text-gray-400 block mb-1">
@@ -2456,17 +2630,106 @@
               </div>
             </header>
 
-            {/* Category Filter */}
-            <div className="px-4 md:px-8 py-4 flex flex-wrap gap-2">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-medium transition border ${selectedCategory === cat ? "bg-emerald-900/60 border-emerald-500 text-emerald-200" : "border-gray-700 text-gray-400 hover:border-gray-500"}`}
+            {/* Search and Filters */}
+            <div className="px-4 md:px-8 py-4 space-y-4">
+              {/* Search Bar */}
+              <div className="relative">
+                <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                <input
+                  type="text"
+                  placeholder="Search products, descriptions, categories..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 bg-gray-900/80 border border-gray-700 rounded-lg focus:border-emerald-500 transition"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-white"
+                  >
+                    <i className="fas fa-times"></i>
+                  </button>
+                )}
+              </div>
+
+              {/* Filters Row */}
+              <div className="flex flex-wrap gap-2">
+                {/* Category Filter */}
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  className="px-3 py-2 text-xs bg-gray-900/80 border border-gray-700 rounded-lg"
                 >
-                  {cat}
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Crypto Filter */}
+                <select
+                  value={selectedCrypto}
+                  onChange={(e) => setSelectedCrypto(e.target.value)}
+                  className="px-3 py-2 text-xs bg-gray-900/80 border border-gray-700 rounded-lg"
+                >
+                  {CRYPTO_TYPES.map((ct) => (
+                    <option key={ct} value={ct}>
+                      {ct} Only
+                    </option>
+                  ))}
+                </select>
+
+                {/* Price Range Filter */}
+                <select
+                  value={selectedPriceRange.label}
+                  onChange={(e) => {
+                    const selected = PRICE_RANGES.find(
+                      (pr) => pr.label === e.target.value,
+                    );
+                    setSelectedPriceRange(selected);
+                  }}
+                  className="px-3 py-2 text-xs bg-gray-900/80 border border-gray-700 rounded-lg"
+                >
+                  {PRICE_RANGES.map((pr) => (
+                    <option key={pr.label} value={pr.label}>
+                      {pr.label}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Rating Filter */}
+                <select
+                  value={selectedRating}
+                  onChange={(e) => setSelectedRating(e.target.value)}
+                  className="px-3 py-2 text-xs bg-gray-900/80 border border-gray-700 rounded-lg"
+                >
+                  {RATING_FILTERS.map((rf) => (
+                    <option key={rf} value={rf}>
+                      {rf}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Clear All Filters */}
+                <button
+                  onClick={() => {
+                    setSelectedCategory("All");
+                    setSearchQuery("");
+                    setSelectedCrypto("All");
+                    setSelectedPriceRange(PRICE_RANGES[0]);
+                    setSelectedRating("All Ratings");
+                  }}
+                  className="px-3 py-2 text-xs bg-gray-800 hover:bg-gray-700 text-gray-400 rounded-lg border border-gray-700 transition"
+                >
+                  <i className="fas fa-undo mr-1"></i>Clear Filters
                 </button>
-              ))}
+              </div>
+
+              {/* Results Count */}
+              <p className="text-xs text-gray-500">
+                Showing {filteredProducts.length} of {PRODUCTS.length} products
+              </p>
             </div>
 
             {/* Product Grid */}
@@ -2502,9 +2765,14 @@
                         {p.shortDesc}
                       </p>
                       <div className="mt-3 flex items-center justify-between">
-                        <span className="mono-text text-amber-300 font-semibold text-sm">
-                          {formatCrypto(p.price, p.crypto)}
-                        </span>
+                        <div>
+                          <span className="mono-text text-amber-300 font-semibold text-sm">
+                            {formatCrypto(p.price, p.crypto)}
+                          </span>
+                          <span className="text-xs text-gray-500 block">
+                            ≈ {formatUSD(cryptoToUSD(p.price, p.crypto))}
+                          </span>
+                        </div>
                         <span className="text-xs text-gray-500">
                           <i className="fas fa-star text-yellow-500 text-xs"></i>{" "}
                           {p.rating}
@@ -2529,9 +2797,23 @@
                 })}
               </div>
               {filteredProducts.length === 0 && (
-                <p className="text-center text-gray-500 mt-10 mono-text">
-                  No tools found in this category.
-                </p>
+                <div className="text-center mt-10">
+                  <p className="text-gray-500 mono-text">
+                    No tools found matching your search criteria.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSelectedCategory("All");
+                      setSearchQuery("");
+                      setSelectedCrypto("All");
+                      setSelectedPriceRange(PRICE_RANGES[0]);
+                      setSelectedRating("All Ratings");
+                    }}
+                    className="mt-4 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-lg text-sm transition"
+                  >
+                    Clear all filters
+                  </button>
+                </div>
               )}
             </main>
 
@@ -2674,8 +2956,31 @@
                               {i.name}
                             </p>
                             <p className="text-xs text-gray-400">
-                              {formatCrypto(i.price, i.crypto)} x {i.qty}
+                              {formatCrypto(i.price, i.crypto)} × {i.qty}
                             </p>
+                            <p className="text-xs text-emerald-400">
+                              ≈{" "}
+                              {formatUSD(
+                                cryptoToUSD(i.price, i.crypto) * i.qty,
+                              )}
+                            </p>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => updateCartQty(i.id, -1)}
+                              className="text-gray-500 hover:text-white bg-gray-800 rounded px-2 py-1 text-xs"
+                            >
+                              -
+                            </button>
+                            <span className="text-xs text-gray-300">
+                              {i.qty}
+                            </span>
+                            <button
+                              onClick={() => updateCartQty(i.id, 1)}
+                              className="text-gray-500 hover:text-white bg-gray-800 rounded px-2 py-1 text-xs"
+                            >
+                              +
+                            </button>
                           </div>
                           <button
                             onClick={() => removeFromCart(i.id)}
@@ -2689,14 +2994,25 @@
                   </div>
                   {cart.length > 0 && (
                     <div className="p-4 border-t border-gray-800">
-                      <div className="flex justify-between text-sm mb-3">
-                        <span>Estimated:</span>
-                        <span className="mono-text text-amber-300 font-bold">
-                          {cart
-                            .reduce((a, i) => a + i.price * i.qty, 0)
-                            .toFixed(4)}{" "}
-                          crypto
-                        </span>
+                      <div className="space-y-2 mb-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-400">Total (USD):</span>
+                          <span className="text-emerald-400 font-bold">
+                            {formatUSD(cartTotalUSD)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-400">Total (BTC):</span>
+                          <span className="text-amber-300 font-bold mono-text">
+                            {cartTotalBTC.toFixed(4)} BTC
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-400">Total (ETH):</span>
+                          <span className="text-amber-300 font-bold mono-text">
+                            {cartTotalETH.toFixed(4)} ETH
+                          </span>
+                        </div>
                       </div>
                       <button
                         onClick={() => {
@@ -2712,6 +3028,7 @@
                 </div>
               </div>
             )}
+
             {showWishPanel && (
               <div
                 className="fixed inset-0 z-40 flex justify-end"
@@ -2751,7 +3068,8 @@
                               {i.name}
                             </p>
                             <p className="text-xs text-gray-400">
-                              {formatCrypto(i.price, i.crypto)}
+                              {formatCrypto(i.price, i.crypto)} ≈{" "}
+                              {formatUSD(cryptoToUSD(i.price, i.crypto))}
                             </p>
                           </div>
                           <button
