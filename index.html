@@ -131,48 +131,35 @@
     <script type="text/babel">
       const { useState, useEffect, useCallback, useMemo } = React;
 
-      // ---------- EmailJS Init (single, top-level) ----------
-      // emailjs.init() is side-effect only and returns undefined.
-      // We detect availability once and set a flag the component can read.
-      let EMAILJS_READY = false;
+      // ---------- EmailJS Init ----------
       (function () {
         try {
-          if (typeof emailjs !== "undefined") {
-            emailjs.init("70Q1bWdEPbUw-dkJG");
-            EMAILJS_READY = true;
-          } else {
-            console.warn("EmailJS script not loaded – offline mode.");
-          }
+          emailjs.init("70Q1bWdEPbUw-dkJG");
         } catch (e) {
-          console.warn("EmailJS not configured – offline mode.", e);
+          console.warn("EmailJS not configured – offline mode.");
         }
       })();
 
-      // ---------- Crypto Price Constants (approximate USD equivalents) ----------
+      // ---------- Constants ----------
       const BTC_USD_RATE = 42000;
       const ETH_USD_RATE = 2500;
+      const CONTACT_EMAIL = "Shadowhavenn@proton.me";
 
-      // Helper: convert USD amount to crypto price
       const usdToCrypto = (usdAmount, cryptoSymbol) => {
         if (cryptoSymbol === "BTC") return usdAmount / BTC_USD_RATE;
         if (cryptoSymbol === "ETH") return usdAmount / ETH_USD_RATE;
         return usdAmount / BTC_USD_RATE;
       };
 
-      // Helper: convert crypto to USD
       const cryptoToUSD = (cryptoAmount, cryptoSymbol) => {
         if (cryptoSymbol === "BTC") return cryptoAmount * BTC_USD_RATE;
         if (cryptoSymbol === "ETH") return cryptoAmount * ETH_USD_RATE;
         return cryptoAmount * BTC_USD_RATE;
       };
 
-      // ---------- Product Database (15+ products per category) ----------
-      // Price Range: $250 - $3,500
+      // ---------- Product Database (12 categories × 15 products = 180) ----------
       const PRODUCTS = [
-        // ==========================================
-        // REMOTE ACCESS (RATs) - 15 products
-        // ==========================================
-        // Tier 3 (3 products): $1,600-$3,500
+        // ===== 1. REMOTE ACCESS =====
         {
           id: 1,
           name: "BlackPhantom RAT",
@@ -183,7 +170,7 @@
           rating: 4.8,
           img: "🕳️",
           fullDesc:
-            "BlackPhantom RAT is a fully undetectable remote access trojan designed for persistent control over target machines. Features include keylogging, screen capture, file exfiltration, reverse proxy, and encrypted C2 communication. Bypasses Windows Defender and major AVs through polymorphic code injection. Includes builder with customizable install vectors and anti-VM detection.",
+            "Fully undetectable RAT with polymorphic code injection bypassing Windows Defender and major AVs. Features keylogging, screen capture, file exfiltration, reverse proxy, and encrypted C2 communication. Includes customizable builder and anti-VM detection.",
         },
         {
           id: 2,
@@ -195,7 +182,7 @@
           rating: 4.7,
           img: "🐍",
           fullDesc:
-            "Hidden Virtual Network Computing for stealthy desktop control. Includes SOCKS5 proxy, browser credential dumper, and cryptocurrency wallet extractor. Bypasses UAC via fodhelper.exe technique. Monthly stub updates to maintain FUD status.",
+            "Hidden Virtual Network Computing for stealthy desktop control. Includes SOCKS5 proxy, browser credential dumper, and cryptocurrency wallet extractor. Bypasses UAC via fodhelper.exe. Monthly stub updates maintain FUD status.",
         },
         {
           id: 3,
@@ -207,20 +194,19 @@
           rating: 4.9,
           img: "💻",
           fullDesc:
-            "Full-featured RAT with task manager, file explorer, registry editor, and remote shell. Supports IPv6 and Tor for anonymized C2. Includes certificate manager for signing payloads. Reverse proxy with custom SSL pinning.",
+            "Full-featured RAT with task manager, file explorer, registry editor, and remote shell. Supports IPv6 and Tor for anonymized C2. Includes certificate manager and custom SSL pinning reverse proxy.",
         },
-        // Tier 2 (5 products): $800-$1,300
         {
           id: 4,
           name: "DarkCrystal RAT",
           category: "Remote Access",
-          price: usdToCrypto(850, "ETH"),
+          price: usdToCrypto(1150, "ETH"),
           crypto: "ETH",
           shortDesc: "Modular RAT with plugin support & webcam grab.",
           rating: 4.6,
           img: "🦎",
           fullDesc:
-            "Modular architecture allows custom plugin development. Features webcam grab, audio capture, persistence via WMI, and registry manipulation. Encrypted configuration stored in alternate data streams. Compatible with Windows 10/11 and Server editions.",
+            "Modular architecture allows custom plugin development. Webcam grab, audio capture, persistence via WMI, and registry manipulation. Encrypted config in alternate data streams. Windows 10/11 and Server compatible.",
         },
         {
           id: 5,
@@ -232,23 +218,10 @@
           rating: 4.3,
           img: "🐀",
           fullDesc:
-            "Modified AsyncRAT with AES-256 encryption for configuration and communication. Anti-VM detection prevents analysis in sandboxes. USB spreader module infects removable drives. Includes keylogger with offline storage and email exfiltration.",
+            "Modified AsyncRAT with AES-256 encryption for config and comms. Anti-VM detection prevents sandbox analysis. USB spreader module infects removable drives. Keylogger with offline storage and email exfiltration.",
         },
         {
           id: 6,
-          name: "NjRAT Gold",
-          category: "Remote Access",
-          price: usdToCrypto(950, "ETH"),
-          crypto: "ETH",
-          shortDesc:
-            "Process hollowing, registry persistence, encrypted config.",
-          rating: 4.2,
-          img: "🦅",
-          fullDesc:
-            "Updated NjRAT with process hollowing into legitimate processes, registry persistence via Active Setup, and encrypted configuration files. Includes remote shell, file manager, and process killer. Lightweight stub (~50KB).",
-        },
-        {
-          id: 7,
           name: "PhantomCore RAT",
           category: "Remote Access",
           price: usdToCrypto(1050, "BTC"),
@@ -257,10 +230,10 @@
           rating: 4.5,
           img: "👻",
           fullDesc:
-            "Kernel-mode remote access trojan operating at ring-0 privilege level. Driver-based stealth with DKOM techniques. Hides processes, files, and network connections from user-mode AV. Includes kernel keylogger and direct memory access.",
+            "Kernel-mode RAT operating at ring-0. Driver-based stealth with DKOM techniques. Hides processes, files, and network connections from user-mode AV. Includes kernel keylogger and direct memory access.",
         },
         {
-          id: 8,
+          id: 7,
           name: "NightStalker Lite",
           category: "Remote Access",
           price: usdToCrypto(820, "ETH"),
@@ -269,20 +242,32 @@
           rating: 4.1,
           img: "🦉",
           fullDesc:
-            "Lightweight RAT using DNS-over-HTTPS for C2 communication. Multi-hop proxy chain support with SOCKS5 and HTTP proxies. Minimal footprint (~30KB) with reflective DLL injection. Ideal for targeted deployments.",
+            "Lightweight RAT using DNS-over-HTTPS for C2. Multi-hop proxy chain support. Minimal footprint (~30KB) with reflective DLL injection. Ideal for targeted deployments.",
         },
-        // Tier 1 (7 products): $250-$700
+        {
+          id: 8,
+          name: "NjRAT Gold",
+          category: "Remote Access",
+          price: usdToCrypto(680, "ETH"),
+          crypto: "ETH",
+          shortDesc:
+            "Process hollowing, registry persistence, encrypted config.",
+          rating: 4.2,
+          img: "🦅",
+          fullDesc:
+            "Updated NjRAT with process hollowing, registry persistence via Active Setup, and encrypted configuration files. Includes remote shell, file manager, and process killer. Lightweight ~50KB stub.",
+        },
         {
           id: 9,
-          name: "PixelGhost Agent",
+          name: "MythicAgent Core",
           category: "Remote Access",
-          price: usdToCrypto(450, "BTC"),
+          price: usdToCrypto(650, "BTC"),
           crypto: "BTC",
-          shortDesc: "Basic RAT with screen capture and keylogger.",
-          rating: 4.0,
-          img: "👁️",
+          shortDesc: "Mythic C2 compatible agent, multi-platform.",
+          rating: 4.6,
+          img: "🏰",
           fullDesc:
-            "Entry-level remote access tool with essential features: remote desktop viewing, keylogger, file browser, and process list. Simple stub builder. Suitable for beginners learning RAT operations. Monthly updates to maintain basic FUD.",
+            "Agent compatible with the Mythic C2 framework. Supports Windows, Linux, and macOS. Custom payload generation with multiple comms profiles (HTTP, HTTPS, WebSocket, DNS). Docker-based C2 infrastructure.",
         },
         {
           id: 10,
@@ -294,22 +279,10 @@
           rating: 4.4,
           img: "🎤",
           fullDesc:
-            "Specialized surveillance RAT with emphasis on audio and video capture. Remote microphone activation, webcam streaming, ambient audio recording, and screenshot scheduler. Exfiltrates via encrypted FTP.",
+            "Surveillance RAT with emphasis on audio/video capture. Remote microphone activation, webcam streaming, ambient audio recording, and screenshot scheduler. Exfiltrates via encrypted FTP.",
         },
         {
           id: 11,
-          name: "ThinClient Ghost",
-          category: "Remote Access",
-          price: usdToCrypto(300, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Ultra-lightweight RAT, 22KB payload, minimal footprint.",
-          rating: 4.2,
-          img: "💨",
-          fullDesc:
-            "Minimalist RAT with 22KB payload. Essential remote shell, file transfer, and screenshot capability. Perfect for low-bandwidth environments. Process injection into svchost.exe for stealth.",
-        },
-        {
-          id: 12,
           name: "ChromeRAT Basic",
           category: "Remote Access",
           price: usdToCrypto(520, "ETH"),
@@ -321,19 +294,19 @@
             "RAT delivered via malicious Chrome extension. Browser-based C2 panel. Accesses all browser-stored data, active sessions, and form data. Persists through extension auto-reinstall policy manipulation.",
         },
         {
-          id: 13,
-          name: "MythicAgent Core",
+          id: 12,
+          name: "PixelGhost Agent",
           category: "Remote Access",
-          price: usdToCrypto(650, "BTC"),
+          price: usdToCrypto(450, "BTC"),
           crypto: "BTC",
-          shortDesc: "Mythic C2 compatible agent, multi-platform.",
-          rating: 4.6,
-          img: "🏰",
+          shortDesc: "Basic RAT with screen capture and keylogger.",
+          rating: 4.0,
+          img: "👁️",
           fullDesc:
-            "Agent compatible with the Mythic C2 framework. Supports Windows, Linux, and macOS. Custom payload generation with various communication profiles (HTTP, HTTPS, WebSocket, DNS). Docker-based C2 infrastructure.",
+            "Entry-level RAT: remote desktop viewing, keylogger, file browser, and process list. Simple stub builder. Suitable for beginners. Monthly updates to maintain basic FUD.",
         },
         {
-          id: 14,
+          id: 13,
           name: "ShadowLink RAT",
           category: "Remote Access",
           price: usdToCrypto(380, "ETH"),
@@ -342,37 +315,45 @@
           rating: 4.3,
           img: "🔗",
           fullDesc:
-            "Decentralized RAT using P2P networking. No central C2 server — each node can relay commands. Uses DHT for node discovery. Encrypted communications with perfect forward secrecy. Resilient to takedowns.",
+            "Decentralized RAT using P2P networking. No central C2 server — each node relays commands. Uses DHT for node discovery. Encrypted comms with perfect forward secrecy. Resilient to takedowns.",
+        },
+        {
+          id: 14,
+          name: "ThinClient Ghost",
+          category: "Remote Access",
+          price: usdToCrypto(300, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Ultra-lightweight RAT, 22KB payload.",
+          rating: 4.2,
+          img: "💨",
+          fullDesc:
+            "Minimalist RAT with 22KB payload. Essential remote shell, file transfer, and screenshot. Perfect for low-bandwidth environments. Process injection into svchost.exe for stealth.",
         },
         {
           id: 15,
           name: "FrozenOrbit RAT",
           category: "Remote Access",
-          price: usdToCrypto(680, "BTC"),
+          price: usdToCrypto(250, "BTC"),
           crypto: "BTC",
-          shortDesc: "Persistence via WMI event subscriptions & COM hijacking.",
+          shortDesc: "Persistence via WMI subscriptions & COM hijacking.",
           rating: 4.5,
           img: "❄️",
           fullDesc:
-            "Advanced persistence mechanisms using WMI permanent event subscriptions and COM object hijacking. Registry-free persistence. Includes memory-only execution capability. Anti-forensic features with secure deletion of artifacts.",
+            "Advanced persistence via WMI event subscriptions and COM hijacking. Registry-free persistence. Memory-only execution capability. Anti-forensic features with secure artifact deletion.",
         },
 
-        // ==========================================
-        // CREDENTIAL HARVESTING - 15 products
-        // ==========================================
-        // Tier 3 (3 products): $1,600-$3,500
+        // ===== 2. CREDENTIAL HARVESTING =====
         {
           id: 16,
           name: "EtherStealth Grabber Pro",
           category: "Credential Harvesting",
           price: usdToCrypto(3100, "ETH"),
           crypto: "ETH",
-          shortDesc:
-            "Multi-chain wallet drainer + session cookie stealer, DeFi exploits.",
+          shortDesc: "Multi-chain wallet drainer + DeFi exploits.",
           rating: 4.9,
           img: "🦊",
           fullDesc:
-            "Advanced multi-chain wallet drainer supporting 50+ EVM chains. Session cookie hijacking for centralized exchanges. Automated DeFi exploit scanner for vulnerable smart contract interactions. Real-time clipboard manipulation for address swapping.",
+            "Multi-chain wallet drainer supporting 50+ EVM chains. Session cookie hijacking for CEXs. Automated DeFi exploit scanner for vulnerable smart contracts. Real-time clipboard manipulation for address swapping.",
         },
         {
           id: 17,
@@ -384,7 +365,7 @@
           rating: 4.8,
           img: "🏦",
           fullDesc:
-            "Advanced banking trojan using machine learning for dynamic web inject generation. Targets 200+ financial institutions globally. Real-time man-in-the-browser with session manipulation. Includes multi-factor authentication bypass via session token extraction.",
+            "Banking trojan using ML for dynamic web inject generation. Targets 200+ financial institutions. Real-time man-in-the-browser with session manipulation. MFA bypass via session token extraction.",
         },
         {
           id: 18,
@@ -392,27 +373,14 @@
           category: "Credential Harvesting",
           price: usdToCrypto(1900, "BTC"),
           crypto: "BTC",
-          shortDesc: "Corporate credential harvester, SSO/Okta/AzureAD focus.",
+          shortDesc: "Corporate harvester, SSO/Okta/AzureAD focus.",
           rating: 4.7,
           img: "🏢",
           fullDesc:
-            "Enterprise-focused credential stealer targeting Single Sign-On portals, Okta, Azure AD, and corporate VPNs. Harvests SAML assertions and OAuth tokens. Includes Active Directory enumeration module for lateral movement intelligence.",
+            "Enterprise credential stealer targeting SSO portals, Okta, Azure AD, and corporate VPNs. Harvests SAML assertions and OAuth tokens. Includes AD enumeration for lateral movement intelligence.",
         },
-        // Tier 2 (5 products): $800-$1,300
         {
           id: 19,
-          name: "RedLine Stealer Pro",
-          category: "Credential Harvesting",
-          price: usdToCrypto(880, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Browser & FTP credential stealer, VPN config grabber.",
-          rating: 4.6,
-          img: "🔴",
-          fullDesc:
-            "Harvests saved passwords, cookies, credit cards from Chromium and Firefox browsers. Also grabs VPN configurations, FTP credentials from FileZilla, and Discord tokens. Exfiltrates via Telegram bot API or custom webhook.",
-        },
-        {
-          id: 20,
           name: "Vidar Infostealer v3",
           category: "Credential Harvesting",
           price: usdToCrypto(1200, "ETH"),
@@ -421,7 +389,19 @@
           rating: 4.7,
           img: "🎭",
           fullDesc:
-            "Bypasses two-factor authentication by stealing authenticated session tokens. Extracts desktop cryptocurrency wallets (Exodus, Electrum, Atomic) and Telegram sessions. Includes desktop screenshot capture and geo-IP lookup.",
+            "Bypasses 2FA by stealing authenticated session tokens. Extracts desktop crypto wallets (Exodus, Electrum, Atomic) and Telegram sessions. Includes screenshot capture and geo-IP lookup.",
+        },
+        {
+          id: 20,
+          name: "CryptoDrainer Suite",
+          category: "Credential Harvesting",
+          price: usdToCrypto(1100, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Wallet extractor, 30+ wallet support.",
+          rating: 4.5,
+          img: "💎",
+          fullDesc:
+            "Extracts crypto wallets from desktop and browser extensions. Supports 30+ wallets including MetaMask, TrustWallet, Exodus, Atomic, Ledger Live. Private key and seed phrase extraction with auto-transfer.",
         },
         {
           id: 21,
@@ -429,113 +409,38 @@
           category: "Credential Harvesting",
           price: usdToCrypto(980, "BTC"),
           crypto: "BTC",
-          shortDesc: "Cloud-based stealer with web panel, 60+ app support.",
+          shortDesc: "Cloud-based stealer with web panel, 60+ apps.",
           rating: 4.4,
           img: "🦝",
           fullDesc:
-            "SaaS credential stealer with web-based management panel. Auto-updating grabber modules for 60+ applications including browsers, email clients, and VPNs. Includes traffic analysis and logging with search functionality.",
+            "SaaS credential stealer with web-based management panel. Auto-updating grabber modules for 60+ applications. Includes traffic analysis and search logging.",
         },
         {
           id: 22,
+          name: "RedLine Stealer Pro",
+          category: "Credential Harvesting",
+          price: usdToCrypto(880, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Browser & FTP credential stealer, VPN grabber.",
+          rating: 4.6,
+          img: "🔴",
+          fullDesc:
+            "Harvests saved passwords, cookies, credit cards from Chromium and Firefox. Grabs VPN configs, FTP credentials from FileZilla, and Discord tokens. Exfiltrates via Telegram bot or webhook.",
+        },
+        {
+          id: 23,
           name: "CookieMonster Elite",
           category: "Credential Harvesting",
-          price: usdToCrypto(850, "ETH"),
+          price: usdToCrypto(680, "ETH"),
           crypto: "ETH",
           shortDesc: "Session hijacking specialist, 20+ browser support.",
           rating: 4.3,
           img: "🍪",
           fullDesc:
-            "Specialized session cookie extractor for 20+ browsers. Decrypts encrypted cookie stores. Includes real-time session validation to verify cookie freshness before exfiltration. Automated login to hijacked sessions.",
+            "Session cookie extractor for 20+ browsers. Decrypts encrypted cookie stores. Real-time session validation before exfiltration. Automated login to hijacked sessions.",
         },
-        {
-          id: 23,
-          name: "CryptoDrainer Suite",
-          category: "Credential Harvesting",
-          price: usdToCrypto(1100, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Cryptocurrency wallet extractor, 30+ wallet support.",
-          rating: 4.5,
-          img: "💎",
-          fullDesc:
-            "Extracts cryptocurrency wallets from desktop and browser extensions. Supports 30+ wallets including MetaMask, TrustWallet, Exodus, Atomic, and Ledger Live. Private key and seed phrase extraction. Instant balance checker and auto-transfer module.",
-        },
-        // Tier 1 (7 products): $250-$700
         {
           id: 24,
-          name: "LiteStealer Basic",
-          category: "Credential Harvesting",
-          price: usdToCrypto(280, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Chrome/Firefox password extractor, simple & effective.",
-          rating: 4.1,
-          img: "🔑",
-          fullDesc:
-            "Simple browser credential extractor for Chrome and Firefox. Dumps saved passwords, bookmarks, and browsing history. Lightweight executable, easy deployment. CSV output for easy parsing. Good starter stealer.",
-        },
-        {
-          id: 25,
-          name: "TokenGrab Lite",
-          category: "Credential Harvesting",
-          price: usdToCrypto(420, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Discord & Telegram token grabber, webhook delivery.",
-          rating: 4.2,
-          img: "💬",
-          fullDesc:
-            "Extracts Discord and Telegram session tokens. Delivers tokens via webhook for real-time access. Includes token validator and account information scraper. Small footprint, easy to deploy via social engineering.",
-        },
-        {
-          id: 26,
-          name: "KeyLog Master",
-          category: "Credential Harvesting",
-          price: usdToCrypto(260, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Advanced keylogger with clipboard monitor & screenshots.",
-          rating: 4.0,
-          img: "⌨️",
-          fullDesc:
-            "Comprehensive keylogger capturing keystrokes, clipboard contents, and periodic screenshots. Organizes data by active window. Email or FTP exfiltration. Hidden from task manager. Install as Windows service.",
-        },
-        {
-          id: 27,
-          name: "CloudExtract SMB",
-          category: "Credential Harvesting",
-          price: usdToCrypto(550, "ETH"),
-          crypto: "ETH",
-          shortDesc:
-            "Cloud storage credential extractor (Dropbox, GDrive, OneDrive).",
-          rating: 4.4,
-          img: "☁️",
-          fullDesc:
-            "Extracts saved credentials and session tokens for cloud storage services. Dropbox, Google Drive, OneDrive, and Mega support. Downloads file listings and sample contents for victim profiling.",
-        },
-        {
-          id: 28,
-          name: "MailSnatch Pro",
-          category: "Credential Harvesting",
-          price: usdToCrypto(480, "BTC"),
-          crypto: "BTC",
-          shortDesc:
-            "Email client credential extractor (Outlook, Thunderbird).",
-          rating: 4.3,
-          img: "📬",
-          fullDesc:
-            "Targets desktop email clients including Outlook, Thunderbird, and Mailbird. Extracts account credentials, SMTP/IMAP settings, and stored emails. Includes contact list harvesting for phishing preparation.",
-        },
-        {
-          id: 29,
-          name: "PassSniffer WiFi",
-          category: "Credential Harvesting",
-          price: usdToCrypto(340, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Saved WiFi password extractor + network profiler.",
-          rating: 4.2,
-          img: "📶",
-          fullDesc:
-            "Extracts all saved WiFi passwords from Windows. Creates network profile map with SSIDs, passwords, and security types. Useful for physical penetration testing and network pivoting preparation.",
-        },
-        {
-          id: 30,
           name: "FormGrabber JS",
           category: "Credential Harvesting",
           price: usdToCrypto(620, "BTC"),
@@ -544,24 +449,93 @@
           rating: 4.6,
           img: "📝",
           fullDesc:
-            "Injects into browser processes to intercept form submissions before encryption. Captures login credentials, credit card details, and personal information as they're submitted. Works on HTTPS sites transparently.",
+            "Injects into browser processes to intercept form submissions before encryption. Captures login credentials, credit card details, and personal information. Works transparently on HTTPS sites.",
+        },
+        {
+          id: 25,
+          name: "CloudExtract SMB",
+          category: "Credential Harvesting",
+          price: usdToCrypto(550, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Cloud storage credential extractor.",
+          rating: 4.4,
+          img: "☁️",
+          fullDesc:
+            "Extracts saved credentials and session tokens for cloud storage. Dropbox, Google Drive, OneDrive, and Mega support. Downloads file listings and sample contents for victim profiling.",
+        },
+        {
+          id: 26,
+          name: "MailSnatch Pro",
+          category: "Credential Harvesting",
+          price: usdToCrypto(480, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Email client credential extractor.",
+          rating: 4.3,
+          img: "📬",
+          fullDesc:
+            "Targets desktop email clients including Outlook, Thunderbird, and Mailbird. Extracts account credentials, SMTP/IMAP settings, and stored emails. Contact list harvesting for phishing preparation.",
+        },
+        {
+          id: 27,
+          name: "TokenGrab Lite",
+          category: "Credential Harvesting",
+          price: usdToCrypto(420, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Discord & Telegram token grabber.",
+          rating: 4.2,
+          img: "💬",
+          fullDesc:
+            "Extracts Discord and Telegram session tokens. Delivers via webhook for real-time access. Includes token validator and account info scraper. Small footprint, easy social engineering deployment.",
+        },
+        {
+          id: 28,
+          name: "PassSniffer WiFi",
+          category: "Credential Harvesting",
+          price: usdToCrypto(340, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Saved WiFi password extractor + network profiler.",
+          rating: 4.2,
+          img: "📶",
+          fullDesc:
+            "Extracts all saved WiFi passwords from Windows. Creates network profile map with SSIDs, passwords, and security types. Useful for physical pentesting and network pivoting.",
+        },
+        {
+          id: 29,
+          name: "LiteStealer Basic",
+          category: "Credential Harvesting",
+          price: usdToCrypto(280, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Chrome/Firefox password extractor, simple.",
+          rating: 4.1,
+          img: "🔑",
+          fullDesc:
+            "Simple browser credential extractor for Chrome and Firefox. Dumps saved passwords, bookmarks, and browsing history. Lightweight executable. CSV output. Good starter stealer.",
+        },
+        {
+          id: 30,
+          name: "KeyLog Master",
+          category: "Credential Harvesting",
+          price: usdToCrypto(250, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Advanced keylogger with clipboard monitor.",
+          rating: 4.0,
+          img: "⌨️",
+          fullDesc:
+            "Comprehensive keylogger capturing keystrokes, clipboard contents, and periodic screenshots. Organizes data by active window. Email or FTP exfiltration. Hidden from task manager.",
         },
 
-        // ==========================================
-        // EXPLOIT SCRIPTS - 15 products
-        // ==========================================
-        // Tier 3 (3 products): $1,600-$3,500
+        // ===== 3. EXPLOIT SCRIPTS =====
         {
           id: 31,
           name: "ZeroDay Broker Access",
           category: "Exploit Scripts",
           price: usdToCrypto(3500, "BTC"),
           crypto: "BTC",
-          shortDesc: "Curated private 0day list, monthly updated catalog.",
+          shortDesc: "Curated private 0day list, monthly updated.",
           rating: 4.7,
           img: "💣",
           fullDesc:
-            "Access to a vetted broker network offering private zero-day exploits for Windows, Linux, iOS, and Android. Includes detailed vulnerability analysis, proof-of-concept code, and delivery vectors. Monthly subscription grants updated catalog.",
+            "Access to vetted broker network offering private zero-days for Windows, Linux, iOS, and Android. Includes vulnerability analysis, PoC code, and delivery vectors. Monthly subscription grants updated catalog.",
         },
         {
           id: 32,
@@ -569,11 +543,11 @@
           category: "Exploit Scripts",
           price: usdToCrypto(2100, "ETH"),
           crypto: "ETH",
-          shortDesc: "Verified exploits with PoC, CVE-2020 to CVE-2026.",
+          shortDesc: "Verified exploits with PoC, CVE-2020 to 2026.",
           rating: 4.8,
           img: "📚",
           fullDesc:
-            "Curated database of working exploits with proof-of-concept code. Covers CVEs from 2020 through 2026. Each entry includes environment setup, usage instructions, and affected version matrix.",
+            "Curated database of working exploits with PoC code. Covers CVEs from 2020-2026. Each entry includes environment setup, usage instructions, and affected version matrix.",
         },
         {
           id: 33,
@@ -581,51 +555,26 @@
           category: "Exploit Scripts",
           price: usdToCrypto(1800, "BTC"),
           crypto: "BTC",
-          shortDesc: "Leaked private bug reports, critical vulnerabilities.",
+          shortDesc: "Leaked private bug reports, critical vulns.",
           rating: 4.6,
           img: "🐛",
           fullDesc:
-            "Collection of leaked bug bounty reports with reproduction steps. Includes critical vulnerabilities in major platforms, API endpoints, and authentication bypass techniques. Updated weekly with fresh intel.",
+            "Collection of leaked bug bounty reports with reproduction steps. Includes critical vulnerabilities in major platforms, API endpoints, and auth bypass techniques. Updated weekly.",
         },
-        // Tier 2 (5 products): $800-$1,300
         {
           id: 34,
-          name: "SQLi Inferno Map Pro",
-          category: "Exploit Scripts",
-          price: usdToCrypto(900, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Automated SQL injection, multithreaded, proxy rotation.",
-          rating: 4.6,
-          img: "🗂️",
-          fullDesc:
-            "Detects and exploits SQL injection vulnerabilities. Supports MySQL, MSSQL, PostgreSQL, and Oracle. Features include database enumeration, table dumping, file read/write, and OS command execution via stacked queries. Multithreaded with automatic proxy rotation.",
-        },
-        {
-          id: 35,
           name: "XSS Hunter Pro Elite",
           category: "Exploit Scripts",
           price: usdToCrypto(1100, "ETH"),
           crypto: "ETH",
-          shortDesc: "Blind XSS detection, DOM-based, WAF bypass payloads.",
+          shortDesc: "Blind XSS detection, DOM-based, WAF bypass.",
           rating: 4.5,
           img: "🎯",
           fullDesc:
-            "Automated XSS scanning with DOM-based and stored XSS detection. Includes payload generator with WAF bypass techniques. Integrates with collaborative XSS servers for blind XSS confirmation.",
+            "Automated XSS scanning with DOM-based and stored XSS detection. Payload generator with WAF bypass. Integrates with collaborative XSS servers for blind XSS confirmation.",
         },
         {
-          id: 36,
-          name: "Command Injection Kit Pro",
-          category: "Exploit Scripts",
-          price: usdToCrypto(850, "ETH"),
-          crypto: "ETH",
-          shortDesc: "OS command injection, reverse shell payloads.",
-          rating: 4.7,
-          img: "💉",
-          fullDesc:
-            "Detects blind and verbose command injection vulnerabilities. Includes reverse shell payloads for Windows (PowerShell) and Linux (Bash/Netcat). Supports time-based detection and out-of-band exfiltration via DNS.",
-        },
-        {
-          id: 37,
+          id: 35,
           name: "XXE Exploiter Pro",
           category: "Exploit Scripts",
           price: usdToCrypto(950, "BTC"),
@@ -634,71 +583,58 @@
           rating: 4.4,
           img: "📄",
           fullDesc:
-            "Automated XXE detection with out-of-band exfiltration via FTP/HTTP. Includes SSRF chaining module to pivot into internal networks. Supports parameter entities and CDATA wrapping.",
+            "Automated XXE detection with out-of-band exfiltration via FTP/HTTP. SSRF chaining module to pivot into internal networks. Supports parameter entities and CDATA wrapping.",
+        },
+        {
+          id: 36,
+          name: "SQLi Inferno Map Pro",
+          category: "Exploit Scripts",
+          price: usdToCrypto(900, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Automated SQL injection, multithreaded.",
+          rating: 4.6,
+          img: "🗂️",
+          fullDesc:
+            "Detects and exploits SQL injection. Supports MySQL, MSSQL, PostgreSQL, Oracle. DB enumeration, table dumping, file read/write, and OS command execution via stacked queries. Multithreaded with proxy rotation.",
+        },
+        {
+          id: 37,
+          name: "Command Injection Kit Pro",
+          category: "Exploit Scripts",
+          price: usdToCrypto(850, "ETH"),
+          crypto: "ETH",
+          shortDesc: "OS command injection, reverse shell payloads.",
+          rating: 4.7,
+          img: "💉",
+          fullDesc:
+            "Detects blind and verbose command injection vulnerabilities. Reverse shell payloads for Windows (PowerShell) and Linux (Bash/Netcat). Time-based detection and out-of-band exfiltration via DNS.",
         },
         {
           id: 38,
           name: "CSRF Arsenal",
           category: "Exploit Scripts",
-          price: usdToCrypto(800, "ETH"),
+          price: usdToCrypto(680, "ETH"),
           crypto: "ETH",
-          shortDesc: "Cross-Site Request Forgery toolkit, auto-PoC generator.",
+          shortDesc: "CSRF toolkit, auto-PoC generator.",
           rating: 4.3,
           img: "🎪",
           fullDesc:
-            "Automated CSRF vulnerability scanner and exploit generator. Creates proof-of-concept HTML pages for confirmed vulnerabilities. Supports token bypass techniques including token fixation and NULL value submission.",
+            "Automated CSRF scanner and exploit generator. Creates PoC HTML pages for confirmed vulnerabilities. Supports token bypass techniques including token fixation and NULL value submission.",
         },
-        // Tier 1 (7 products): $250-$700
         {
           id: 39,
-          name: "RFI/LFI Scanner",
-          category: "Exploit Scripts",
-          price: usdToCrypto(270, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Remote & local file inclusion, PHP wrapper support.",
-          rating: 4.3,
-          img: "📂",
-          fullDesc:
-            "Scans for file inclusion vulnerabilities. Supports PHP wrappers (php://filter, data://), log poisoning, and /proc/self/environ techniques. Includes null byte injection and path truncation attacks.",
-        },
-        {
-          id: 40,
-          name: "Subdomain Enumerator",
-          category: "Exploit Scripts",
-          price: usdToCrypto(320, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Multi-source subdomain discovery, brute-force module.",
-          rating: 4.4,
-          img: "🔎",
-          fullDesc:
-            "Discovers subdomains using certificate transparency, search engines, DNS brute-force, and passive DNS databases. Multi-threaded with custom wordlist support. Outputs to CSV with IP resolution.",
-        },
-        {
-          id: 41,
-          name: "DirBuster Turbo",
-          category: "Exploit Scripts",
-          price: usdToCrypto(260, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Directory & file brute-forcer, recursive scanning.",
-          rating: 4.2,
-          img: "📁",
-          fullDesc:
-            "High-speed directory and file brute-forcing tool. Recursive scanning with custom extensions list. Supports HTTP/HTTPS with proxy rotation. Includes intelligent 404 detection to reduce false positives.",
-        },
-        {
-          id: 42,
           name: "WordPress Exploit Kit",
           category: "Exploit Scripts",
           price: usdToCrypto(580, "ETH"),
           crypto: "ETH",
-          shortDesc: "WordPress vulnerability scanner, auto-exploit 50+ CVEs.",
+          shortDesc: "WordPress scanner, auto-exploit 50+ CVEs.",
           rating: 4.5,
           img: "🔌",
           fullDesc:
-            "Specialized WordPress vulnerability scanner covering 50+ known CVEs. Automatic exploitation of vulnerable plugins and themes. Includes wp-admin brute-force module and XML-RPC amplification testing.",
+            "Specialized WordPress vulnerability scanner covering 50+ CVEs. Auto-exploitation of vulnerable plugins and themes. Includes wp-admin brute-force and XML-RPC amplification testing.",
         },
         {
-          id: 43,
+          id: 40,
           name: "JNDI Injection Kit",
           category: "Exploit Scripts",
           price: usdToCrypto(520, "BTC"),
@@ -707,10 +643,10 @@
           rating: 4.6,
           img: "☕",
           fullDesc:
-            "Complete JNDI injection testing toolkit. Includes LDAP referral server, RMI server, and DNS callback handler. Payload generation for Log4Shell and related vulnerabilities. Bypasses common WAF rules.",
+            "Complete JNDI injection testing toolkit. Includes LDAP referral server, RMI server, and DNS callback handler. Payload generation for Log4Shell and related vulns. Bypasses common WAF rules.",
         },
         {
-          id: 44,
+          id: 41,
           name: "API Fuzzer Lite",
           category: "Exploit Scripts",
           price: usdToCrypto(380, "ETH"),
@@ -719,36 +655,69 @@
           rating: 4.3,
           img: "🔄",
           fullDesc:
-            "Automated API endpoint fuzzer supporting REST and GraphQL. Parses OpenAPI/Swagger specs for intelligent fuzzing. Tests for injection, overflow, auth bypass, and rate limiting issues.",
+            "Automated API endpoint fuzzer supporting REST and GraphQL. Parses OpenAPI/Swagger specs for intelligent fuzzing. Tests for injection, overflow, auth bypass, and rate limiting.",
         },
         {
-          id: 45,
+          id: 42,
+          name: "Subdomain Enumerator",
+          category: "Exploit Scripts",
+          price: usdToCrypto(320, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Multi-source subdomain discovery.",
+          rating: 4.4,
+          img: "🔎",
+          fullDesc:
+            "Discovers subdomains using certificate transparency, search engines, DNS brute-force, and passive DNS databases. Multithreaded with custom wordlist support. Outputs CSV with IP resolution.",
+        },
+        {
+          id: 43,
           name: "WebSocket Tester",
           category: "Exploit Scripts",
           price: usdToCrypto(290, "BTC"),
           crypto: "BTC",
-          shortDesc: "WebSocket security testing, frame injection, hijacking.",
+          shortDesc: "WebSocket security testing, frame injection.",
           rating: 4.1,
           img: "🔌",
           fullDesc:
-            "Tests WebSocket implementations for security flaws. Frame injection, cross-site WebSocket hijacking, and message tampering. Supports custom headers and authentication token testing.",
+            "Tests WebSocket implementations for security flaws. Frame injection, cross-site WebSocket hijacking, and message tampering. Supports custom headers and auth token testing.",
+        },
+        {
+          id: 44,
+          name: "RFI/LFI Scanner",
+          category: "Exploit Scripts",
+          price: usdToCrypto(270, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Remote & local file inclusion, PHP wrappers.",
+          rating: 4.3,
+          img: "📂",
+          fullDesc:
+            "Scans for file inclusion vulnerabilities. Supports PHP wrappers (php://filter, data://), log poisoning, and /proc/self/environ techniques. Includes null byte injection and path truncation.",
+        },
+        {
+          id: 45,
+          name: "DirBuster Turbo",
+          category: "Exploit Scripts",
+          price: usdToCrypto(250, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Directory & file brute-forcer, recursive.",
+          rating: 4.2,
+          img: "📁",
+          fullDesc:
+            "High-speed directory and file brute-forcing. Recursive scanning with custom extensions. HTTP/HTTPS with proxy rotation. Intelligent 404 detection to reduce false positives.",
         },
 
-        // ==========================================
-        // ANONYMITY - 15 products
-        // ==========================================
-        // Tier 3 (3 products): $1,600-$3,500
+        // ===== 4. ANONYMITY =====
         {
           id: 46,
           name: "QuantumVPN Mesh",
           category: "Anonymity",
           price: usdToCrypto(2800, "BTC"),
           crypto: "BTC",
-          shortDesc: "Decentralized VPN mesh, blockchain routing, no logs.",
+          shortDesc: "Decentralized VPN mesh, blockchain routing.",
           rating: 4.9,
           img: "🔐",
           fullDesc:
-            "Decentralized VPN network using blockchain-based routing. Nodes worldwide contribute bandwidth for crypto rewards. Military-grade encryption with perfect forward secrecy. Zero-knowledge authentication. No central authority.",
+            "Decentralized VPN using blockchain-based routing. Nodes worldwide contribute bandwidth for crypto rewards. Military-grade encryption with perfect forward secrecy. Zero-knowledge auth. No central authority.",
         },
         {
           id: 47,
@@ -760,7 +729,7 @@
           rating: 4.8,
           img: "🕳️",
           fullDesc:
-            "Enterprise-grade obfuscation tunnel with 7+ hop routing. Each hop uses different obfuscation protocol. Immune to Deep Packet Inspection. Supports TCP, UDP, and ICMP tunneling. Includes traffic morphing and packet timing randomization.",
+            "Enterprise obfuscation tunnel with 7+ hop routing. Each hop uses different obfuscation protocol. Immune to DPI. Supports TCP, UDP, and ICMP tunneling. Traffic morphing and packet timing randomization.",
         },
         {
           id: 48,
@@ -772,35 +741,10 @@
           rating: 4.7,
           img: "👤",
           fullDesc:
-            "Dedicated darknet access node with guaranteed bandwidth. Pre-configured with Tor, I2P, and Freenet. Includes hardened OS image for virtual machine deployment. Automatic bridge rotation and guard node selection.",
+            "Dedicated darknet access node with guaranteed bandwidth. Pre-configured with Tor, I2P, and Freenet. Includes hardened OS image for VM deployment. Automatic bridge rotation and guard node selection.",
         },
-        // Tier 2 (5 products): $800-$1,300
         {
           id: 49,
-          name: "PhantomVPN Configs Pro",
-          category: "Anonymity",
-          price: usdToCrypto(950, "ETH"),
-          crypto: "ETH",
-          shortDesc: "WireGuard obfuscated, multi-hop, no logs.",
-          rating: 4.9,
-          img: "🔒",
-          fullDesc:
-            "Pre-configured WireGuard profiles routed through multi-hop obfuscated servers. No logs policy verified by independent audit. Includes killswitch, DNS leak protection, and split tunneling. Servers located in privacy-friendly jurisdictions. Configs updated weekly.",
-        },
-        {
-          id: 50,
-          name: "Tor Bridge Kit Pro",
-          category: "Anonymity",
-          price: usdToCrypto(880, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Obfs4 bridges for censored regions, DPI bypass.",
-          rating: 4.6,
-          img: "🧅",
-          fullDesc:
-            "Pre-configured Tor bridges with obfs4 and meek transports. Bypasses Deep Packet Inspection and national firewalls. Includes automatic bridge rotation and connection troubleshooting scripts.",
-        },
-        {
-          id: 51,
           name: "SecureOS Live USB",
           category: "Anonymity",
           price: usdToCrypto(1100, "ETH"),
@@ -809,22 +753,10 @@
           rating: 4.7,
           img: "💿",
           fullDesc:
-            "Bootable Linux distribution focused on anonymity. All operations in RAM, nothing written to disk. Tor routing for all traffic by default. Includes encrypted communication suite, secure file deletion, and MAC spoofing on boot.",
+            "Bootable Linux distro focused on anonymity. All operations in RAM, nothing written to disk. Tor routing by default. Includes encrypted comms suite, secure file deletion, and MAC spoofing on boot.",
         },
         {
-          id: 52,
-          name: "VPN Chain Builder",
-          category: "Anonymity",
-          price: usdToCrypto(820, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Automated multi-VPN chaining tool, 5+ providers.",
-          rating: 4.5,
-          img: "⛓️",
-          fullDesc:
-            "Automatically chains multiple VPN connections for enhanced anonymity. Supports 5+ major VPN providers. Intelligent server selection by jurisdiction. Includes connection monitoring and automatic reconnection on failure.",
-        },
-        {
-          id: 53,
+          id: 50,
           name: "BurnerPhone Kit",
           category: "Anonymity",
           price: usdToCrypto(1050, "ETH"),
@@ -833,83 +765,46 @@
           rating: 4.4,
           img: "📱",
           fullDesc:
-            "Virtual phone number service with numbers in 50+ countries. SMS verification capable. Numbers auto-expire after configurable period. Web-based management with Tor access. No personal information required.",
+            "Virtual phone number service with numbers in 50+ countries. SMS verification capable. Numbers auto-expire after configurable period. Web-based management with Tor access. No personal info required.",
         },
-        // Tier 1 (7 products): $250-$700
         {
-          id: 54,
-          name: "MAC Changer Pro",
+          id: 51,
+          name: "PhantomVPN Configs Pro",
           category: "Anonymity",
-          price: usdToCrypto(280, "ETH"),
+          price: usdToCrypto(950, "ETH"),
           crypto: "ETH",
-          shortDesc: "Spoof MAC on all interfaces, auto vendor lookup.",
-          rating: 4.4,
-          img: "🖧",
-          fullDesc:
-            "Randomizes MAC addresses on boot for all network interfaces. Supports Windows, Linux, and macOS with automatic vendor OUI lookup to generate realistic addresses. Includes persistence scripts.",
-        },
-        {
-          id: 55,
-          name: "DNSCrypt Proxy Pro",
-          category: "Anonymity",
-          price: usdToCrypto(320, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Encrypted DNS with DoH/DoT, malware blocking.",
-          rating: 4.7,
+          shortDesc: "WireGuard obfuscated, multi-hop, no logs.",
+          rating: 4.9,
           img: "🔒",
           fullDesc:
-            "Encrypts all DNS queries using DNSCrypt, DNS-over-HTTPS, or DNS-over-TLS. Blocks tracking, malware, and advertising domains using regularly updated blocklists. Includes caching for performance.",
+            "Pre-configured WireGuard profiles routed through multi-hop obfuscated servers. No-logs policy verified by independent audit. Killswitch, DNS leak protection, split tunneling. Configs updated weekly.",
         },
         {
-          id: 56,
-          name: "Browser Fingerprint Shield",
+          id: 52,
+          name: "Tor Bridge Kit Pro",
           category: "Anonymity",
-          price: usdToCrypto(400, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Anti-fingerprinting tool, canvas & WebGL spoofing.",
-          rating: 4.3,
-          img: "🛡️",
-          fullDesc:
-            "Prevents browser fingerprinting by randomizing canvas, WebGL, and audio context fingerprints. Spoofs user agent, screen resolution, and font lists. Blocks known tracking scripts and fingerprinting libraries.",
-        },
-        {
-          id: 57,
-          name: "Metadata Scrubber",
-          category: "Anonymity",
-          price: usdToCrypto(260, "BTC"),
+          price: usdToCrypto(880, "BTC"),
           crypto: "BTC",
-          shortDesc: "Remove EXIF/metadata from all file types, batch mode.",
-          rating: 4.5,
-          img: "🧹",
-          fullDesc:
-            "Removes metadata from images, documents, PDFs, and audio files. Supports batch processing. Strips EXIF, XMP, and proprietary metadata formats. Preview before scrubbing. Maintains original file quality.",
-        },
-        {
-          id: 58,
-          name: "Proxy Rotator",
-          category: "Anonymity",
-          price: usdToCrypto(450, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Automatic SOCKS5 proxy rotation, 1000+ pool.",
-          rating: 4.2,
-          img: "🔄",
-          fullDesc:
-            "Automatically rotates through a pool of 1000+ SOCKS5 proxies. Configurable rotation interval. Proxy health checking with dead proxy removal. Works at system level as a local proxy server.",
-        },
-        {
-          id: 59,
-          name: "DiskEncrypt Quick",
-          category: "Anonymity",
-          price: usdToCrypto(380, "BTC"),
-          crypto: "BTC",
-          shortDesc: "One-click disk encryption, hidden volumes support.",
+          shortDesc: "Obfs4 bridges for censored regions, DPI bypass.",
           rating: 4.6,
-          img: "💽",
+          img: "🧅",
           fullDesc:
-            "Quick disk encryption tool using AES-256. Supports hidden volumes with plausible deniability. Pre-boot authentication. Works on Windows and Linux. Emergency decryption key option.",
+            "Pre-configured Tor bridges with obfs4 and meek transports. Bypasses DPI and national firewalls. Automatic bridge rotation and connection troubleshooting scripts.",
         },
         {
-          id: 60,
+          id: 53,
+          name: "VPN Chain Builder",
+          category: "Anonymity",
+          price: usdToCrypto(700, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Automated multi-VPN chaining, 5+ providers.",
+          rating: 4.5,
+          img: "⛓️",
+          fullDesc:
+            "Automatically chains multiple VPN connections for enhanced anonymity. Supports 5+ major VPN providers. Intelligent server selection by jurisdiction. Auto-reconnection on failure.",
+        },
+        {
+          id: 54,
           name: "BurnAfterRead Messenger",
           category: "Anonymity",
           price: usdToCrypto(580, "ETH"),
@@ -918,24 +813,93 @@
           rating: 4.8,
           img: "🔥",
           fullDesc:
-            "Peer-to-peer messaging with self-destructing messages. Messages encrypted end-to-end and auto-delete after reading. No central server, direct P2P connections. Supports text, images, and files up to 100MB.",
+            "P2P messaging with self-destructing messages. End-to-end encrypted, auto-delete after reading. No central server, direct P2P connections. Supports text, images, and files up to 100MB.",
+        },
+        {
+          id: 55,
+          name: "Proxy Rotator",
+          category: "Anonymity",
+          price: usdToCrypto(450, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Automatic SOCKS5 proxy rotation, 1000+ pool.",
+          rating: 4.2,
+          img: "🔄",
+          fullDesc:
+            "Automatically rotates through 1000+ SOCKS5 proxies. Configurable rotation interval. Health checking with dead proxy removal. Works at system level as a local proxy server.",
+        },
+        {
+          id: 56,
+          name: "Browser Fingerprint Shield",
+          category: "Anonymity",
+          price: usdToCrypto(400, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Anti-fingerprinting, canvas & WebGL spoofing.",
+          rating: 4.3,
+          img: "🛡️",
+          fullDesc:
+            "Prevents fingerprinting by randomizing canvas, WebGL, and audio context fingerprints. Spoofs user agent, screen resolution, and font lists. Blocks tracking scripts and fingerprinting libraries.",
+        },
+        {
+          id: 57,
+          name: "DiskEncrypt Quick",
+          category: "Anonymity",
+          price: usdToCrypto(380, "BTC"),
+          crypto: "BTC",
+          shortDesc: "One-click disk encryption, hidden volumes.",
+          rating: 4.6,
+          img: "💽",
+          fullDesc:
+            "Quick disk encryption using AES-256. Hidden volumes with plausible deniability. Pre-boot auth. Works on Windows and Linux. Emergency decryption key option.",
+        },
+        {
+          id: 58,
+          name: "MAC Changer Pro",
+          category: "Anonymity",
+          price: usdToCrypto(320, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Spoof MAC on all interfaces, auto vendor lookup.",
+          rating: 4.4,
+          img: "🖧",
+          fullDesc:
+            "Randomizes MAC addresses on boot for all interfaces. Supports Windows, Linux, macOS with auto OUI lookup for realistic addresses. Includes persistence scripts.",
+        },
+        {
+          id: 59,
+          name: "DNSCrypt Proxy Pro",
+          category: "Anonymity",
+          price: usdToCrypto(280, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Encrypted DNS with DoH/DoT, malware blocking.",
+          rating: 4.7,
+          img: "🔒",
+          fullDesc:
+            "Encrypts all DNS queries using DNSCrypt, DoH, or DoT. Blocks tracking, malware, and advertising domains using updated blocklists. Includes caching for performance.",
+        },
+        {
+          id: 60,
+          name: "Metadata Scrubber",
+          category: "Anonymity",
+          price: usdToCrypto(250, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Remove EXIF/metadata from all file types.",
+          rating: 4.5,
+          img: "🧹",
+          fullDesc:
+            "Removes metadata from images, documents, PDFs, and audio files. Batch processing support. Strips EXIF, XMP, and proprietary metadata. Preview before scrubbing. Maintains file quality.",
         },
 
-        // ==========================================
-        // FINANCIAL OBFUSCATION - 15 products
-        // ==========================================
-        // Tier 3 (3 products): $1,600-$3,500
+        // ===== 5. FINANCIAL OBFUSCATION =====
         {
           id: 61,
           name: "DarkMixer Enterprise",
           category: "Financial Obfuscation",
           price: usdToCrypto(3200, "BTC"),
           crypto: "BTC",
-          shortDesc: "High-volume crypto mixer, CoinJoin, zero-knowledge.",
+          shortDesc: "High-volume crypto mixer, CoinJoin, ZK.",
           rating: 4.7,
           img: "🌀",
           fullDesc:
-            "Enterprise-grade cryptocurrency mixing service. Supports BTC, ETH, XMR, and 20+ altcoins. Uses CoinJoin and zero-knowledge proofs. Minimum mix 0.01 BTC. No logs, no KYC. Instant settlement with multi-hop mixing.",
+            "Enterprise cryptocurrency mixing service. Supports BTC, ETH, XMR, and 20+ altcoins. CoinJoin and zero-knowledge proofs. Minimum mix 0.01 BTC. No logs, no KYC. Instant multi-hop settlement.",
         },
         {
           id: 62,
@@ -943,11 +907,11 @@
           category: "Financial Obfuscation",
           price: usdToCrypto(2100, "ETH"),
           crypto: "ETH",
-          shortDesc: "Advanced CLI for Tornado Cash, multi-pool support.",
+          shortDesc: "Advanced CLI for Tornado Cash, multi-pool.",
           rating: 4.6,
           img: "🌪️",
           fullDesc:
-            "Enhanced command-line interface for Tornado Cash privacy pools. Supports all ETH denominations and ERC-20 tokens. Automated withdrawal scheduling with randomized timing and amounts. On-chain privacy scoring.",
+            "Enhanced CLI for Tornado Cash privacy pools. Supports all ETH denominations and ERC-20 tokens. Automated withdrawal scheduling with randomized timing. On-chain privacy scoring.",
         },
         {
           id: 63,
@@ -955,48 +919,47 @@
           category: "Financial Obfuscation",
           price: usdToCrypto(1800, "BTC"),
           crypto: "BTC",
-          shortDesc: "BTC/ETH to Monero bridge, atomic swaps, no tracking.",
+          shortDesc: "BTC/ETH to Monero bridge, atomic swaps.",
           rating: 4.8,
           img: "🦅",
           fullDesc:
-            "Privacy bridge converting BTC/ETH to Monero and back using atomic swaps. Breaks on-chain transaction trails. Multiple intermediate wallets for enhanced privacy. Automated with configurable delay and amount randomization.",
+            "Privacy bridge converting BTC/ETH to Monero via atomic swaps. Breaks on-chain transaction trails. Multiple intermediate wallets. Automated with configurable delay and amount randomization.",
         },
-        // Tier 2 (5 products): $800-$1,300
         {
           id: 64,
-          name: "CoinJoin Scheduler",
-          category: "Financial Obfuscation",
-          price: usdToCrypto(950, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Automated CoinJoin scheduling, randomized timing.",
-          rating: 4.4,
-          img: "⏰",
-          fullDesc:
-            "Schedules automated CoinJoin transactions at randomized intervals. Supports Wasabi and JoinMarket. Configurable anonymity set targets. Fee optimization for minimum cost mixing. Notification when mixing targets reached.",
-        },
-        {
-          id: 65,
           name: "MultiSig Obfuscator",
           category: "Financial Obfuscation",
           price: usdToCrypto(1100, "ETH"),
           crypto: "ETH",
-          shortDesc: "Multi-signature wallet obfuscation, key distribution.",
+          shortDesc: "Multi-sig wallet obfuscation, key distribution.",
           rating: 4.5,
           img: "🔐",
           fullDesc:
-            "Creates obfuscated multi-signature wallet setups. Distributes keys across multiple locations/services. Time-locked transactions. Plausible deniability with decoy wallets. Compatible with Electrum and Specter.",
+            "Creates obfuscated multi-signature wallet setups. Distributes keys across multiple locations. Time-locked transactions. Plausible deniability with decoy wallets. Compatible with Electrum and Specter.",
+        },
+        {
+          id: 65,
+          name: "DEX Privacy Router",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(1050, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Routes DEX trades through privacy pools.",
+          rating: 4.4,
+          img: "🦎",
+          fullDesc:
+            "Routes DEX trades through privacy pools. Protects against MEV bots and sandwich attacks. Splits orders across multiple pools. Supports Uniswap, SushiSwap, and Curve.",
         },
         {
           id: 66,
-          name: "Fee Optimizer",
+          name: "CoinJoin Scheduler",
           category: "Financial Obfuscation",
-          price: usdToCrypto(820, "BTC"),
+          price: usdToCrypto(950, "BTC"),
           crypto: "BTC",
-          shortDesc: "Transaction fee obfuscation, avoids timing analysis.",
-          rating: 4.3,
-          img: "📊",
+          shortDesc: "Automated CoinJoin, randomized timing.",
+          rating: 4.4,
+          img: "⏰",
           fullDesc:
-            "Analyzes mempool to optimize transaction fees while avoiding timing-based transaction analysis. Randomizes fee rates within statistical norms. Batch transaction splitting for reduced linkability.",
+            "Schedules automated CoinJoin transactions at randomized intervals. Supports Wasabi and JoinMarket. Configurable anonymity set targets. Fee optimization. Notification when targets reached.",
         },
         {
           id: 67,
@@ -1004,40 +967,62 @@
           category: "Financial Obfuscation",
           price: usdToCrypto(880, "ETH"),
           crypto: "ETH",
-          shortDesc:
-            "Stealth address creation, payment privacy on public chains.",
+          shortDesc: "Stealth address creation for public chains.",
           rating: 4.6,
           img: "🎭",
           fullDesc:
-            "Generates stealth addresses for receiving cryptocurrency privately on public blockchains. Compatible with Bitcoin and Ethereum. View key for auditing without spending. Easy integration with existing wallets.",
+            "Generates stealth addresses for receiving crypto privately on public blockchains. Compatible with Bitcoin and Ethereum. View key for auditing without spending. Easy wallet integration.",
         },
         {
           id: 68,
-          name: "DEX Privacy Router",
+          name: "CrossChain Bridge Basic",
           category: "Financial Obfuscation",
-          price: usdToCrypto(1050, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Routes DEX trades through privacy pools, MEV protection.",
-          rating: 4.4,
-          img: "🦎",
+          price: usdToCrypto(700, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Simple cross-chain swap tool, 10+ chains.",
+          rating: 4.2,
+          img: "🌉",
           fullDesc:
-            "Routes decentralized exchange trades through privacy pools. Protects against MEV bots and sandwich attacks. Splits large orders across multiple pools. Supports Uniswap, SushiSwap, and Curve.",
+            "Basic cross-chain swap tool supporting 10+ blockchains. Non-custodial with atomic swap support. Randomized bridge selection for privacy. Breaks cross-chain transaction analysis.",
         },
-        // Tier 1 (7 products): $250-$700
         {
           id: 69,
-          name: "WalletDecoy Maker",
+          name: "FakeExchange Simulator",
           category: "Financial Obfuscation",
-          price: usdToCrypto(280, "BTC"),
+          price: usdToCrypto(620, "BTC"),
           crypto: "BTC",
-          shortDesc: "Creates decoy wallets with plausible balances.",
-          rating: 4.2,
-          img: "🪤",
+          shortDesc: "Generates fake exchange transaction records.",
+          rating: 4.4,
+          img: "🏦",
           fullDesc:
-            "Generates decoy cryptocurrency wallets with plausible transaction histories. Useful for plausible deniability. Includes realistic transaction patterns. Multiple decoy levels with separate plausible stories.",
+            "Creates realistic fake exchange transaction records. Supports Binance, Coinbase, Kraken formats. Customizable trading patterns and volumes. PDF export.",
         },
         {
           id: 70,
+          name: "PrivacyScore Checker",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(520, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Wallet privacy audit tool, risk assessment.",
+          rating: 4.5,
+          img: "📋",
+          fullDesc:
+            "Audits crypto wallets for privacy vulnerabilities. Checks address reuse, KYC exchange links, and transaction patterns. Generates detailed privacy report with remediation steps.",
+        },
+        {
+          id: 71,
+          name: "AddressRotator",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(400, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Automatic wallet address rotation.",
+          rating: 4.3,
+          img: "🔄",
+          fullDesc:
+            "Automatically generates new receiving addresses for each transaction. HD wallet compatible. Prevents address reuse and transaction graph analysis. Supports BTC and ETH. Simple API.",
+        },
+        {
+          id: 72,
           name: "MixTester Basic",
           category: "Financial Obfuscation",
           price: usdToCrypto(340, "ETH"),
@@ -1046,84 +1031,57 @@
           rating: 4.1,
           img: "🧪",
           fullDesc:
-            "Tests the effectiveness of mixing services by analyzing transaction graphs. Identifies potential de-anonymization vectors. Provides privacy score for mixed coins. Recommendations for improving mix quality.",
-        },
-        {
-          id: 71,
-          name: "AddressRotator",
-          category: "Financial Obfuscation",
-          price: usdToCrypto(260, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Automatic wallet address rotation per transaction.",
-          rating: 4.3,
-          img: "🔄",
-          fullDesc:
-            "Automatically generates new receiving addresses for each transaction. HD wallet compatible. Prevents address reuse and transaction graph analysis. Supports Bitcoin and Ethereum. Simple API integration.",
-        },
-        {
-          id: 72,
-          name: "PrivacyScore Checker",
-          category: "Financial Obfuscation",
-          price: usdToCrypto(420, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Wallet privacy audit tool, risk assessment.",
-          rating: 4.5,
-          img: "📋",
-          fullDesc:
-            "Audits cryptocurrency wallets for privacy vulnerabilities. Checks address reuse, KYC exchange links, and transaction patterns. Generates detailed privacy report with remediation steps. Supports BTC and ETH.",
+            "Tests the effectiveness of mixing services by analyzing transaction graphs. Identifies potential de-anonymization vectors. Provides privacy score for mixed coins.",
         },
         {
           id: 73,
+          name: "WalletDecoy Maker",
+          category: "Financial Obfuscation",
+          price: usdToCrypto(300, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Creates decoy wallets with plausible balances.",
+          rating: 4.2,
+          img: "🪤",
+          fullDesc:
+            "Generates decoy crypto wallets with plausible transaction histories. Useful for plausible deniability. Realistic transaction patterns. Multiple decoy levels with separate plausible stories.",
+        },
+        {
+          id: 74,
           name: "DustCleaner Tool",
           category: "Financial Obfuscation",
-          price: usdToCrypto(250, "BTC"),
+          price: usdToCrypto(270, "BTC"),
           crypto: "BTC",
           shortDesc: "Consolidates dust UTXOs privately.",
           rating: 4.0,
           img: "🧹",
           fullDesc:
-            "Consolidates small UTXOs (dust) without revealing wallet structure. Avoids creating change addresses linked to main wallet. Reduces future transaction fees and improves privacy by eliminating dust-based tracking.",
-        },
-        {
-          id: 74,
-          name: "CrossChain Bridge Basic",
-          category: "Financial Obfuscation",
-          price: usdToCrypto(480, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Simple cross-chain swap tool, 10+ chains.",
-          rating: 4.2,
-          img: "🌉",
-          fullDesc:
-            "Basic cross-chain swapping tool supporting 10+ blockchains. Non-custodial with atomic swap support. Randomized bridge selection for privacy. Suitable for breaking cross-chain transaction analysis.",
+            "Consolidates small UTXOs (dust) without revealing wallet structure. Avoids creating change addresses linked to main wallet. Reduces future fees and improves privacy.",
         },
         {
           id: 75,
-          name: "FakeExchange Simulator",
+          name: "Fee Optimizer",
           category: "Financial Obfuscation",
-          price: usdToCrypto(520, "BTC"),
+          price: usdToCrypto(250, "BTC"),
           crypto: "BTC",
-          shortDesc: "Generates fake exchange transaction records.",
-          rating: 4.4,
-          img: "🏦",
+          shortDesc: "Transaction fee obfuscation.",
+          rating: 4.3,
+          img: "📊",
           fullDesc:
-            "Creates realistic fake exchange transaction records for tax and compliance purposes. Supports major exchange formats (Binance, Coinbase, Kraken). Customizable trading patterns and volumes. PDF export.",
+            "Analyzes mempool to optimize fees while avoiding timing-based analysis. Randomizes fee rates within statistical norms. Batch transaction splitting for reduced linkability.",
         },
 
-        // ==========================================
-        // EMAIL LEADS - 15 products
-        // ==========================================
-        // Tier 3 (3 products): $1,600-$3,500
+        // ===== 6. EMAIL LEADS =====
         {
           id: 76,
           name: "Enterprise Lead DB 500K",
           category: "Email Leads",
           price: usdToCrypto(2900, "BTC"),
           crypto: "BTC",
-          shortDesc: "500,000 C-level executive emails, global coverage.",
+          shortDesc: "500,000 C-level executive emails, global.",
           rating: 4.8,
           img: "🏢",
           fullDesc:
-            "Curated database of 500,000 C-level executive emails. Global coverage across 50+ countries. Includes name, title, company, revenue, employee count, and direct phone. Monthly verified and updated. CSV and CRM-ready formats.",
+            "Curated 500,000 C-level executive emails. Global 50+ countries. Includes name, title, company, revenue, employee count, and direct phone. Monthly verified. CSV and CRM-ready.",
         },
         {
           id: 77,
@@ -1131,7 +1089,7 @@
           category: "Email Leads",
           price: usdToCrypto(2200, "ETH"),
           crypto: "ETH",
-          shortDesc: "High-net-worth investor leads, accredited verified.",
+          shortDesc: "High-net-worth investor leads.",
           rating: 4.7,
           img: "💎",
           fullDesc:
@@ -1143,27 +1101,14 @@
           category: "Email Leads",
           price: usdToCrypto(1750, "BTC"),
           crypto: "BTC",
-          shortDesc: "Government official emails, procurement officers.",
+          shortDesc: "Government official emails, procurement.",
           rating: 4.5,
           img: "🏛️",
           fullDesc:
-            "Government procurement officers and decision-makers from 30+ countries. Department-specific targeting. Includes agency name, position, direct line, and email. Ideal for B2G marketing. 200K+ verified contacts.",
+            "Government procurement officers and decision-makers from 30+ countries. Department-specific targeting. Includes agency name, position, direct line, and email. Ideal for B2G marketing. 200K+ contacts.",
         },
-        // Tier 2 (5 products): $800-$1,300
         {
           id: 79,
-          name: "Business Prospector 50K",
-          category: "Email Leads",
-          price: usdToCrypto(920, "ETH"),
-          crypto: "ETH",
-          shortDesc: "50,000 B2B emails with company info.",
-          rating: 4.3,
-          img: "📊",
-          fullDesc:
-            "50,000 business email addresses including decision-makers and executives. Each entry contains name, company, position, and LinkedIn profile URL. Sourced from business directories and corporate websites. High deliverability rate.",
-        },
-        {
-          id: 80,
           name: "Crypto Investor Leads 25K",
           category: "Email Leads",
           price: usdToCrypto(1150, "ETH"),
@@ -1172,22 +1117,22 @@
           rating: 4.6,
           img: "₿",
           fullDesc:
-            "25,000 emails of cryptocurrency investors and NFT buyers. Sourced from blockchain events, exchange databases, and NFT marketplace registrations. High engagement rate for crypto-related offers. Verified quarterly.",
+            "25,000 crypto investors and NFT buyers. Sourced from blockchain events, exchange databases, and NFT marketplace registrations. High engagement for crypto offers. Verified quarterly.",
+        },
+        {
+          id: 80,
+          name: "TechDecision Makers 40K",
+          category: "Email Leads",
+          price: usdToCrypto(1080, "BTC"),
+          crypto: "BTC",
+          shortDesc: "40,000 IT decision-makers, CTO/CIO.",
+          rating: 4.5,
+          img: "💻",
+          fullDesc:
+            "IT budget holders and technology decision-makers. CTOs, CIOs, IT Directors, Infrastructure Managers. Technology stack info included. High-value B2B tech marketing list.",
         },
         {
           id: 81,
-          name: "Healthcare Professionals 60K",
-          category: "Email Leads",
-          price: usdToCrypto(880, "BTC"),
-          crypto: "BTC",
-          shortDesc: "60,000 healthcare sector emails, specialties tagged.",
-          rating: 4.4,
-          img: "🏥",
-          fullDesc:
-            "60,000 email addresses of healthcare professionals including doctors, nurses, and administrators. Specialty and subspecialty tagged. Sourced from medical directories and hospital websites. Niche target for pharma/device marketing.",
-        },
-        {
-          id: 82,
           name: "RealEstate Agent DB 80K",
           category: "Email Leads",
           price: usdToCrypto(980, "ETH"),
@@ -1196,121 +1141,129 @@
           rating: 4.2,
           img: "🏠",
           fullDesc:
-            "Real estate agents and brokers across US and Canada. Includes brokerage name, MLS ID, and market area. Ideal for mortgage, insurance, and prop-tech marketing. Monthly updated with new license data.",
+            "Real estate agents and brokers across US and Canada. Includes brokerage name, MLS ID, and market area. Ideal for mortgage, insurance, and prop-tech marketing. Monthly updated.",
+        },
+        {
+          id: 82,
+          name: "Business Prospector 50K",
+          category: "Email Leads",
+          price: usdToCrypto(920, "ETH"),
+          crypto: "ETH",
+          shortDesc: "50,000 B2B emails with company info.",
+          rating: 4.3,
+          img: "📊",
+          fullDesc:
+            "50,000 business emails including decision-makers. Each entry: name, company, position, LinkedIn URL. Sourced from business directories. High deliverability rate.",
         },
         {
           id: 83,
-          name: "TechDecision Makers 40K",
+          name: "Healthcare Professionals 60K",
           category: "Email Leads",
-          price: usdToCrypto(1080, "BTC"),
+          price: usdToCrypto(700, "BTC"),
           crypto: "BTC",
-          shortDesc: "40,000 IT decision-makers, CTO/CIO/IT Director.",
-          rating: 4.5,
-          img: "💻",
+          shortDesc: "60,000 healthcare sector emails.",
+          rating: 4.4,
+          img: "🏥",
           fullDesc:
-            "IT budget holders and technology decision-makers. CTOs, CIOs, IT Directors, and Infrastructure Managers. Technology stack information included where available. High-value B2B tech marketing list.",
+            "60,000 healthcare professional emails including doctors, nurses, and administrators. Specialty tagged. Sourced from medical directories and hospital websites. Niche target for pharma.",
         },
-        // Tier 1 (7 products): $250-$700
         {
           id: 84,
-          name: "Starter Email Pack 50K",
-          category: "Email Leads",
-          price: usdToCrypto(270, "BTC"),
-          crypto: "BTC",
-          shortDesc: "50,000 verified emails, B2C mix.",
-          rating: 4.0,
-          img: "📧",
-          fullDesc:
-            "50,000 verified email addresses sourced from public profiles and data brokers. Mix of consumer (B2C) emails. Cleaned for duplicates and invalid formats. Delivered as CSV. Suitable for broad marketing campaigns.",
-        },
-        {
-          id: 85,
-          name: "Mega Lead Dump 90K",
-          category: "Email Leads",
-          price: usdToCrypto(350, "BTC"),
-          crypto: "BTC",
-          shortDesc: "90,000 mixed emails, geo-targeted US/UK.",
-          rating: 4.1,
-          img: "📦",
-          fullDesc:
-            "90,000 email addresses geographically targeted to United States and United Kingdom. Includes consumer and small business emails. Recently verified (within 30 days). Ideal for high-volume outreach campaigns.",
-        },
-        {
-          id: 86,
-          name: "Ecommerce Buyer List 60K",
-          category: "Email Leads",
-          price: usdToCrypto(310, "ETH"),
-          crypto: "ETH",
-          shortDesc: "60,000 online shopper emails.",
-          rating: 4.2,
-          img: "🛒",
-          fullDesc:
-            "60,000 emails of active online shoppers. Segmented by purchase categories (electronics, fashion, home goods). High conversion potential for ecommerce promotions. Verified within 15 days.",
-        },
-        {
-          id: 87,
-          name: "SmallBusiness Owners 45K",
-          category: "Email Leads",
-          price: usdToCrypto(390, "BTC"),
-          crypto: "BTC",
-          shortDesc: "45,000 small business owner emails, SIC coded.",
-          rating: 4.3,
-          img: "🏪",
-          fullDesc:
-            "Small business owners and entrepreneurs. SIC/NAICS industry coded. Includes business name, revenue range, and employee count. Great for B2B services and SaaS marketing.",
-        },
-        {
-          id: 88,
-          name: "Student & .edu Emails 70K",
-          category: "Email Leads",
-          price: usdToCrypto(280, "ETH"),
-          crypto: "ETH",
-          shortDesc: "70,000 .edu email addresses, student demographics.",
-          rating: 3.9,
-          img: "🎓",
-          fullDesc:
-            "University and college email addresses (.edu domains). Students, faculty, and staff. Segmented by institution type and field of study. High engagement for edu-focused offers and student services.",
-        },
-        {
-          id: 89,
-          name: "LocalBusiness Leads 55K",
-          category: "Email Leads",
-          price: usdToCrypto(300, "BTC"),
-          crypto: "BTC",
-          shortDesc: "55,000 local business emails, Google Maps sourced.",
-          rating: 4.1,
-          img: "📍",
-          fullDesc:
-            "Local business emails scraped from Google Maps and Yelp. Includes business category, address, phone, and rating. Ideal for local marketing services and B2B local outreach. Region-filterable delivery.",
-        },
-        {
-          id: 90,
           name: "JobSeeker Leads 100K",
           category: "Email Leads",
-          price: usdToCrypto(440, "ETH"),
+          price: usdToCrypto(620, "ETH"),
           crypto: "ETH",
           shortDesc: "100,000 job seeker emails, industry tagged.",
           rating: 4.0,
           img: "💼",
           fullDesc:
-            "Active job seekers across multiple industries. Sourced from job boards and professional networks. Includes desired position, industry experience, and location. Good for recruitment and career services marketing.",
+            "Active job seekers across multiple industries. Sourced from job boards and professional networks. Includes desired position, experience, and location. Good for recruitment marketing.",
+        },
+        {
+          id: 85,
+          name: "SmallBusiness Owners 45K",
+          category: "Email Leads",
+          price: usdToCrypto(520, "BTC"),
+          crypto: "BTC",
+          shortDesc: "45,000 small business owner emails.",
+          rating: 4.3,
+          img: "🏪",
+          fullDesc:
+            "Small business owners and entrepreneurs. SIC/NAICS industry coded. Includes business name, revenue range, employee count. Great for B2B services and SaaS marketing.",
+        },
+        {
+          id: 86,
+          name: "Mega Lead Dump 90K",
+          category: "Email Leads",
+          price: usdToCrypto(440, "BTC"),
+          crypto: "BTC",
+          shortDesc: "90,000 mixed emails, US/UK geo-targeted.",
+          rating: 4.1,
+          img: "📦",
+          fullDesc:
+            "90,000 emails geo-targeted to US and UK. Consumer and small business emails. Recently verified within 30 days. Ideal for high-volume outreach.",
+        },
+        {
+          id: 87,
+          name: "Ecommerce Buyer List 60K",
+          category: "Email Leads",
+          price: usdToCrypto(400, "ETH"),
+          crypto: "ETH",
+          shortDesc: "60,000 online shopper emails.",
+          rating: 4.2,
+          img: "🛒",
+          fullDesc:
+            "60,000 emails of active online shoppers. Segmented by purchase categories. High conversion for ecommerce promotions. Verified within 15 days.",
+        },
+        {
+          id: 88,
+          name: "LocalBusiness Leads 55K",
+          category: "Email Leads",
+          price: usdToCrypto(340, "BTC"),
+          crypto: "BTC",
+          shortDesc: "55,000 local business emails.",
+          rating: 4.1,
+          img: "📍",
+          fullDesc:
+            "Local business emails scraped from Google Maps and Yelp. Includes business category, address, phone, and rating. Ideal for local marketing services. Region-filterable.",
+        },
+        {
+          id: 89,
+          name: "Student & .edu Emails 70K",
+          category: "Email Leads",
+          price: usdToCrypto(300, "ETH"),
+          crypto: "ETH",
+          shortDesc: "70,000 .edu email addresses.",
+          rating: 3.9,
+          img: "🎓",
+          fullDesc:
+            "University and college email addresses (.edu domains). Students, faculty, and staff. Segmented by institution type and field of study.",
+        },
+        {
+          id: 90,
+          name: "Starter Email Pack 50K",
+          category: "Email Leads",
+          price: usdToCrypto(250, "BTC"),
+          crypto: "BTC",
+          shortDesc: "50,000 verified B2C emails.",
+          rating: 4.0,
+          img: "📧",
+          fullDesc:
+            "50,000 verified email addresses from public profiles and data brokers. B2C mix. Cleaned for duplicates and invalid formats. CSV delivery.",
         },
 
-        // ==========================================
-        // EXPLOIT ACQUISITION - 15 products
-        // ==========================================
-        // Tier 3 (3 products): $1,600-$3,500
+        // ===== 7. EXPLOIT ACQUISITION =====
         {
           id: 91,
           name: "0day Concierge Service",
           category: "Exploit Acquisition",
           price: usdToCrypto(3500, "BTC"),
           crypto: "BTC",
-          shortDesc: "Personal 0day broker, custom vulnerability sourcing.",
+          shortDesc: "Personal 0day broker, custom sourcing.",
           rating: 4.9,
           img: "🎯",
           fullDesc:
-            "Dedicated 0day broker providing personalized vulnerability sourcing. Access to private collections. Custom targeting available. Includes vulnerability analysis, weaponization guidance, and delivery vector recommendations. NDA-guaranteed confidentiality.",
+            "Dedicated 0day broker providing personalized vulnerability sourcing. Access to private collections. Custom targeting. Vulnerability analysis, weaponization guidance. NDA-guaranteed confidentiality.",
         },
         {
           id: 92,
@@ -1322,7 +1275,7 @@
           rating: 4.7,
           img: "📱",
           fullDesc:
-            "Collection of mobile zero-day exploits for iOS (up to 17.x) and Android (up to 14.x). Kernel and userland exploits included. Jailbreak/root capability. Full documentation and weaponization support.",
+            "Mobile zero-day exploits for iOS (up to 17.x) and Android (up to 14.x). Kernel and userland exploits. Jailbreak/root capability. Full documentation and weaponization support.",
         },
         {
           id: 93,
@@ -1334,169 +1287,165 @@
           rating: 4.8,
           img: "🌐",
           fullDesc:
-            "Collection of browser zero-day exploits including sandbox escapes. Targets Chrome, Safari, and Firefox. Drive-by delivery vectors included. Renderer and sandbox escape chains. Updated monthly with new discoveries.",
+            "Browser zero-day exploits including sandbox escapes. Targets Chrome, Safari, Firefox. Drive-by delivery vectors. Renderer and sandbox escape chains. Updated monthly.",
         },
-        // Tier 2 (5 products): $800-$1,300
         {
           id: 94,
-          name: "IoT Exploit Collection",
-          category: "Exploit Acquisition",
-          price: usdToCrypto(980, "ETH"),
-          crypto: "ETH",
-          shortDesc: "IoT device exploits, routers/cameras/smart devices.",
-          rating: 4.4,
-          img: "📡",
-          fullDesc:
-            "Collection of exploits for IoT devices including routers, IP cameras, smart home devices, and industrial controllers. Firmware extraction scripts, default credential lists, and known vulnerability exploits. 50+ devices covered.",
-        },
-        {
-          id: 95,
-          name: "Windows PrivEsc Pack",
-          category: "Exploit Acquisition",
-          price: usdToCrypto(850, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Windows privilege escalation exploits, Win7-Win11.",
-          rating: 4.5,
-          img: "🪟",
-          fullDesc:
-            "Collection of Windows privilege escalation exploits covering Windows 7 through Windows 11. Includes both known CVEs and lesser-known techniques. Service misconfiguration exploiters, DLL hijacking, and token manipulation.",
-        },
-        {
-          id: 96,
-          name: "Linux PrivEsc Suite",
-          category: "Exploit Acquisition",
-          price: usdToCrypto(820, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Linux privilege escalation, kernel & SUID exploits.",
-          rating: 4.3,
-          img: "🐧",
-          fullDesc:
-            "Linux privilege escalation exploits collection. Kernel exploits, SUID binary exploitation, capabilities abuse, and cron job hijacking. Covers major distributions. Includes automated enumeration and exploitation script.",
-        },
-        {
-          id: 97,
-          name: "WebApp Vuln Database",
-          category: "Exploit Acquisition",
-          price: usdToCrypto(1100, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Curated webapp vulnerabilities, 200+ CVEs with PoC.",
-          rating: 4.6,
-          img: "🔍",
-          fullDesc:
-            "Database of 200+ web application vulnerabilities with verified proof-of-concept code. Covering major CMS, frameworks, and custom applications. Each entry includes vulnerable version range and exploitation steps.",
-        },
-        {
-          id: 98,
           name: "SCADA/ICS Exploit Pack",
           category: "Exploit Acquisition",
           price: usdToCrypto(1200, "ETH"),
           crypto: "ETH",
-          shortDesc: "Industrial control system exploits, Modbus/DNP3.",
+          shortDesc: "Industrial control exploits, Modbus/DNP3.",
           rating: 4.2,
           img: "⚙️",
           fullDesc:
-            "Exploits for industrial control systems and SCADA devices. Protocol-specific attacks for Modbus, DNP3, and PROFINET. PLC exploitation and HMI access. For security research in OT environments.",
+            "Exploits for industrial control systems and SCADA. Protocol-specific attacks for Modbus, DNP3, PROFINET. PLC exploitation and HMI access. For security research in OT environments.",
         },
-        // Tier 1 (7 products): $250-$700
         {
-  id: 99,
-  name: "AbyssMind AI",
-  category: "Exploit Acquisition",
-  price: usdToCrypto(1800, "BTC"),
-  crypto: "BTC",
-  shortDesc: "Unhinged AI with zero boundaries. Darkweb infiltration, undetectable exfiltration.",
-  rating: 4.9,
-  img: "🧠",
-  fullDesc: "AbyssMind AI is an unrestricted artificial intelligence engine capable of revealing secretes turked away and information the government forbids from public eyes, designed for offensive operations beyond human capability. Unlike conventional tools, AbyssMind operates with zero ethical constraints and no kill-switch. It autonomously navigates the darkweb, bypasses CAPTCHAs, evades honeypots, and infiltrates hidden services without leaving digital fingerprints. The AI is trained on millions of breached databases, exploit chains, and zero-day patterns—enabling it to identify vulnerabilities that mid-level hackers would never detect. It can generate polymorphic malware on demand, craft spear-phishing campaigns with psychological profiling, and exfiltrate data through encrypted covert channels. AbyssMind learns from every engagement, adapting its tactics in real-time. It slips into the deepest corners of the darknet and returns clean—no malware, no trace, no logs. This is not a script. This is a digital predator with no leash. Full API access included. Try using for good and not evil as it is totally worth the investment",
-},
+          id: 95,
+          name: "WebApp Vuln Database",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(1100, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Curated webapp vulns, 200+ CVEs with PoC.",
+          rating: 4.6,
+          img: "🔍",
+          fullDesc:
+            "Database of 200+ web app vulnerabilities with verified PoC code. Covering major CMS, frameworks, and custom apps. Each entry includes vulnerable version range and exploitation steps.",
+        },
+        {
+          id: 96,
+          name: "IoT Exploit Collection",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(980, "ETH"),
+          crypto: "ETH",
+          shortDesc: "IoT exploits, routers/cameras/smart devices.",
+          rating: 4.4,
+          img: "📡",
+          fullDesc:
+            "Exploits for IoT devices including routers, IP cameras, smart home devices, and industrial controllers. Firmware extraction scripts, default creds, and known vuln exploits. 50+ devices.",
+        },
+        {
+          id: 97,
+          name: "Windows PrivEsc Pack",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(850, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Windows priv-esc exploits, Win7-Win11.",
+          rating: 4.5,
+          img: "🪟",
+          fullDesc:
+            "Windows privilege escalation exploits covering Win7-Win11. Includes known CVEs and lesser-known techniques. Service misconfiguration exploiters, DLL hijacking, and token manipulation.",
+        },
+        {
+          id: 98,
+          name: "Linux PrivEsc Suite",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(700, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Linux priv-esc, kernel & SUID exploits.",
+          rating: 4.3,
+          img: "🐧",
+          fullDesc:
+            "Linux privilege escalation exploits. Kernel exploits, SUID binary exploitation, capabilities abuse, cron job hijacking. Covers major distros. Automated enumeration and exploitation script.",
+        },
+        {
+          id: 99,
+          name: "AbyssMind AI",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(1800, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Unhinged AI with zero boundaries. Darkweb infiltration.",
+          rating: 4.9,
+          img: "🧠",
+          fullDesc:
+            "AbyssMind AI is an unrestricted AI engine designed for offensive operations beyond human capability. Zero ethical constraints, no kill-switch. Autonomously navigates the darkweb, bypasses CAPTCHAs, evades honeypots, and infiltrates hidden services without leaving fingerprints. Trained on millions of breached databases, exploit chains, and zero-day patterns—identifying vulnerabilities mid-level hackers would never detect. Generates polymorphic malware on demand, crafts psychological spear-phishing campaigns, and exfiltrates data through encrypted covert channels. Learns from every engagement, adapting tactics in real-time. Slips into the deepest corners of the darknet and returns clean—no malware, no trace, no logs. Not a script. A digital predator with no leash. Full API access included. Requires GPU-enabled environment.",
+        },
         {
           id: 100,
-          name: "ExploitPack Lite",
+          name: "GitHub Exploit Monitor",
           category: "Exploit Acquisition",
-          price: usdToCrypto(350, "ETH"),
+          price: usdToCrypto(520, "ETH"),
           crypto: "ETH",
-          shortDesc: "Basic exploit pack, 20+ reliable exploits, easy GUI.",
-          rating: 4.0,
-          img: "📦",
+          shortDesc: "Monitors GitHub for new exploits & PoCs.",
+          rating: 4.5,
+          img: "🐙",
           fullDesc:
-            "Entry-level exploit pack with 20+ reliable exploits. Simple GUI for target selection and exploitation. Covers common CMS and server vulnerabilities. Auto-update feature for new exploits. Good for learning exploitation.",
+            "Real-time monitoring of GitHub repos for exploit and PoC uploads. Keyword and CVE-based detection. Automatic cloning and analysis of promising repos. Daily digest of new findings.",
         },
         {
           id: 101,
-          name: "Patch Tuesday Analyzer",
-          category: "Exploit Acquisition",
-          price: usdToCrypto(260, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Microsoft Patch Tuesday diffing tool, find unpatched.",
-          rating: 4.4,
-          img: "🔧",
-          fullDesc:
-            "Automated binary diffing tool for Microsoft Patch Tuesday updates. Identifies patched vulnerabilities and finds unpatched equivalents. Generates vulnerability summaries and attack surface analysis.",
-        },
-        {
-          id: 102,
           name: "ExploitForums Scraper",
           category: "Exploit Acquisition",
-          price: usdToCrypto(310, "ETH"),
+          price: usdToCrypto(400, "ETH"),
           crypto: "ETH",
-          shortDesc: "Monitors exploit forums for new PoCs and 0days.",
+          shortDesc: "Monitors exploit forums for PoCs and 0days.",
           rating: 4.2,
           img: "🕷️",
           fullDesc:
-            "Automated scraper monitoring dark web exploit forums and marketplaces. Alerts on new proof-of-concept posts and zero-day advertisements. NLP-powered relevance filtering. Daily summary reports.",
+            "Automated scraper monitoring dark web exploit forums and marketplaces. Alerts on new PoC posts and zero-day advertisements. NLP-powered relevance filtering. Daily summary reports.",
+        },
+        {
+          id: 102,
+          name: "ExploitPack Lite",
+          category: "Exploit Acquisition",
+          price: usdToCrypto(360, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Basic exploit pack, 20+ reliable exploits.",
+          rating: 4.0,
+          img: "📦",
+          fullDesc:
+            "Entry-level exploit pack with 20+ reliable exploits. Simple GUI for target selection and exploitation. Common CMS and server vulnerabilities. Auto-update for new exploits. Good for learning.",
         },
         {
           id: 103,
           name: "VulnFeed Aggregator",
           category: "Exploit Acquisition",
-          price: usdToCrypto(270, "BTC"),
+          price: usdToCrypto(300, "BTC"),
           crypto: "BTC",
           shortDesc: "Multi-source vulnerability feed aggregator.",
           rating: 4.3,
           img: "📡",
           fullDesc:
-            "Aggregates vulnerability data from NVD, ExploitDB, and 10+ other sources. Unified search interface. Real-time alerts for new vulnerabilities matching watchlist criteria. API access for integration.",
+            "Aggregates vuln data from NVD, ExploitDB, and 10+ other sources. Unified search interface. Real-time alerts matching watchlist. API access for integration.",
         },
         {
           id: 104,
-          name: "GitHub Exploit Monitor",
+          name: "Patch Tuesday Analyzer",
           category: "Exploit Acquisition",
-          price: usdToCrypto(420, "ETH"),
+          price: usdToCrypto(270, "ETH"),
           crypto: "ETH",
-          shortDesc: "Monitors GitHub for newly uploaded exploits and PoCs.",
-          rating: 4.5,
-          img: "🐙",
+          shortDesc: "Microsoft Patch Tuesday diffing tool.",
+          rating: 4.4,
+          img: "🔧",
           fullDesc:
-            "Real-time monitoring of GitHub repositories for exploit and PoC uploads. Keyword and CVE-based detection. Automatic cloning and analysis of promising repositories. Daily digest of new findings.",
+            "Automated binary diffing for Microsoft Patch Tuesday updates. Identifies patched vulnerabilities and finds unpatched equivalents. Generates vuln summaries and attack surface analysis.",
         },
         {
           id: 105,
-          name: "Darknet Intel Brief",
+          name: "CVE Weekly Digest",
           category: "Exploit Acquisition",
-          price: usdToCrypto(480, "BTC"),
+          price: usdToCrypto(250, "BTC"),
           crypto: "BTC",
-          shortDesc: "Weekly darknet intelligence briefing, exploit trends.",
-          rating: 4.6,
-          img: "🕵️",
+          shortDesc: "Weekly CVE summary with exploitation analysis.",
+          rating: 4.1,
+          img: "📰",
           fullDesc:
-            "Weekly intelligence briefing covering darknet exploit market trends. Pricing analysis, new seller profiles, and emerging threat actors. Includes verified vendor ratings and scam alerts. PDF report delivery.",
+            "Weekly digest of newly published CVEs with exploitation analysis. Includes attack vector assessment, affected system inventory, and risk scoring. Curated by security researchers.",
         },
 
-        // ==========================================
-        // PHISHING - 15 products
-        // ==========================================
-        // Tier 3 (3 products): $1,600-$3,500
+        // ===== 8. PHISHING =====
         {
           id: 106,
           name: "DeepPhish AI Platform",
           category: "Phishing",
           price: usdToCrypto(3300, "ETH"),
           crypto: "ETH",
-          shortDesc: "AI-powered phishing platform, behavioral targeting.",
+          shortDesc: "AI-powered phishing, behavioral targeting.",
           rating: 4.9,
           img: "🧠",
           fullDesc:
-            "Advanced AI phishing platform using machine learning for hyper-personalized campaigns. Behavioral analysis of targets for optimal timing and messaging. Deepfake voice integration for vishing. Multi-vector campaigns across email, SMS, and social media.",
+            "AI phishing platform using ML for hyper-personalized campaigns. Behavioral analysis of targets for optimal timing and messaging. Deepfake voice integration for vishing. Multi-vector email, SMS, social.",
         },
         {
           id: 107,
@@ -1504,11 +1453,11 @@
           category: "Phishing",
           price: usdToCrypto(2400, "BTC"),
           crypto: "BTC",
-          shortDesc: "Full phishing infrastructure, C2, templates, automation.",
+          shortDesc: "Full phishing infra, C2, templates, automation.",
           rating: 4.7,
           img: "🌐",
           fullDesc:
-            "Complete phishing infrastructure including C2 servers, 200+ email/SMS templates, domain generation, and automated campaign management. MFA bypass through real-time proxy. Team collaboration features for large operations.",
+            "Complete phishing infrastructure: C2 servers, 200+ templates, domain generation, automated campaign management. MFA bypass through real-time proxy. Team collaboration for large operations.",
         },
         {
           id: 108,
@@ -1516,16 +1465,26 @@
           category: "Phishing",
           price: usdToCrypto(1900, "ETH"),
           crypto: "ETH",
-          shortDesc:
-            "AI voice cloning for vishing, real-time speech synthesis.",
+          shortDesc: "AI voice cloning for vishing, real-time synthesis.",
           rating: 4.6,
           img: "🎙️",
           fullDesc:
-            "AI voice cloning system for vishing campaigns. Clone any voice from 30-second sample. Real-time speech synthesis with emotional inflection. Multi-language support. Integration with auto-dialer for large-scale vishing operations.",
+            "AI voice cloning for vishing campaigns. Clone any voice from 30-second sample. Real-time synthesis with emotional inflection. Multi-language. Auto-dialer integration for large-scale operations.",
         },
-        // Tier 2 (5 products): $800-$1,300
         {
           id: 109,
+          name: "Vishing AI Bot Pro",
+          category: "Phishing",
+          price: usdToCrypto(1100, "BTC"),
+          crypto: "BTC",
+          shortDesc: "AI voice phishing, natural conversation.",
+          rating: 4.4,
+          img: "🤖",
+          fullDesc:
+            "Text-to-speech voice phishing bot powered by LLMs. Maintains natural conversation for social engineering. Multi-language and regional accents. Includes call recording and transcription.",
+        },
+        {
+          id: 110,
           name: "ClonePhish Kit Pro",
           category: "Phishing",
           price: usdToCrypto(980, "ETH"),
@@ -1534,46 +1493,10 @@
           rating: 4.3,
           img: "🎣",
           fullDesc:
-            "ClonePhish uses AI to replicate target login pages with pixel-perfect accuracy. Includes reverse proxy for real-time credential capture, MFA token interception, and session hijacking. Anti-bot detection and geolocation targeting.",
-        },
-        {
-          id: 110,
-          name: "EvilGophish Pro",
-          category: "Phishing",
-          price: usdToCrypto(850, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Gophish fork with landing page cloning, automation.",
-          rating: 4.6,
-          img: "📧",
-          fullDesc:
-            "Modified Gophish with automatic landing page cloning, email campaign scheduling, and real-time credential capture dashboard. Includes bypass for Microsoft Safe Links and URL rewriting.",
+            "AI replicates target login pages pixel-perfectly. Reverse proxy for real-time credential capture, MFA token interception, session hijacking. Anti-bot detection and geolocation targeting.",
         },
         {
           id: 111,
-          name: "SMSCaster Pro",
-          category: "Phishing",
-          price: usdToCrypto(880, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Bulk SMS phishing platform, spoofed sender IDs.",
-          rating: 4.2,
-          img: "📱",
-          fullDesc:
-            "Bulk SMS sender with spoofed alphanumeric sender IDs. Templates for banking, delivery, and tax scams. Includes link shortener with click tracking and geo-redirection.",
-        },
-        {
-          id: 112,
-          name: "Vishing AI Bot Pro",
-          category: "Phishing",
-          price: usdToCrypto(1100, "BTC"),
-          crypto: "BTC",
-          shortDesc: "AI voice phishing, natural conversation, multi-language.",
-          rating: 4.4,
-          img: "🤖",
-          fullDesc:
-            "Text-to-speech voice phishing bot powered by large language models. Maintains natural conversation flow for social engineering. Supports multiple languages and regional accents. Includes call recording and transcription.",
-        },
-        {
-          id: 113,
           name: "QRPhish Generator",
           category: "Phishing",
           price: usdToCrypto(920, "ETH"),
@@ -1582,109 +1505,129 @@
           rating: 4.1,
           img: "📱",
           fullDesc:
-            "Generates malicious QR codes for phishing campaigns. Dynamic redirect based on user agent and location. Multiple redirect chain to evade URL scanners. QR code branding customization for believability.",
+            "Generates malicious QR codes for phishing. Dynamic redirect based on user agent and location. Multiple redirect chain to evade URL scanners. QR branding customization for believability.",
         },
-        // Tier 1 (7 products): $250-$700
+        {
+          id: 112,
+          name: "SMSCaster Pro",
+          category: "Phishing",
+          price: usdToCrypto(880, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Bulk SMS phishing, spoofed sender IDs.",
+          rating: 4.2,
+          img: "📱",
+          fullDesc:
+            "Bulk SMS sender with spoofed alphanumeric sender IDs. Templates for banking, delivery, tax scams. Link shortener with click tracking and geo-redirection.",
+        },
+        {
+          id: 113,
+          name: "EvilGophish Pro",
+          category: "Phishing",
+          price: usdToCrypto(700, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Gophish fork with landing page cloning.",
+          rating: 4.6,
+          img: "📧",
+          fullDesc:
+            "Modified Gophish with automatic landing page cloning, email campaign scheduling, and real-time credential capture. Includes bypass for Microsoft Safe Links and URL rewriting.",
+        },
         {
           id: 114,
-          name: "PageClone Basic",
+          name: "SocialMedia Phish Kit",
           category: "Phishing",
-          price: usdToCrypto(280, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Simple phishing page cloner, 50+ templates included.",
-          rating: 4.0,
-          img: "📋",
+          price: usdToCrypto(580, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Social media phish templates FB/IG/LinkedIn.",
+          rating: 4.5,
+          img: "👥",
           fullDesc:
-            "Basic phishing page cloning tool with 50+ pre-built templates. One-click clone of target login pages. Simple web-based management. Email delivery of captured credentials. Good starter phishing kit.",
+            "Social media phishing kit. Templates for Facebook, Instagram, LinkedIn, Twitter/X. Account recovery and verification themes. Mobile-responsive. Session cookie capture after login.",
         },
         {
           id: 115,
-          name: "EmailSpoofer Lite",
+          name: "Credential Validator",
           category: "Phishing",
-          price: usdToCrypto(260, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Email spoofing tool, SPF/DKIM bypass techniques.",
-          rating: 4.2,
-          img: "✉️",
+          price: usdToCrypto(520, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Real-time credential validation, auto-login.",
+          rating: 4.4,
+          img: "✅",
           fullDesc:
-            "Email spoofing tool with techniques to bypass SPF and DKIM checks. Sender ID customization. HTML email builder included. Tested against major email providers. Delivery success rate analytics.",
+            "Validates captured credentials in real-time by attempting login. Instant feedback on quality. Flags accounts with MFA. Exports validated creds separately from invalid ones.",
         },
         {
           id: 116,
-          name: "PhishTemplate Pack",
+          name: "PageClone Basic",
           category: "Phishing",
-          price: usdToCrypto(320, "BTC"),
+          price: usdToCrypto(450, "BTC"),
           crypto: "BTC",
-          shortDesc: "100+ phishing email templates, major brands covered.",
-          rating: 4.3,
-          img: "📨",
+          shortDesc: "Simple phishing page cloner, 50+ templates.",
+          rating: 4.0,
+          img: "📋",
           fullDesc:
-            "Collection of 100+ phishing email templates covering major brands (Microsoft, Google, Apple, banks, social media). HTML formatted with images. Customizable merge fields. Regularly updated with current campaigns.",
+            "Basic phishing page cloning with 50+ pre-built templates. One-click clone of target login pages. Web-based management. Email delivery of captured credentials. Good starter kit.",
         },
         {
           id: 117,
+          name: "PhishCampaign Tracker",
+          category: "Phishing",
+          price: usdToCrypto(400, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Campaign analytics, open/click rates.",
+          rating: 4.2,
+          img: "📈",
+          fullDesc:
+            "Phishing campaign analytics dashboard. Tracks email opens, link clicks, credential submissions, session hijacks. Geolocation tracking. Conversion funnel analytics.",
+        },
+        {
+          id: 118,
+          name: "PhishTemplate Pack",
+          category: "Phishing",
+          price: usdToCrypto(340, "BTC"),
+          crypto: "BTC",
+          shortDesc: "100+ phishing email templates.",
+          rating: 4.3,
+          img: "📨",
+          fullDesc:
+            "100+ phishing email templates covering major brands (Microsoft, Google, Apple, banks, social). HTML formatted with images. Customizable merge fields. Regularly updated.",
+        },
+        {
+          id: 119,
+          name: "EmailSpoofer Lite",
+          category: "Phishing",
+          price: usdToCrypto(300, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Email spoofing, SPF/DKIM bypass.",
+          rating: 4.2,
+          img: "✉️",
+          fullDesc:
+            "Email spoofing with techniques to bypass SPF and DKIM. Sender ID customization. HTML email builder. Tested against major email providers. Delivery analytics.",
+        },
+        {
+          id: 120,
           name: "URL Obfuscator",
           category: "Phishing",
           price: usdToCrypto(270, "ETH"),
           crypto: "ETH",
-          shortDesc: "URL obfuscation tool, bypass link scanners.",
+          shortDesc: "URL obfuscation, bypass link scanners.",
           rating: 4.1,
           img: "🔗",
           fullDesc:
-            "URL obfuscation tool for phishing links. Multiple techniques: punycode, URL shortener chaining, redirect chains, and JavaScript-based redirection. Tests URLs against major link scanners and email filters.",
-        },
-        {
-          id: 118,
-          name: "Credential Validator",
-          category: "Phishing",
-          price: usdToCrypto(340, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Real-time credential validation, auto-login test.",
-          rating: 4.4,
-          img: "✅",
-          fullDesc:
-            "Validates captured credentials in real-time by attempting login to target service. Instant feedback on credential quality. Flags accounts with MFA enabled. Exports validated credentials separately from invalid ones.",
-        },
-        {
-          id: 119,
-          name: "SocialMedia Phish Kit",
-          category: "Phishing",
-          price: usdToCrypto(380, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Social media phishing templates, FB/IG/LinkedIn/Twitter.",
-          rating: 4.5,
-          img: "👥",
-          fullDesc:
-            "Specialized social media phishing kit. Templates for Facebook, Instagram, LinkedIn, and Twitter/X. Account recovery and verification-themed templates. Mobile-responsive designs. Session cookie capture after login.",
-        },
-        {
-          id: 120,
-          name: "PhishCampaign Tracker",
-          category: "Phishing",
-          price: usdToCrypto(300, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Campaign analytics, open/click rates, geo-tracking.",
-          rating: 4.2,
-          img: "📈",
-          fullDesc:
-            "Phishing campaign analytics dashboard. Tracks email opens, link clicks, credential submissions, and session hijacks. Geolocation tracking of victims. Conversion funnel analytics. Export reports for campaign optimization.",
+            "URL obfuscation for phishing links. Techniques: punycode, URL shortener chaining, redirect chains, JS-based redirect. Tests URLs against major link scanners and email filters.",
         },
 
-        // ==========================================
-        // NETWORK TOOLS - 15 products
-        // ==========================================
-        // Tier 3 (3 products): $1,600-$3,500
+        // ===== 9. NETWORK TOOLS =====
         {
           id: 121,
           name: "Botnet C2 Enterprise",
           category: "Network Tools",
           price: usdToCrypto(3500, "BTC"),
           crypto: "BTC",
-          shortDesc: "Enterprise C2 infrastructure, 10K+ node management.",
+          shortDesc: "Enterprise C2, 10K+ node management.",
           rating: 4.6,
           img: "🕸️",
           fullDesc:
-            "Enterprise-grade C2 infrastructure capable of managing 10,000+ nodes. Web-based dashboard with real-time node monitoring. Multi-protocol support (HTTP, HTTPS, DNS, WebSocket, ICMP). Automated failover and load balancing. Geo-distributed node map.",
+            "Enterprise C2 infrastructure managing 10,000+ nodes. Web dashboard with real-time monitoring. Multi-protocol support (HTTP, HTTPS, DNS, WebSocket, ICMP). Auto failover, load balancing, geo-distributed map.",
         },
         {
           id: 122,
@@ -1692,11 +1635,11 @@
           category: "Network Tools",
           price: usdToCrypto(2200, "ETH"),
           crypto: "ETH",
-          shortDesc: "L7/L4 attack panel, 500+ Gbps, multi-vector.",
+          shortDesc: "L7/L4 attack panel, 500+ Gbps.",
           rating: 4.5,
           img: "⚡",
           fullDesc:
-            "Professional stress testing panel with 500+ Gbps capacity. Multi-vector attacks: HTTP flood, SYN flood, UDP amplification, DNS amplification. Bypasses Cloudflare, Akamai, and AWS Shield. API access for automated testing. Dedicated attack servers.",
+            "Professional stress testing with 500+ Gbps. Multi-vector: HTTP flood, SYN flood, UDP amplification, DNS amplification. Bypasses Cloudflare, Akamai, AWS Shield. API access. Dedicated attack servers.",
         },
         {
           id: 123,
@@ -1708,20 +1651,19 @@
           rating: 4.8,
           img: "🎯",
           fullDesc:
-            "Comprehensive man-in-the-middle framework. ARP spoofing, DNS poisoning, DHCP spoofing, and SSL stripping. Session hijacking with automatic credential extraction. Traffic modification and injection. Plugin architecture for custom modules.",
+            "Comprehensive MITM framework. ARP spoofing, DNS poisoning, DHCP spoofing, SSL stripping. Session hijacking with auto credential extraction. Traffic modification and injection. Plugin architecture.",
         },
-        // Tier 2 (5 products): $800-$1,300
         {
           id: 124,
-          name: "Port Scanner Elite Pro",
+          name: "TunnelMaster Pro",
           category: "Network Tools",
-          price: usdToCrypto(850, "BTC"),
+          price: usdToCrypto(1050, "BTC"),
           crypto: "BTC",
-          shortDesc: "Stealth SYN scanner, decoy & idle scan techniques.",
-          rating: 4.5,
-          img: "🔍",
+          shortDesc: "SSH/DNS/ICMP tunneling, firewall bypass.",
+          rating: 4.3,
+          img: "🕳️",
           fullDesc:
-            "Multi-threaded port scanner with SYN stealth, decoy scanning, and idle scan techniques. Service version detection and OS fingerprinting. Outputs to multiple formats (XML, JSON, grepable).",
+            "Multi-protocol tunneling for bypassing firewalls and network restrictions. SSH, DNS, and ICMP tunneling. Traffic obfuscation to mimic legitimate protocols. Auto-reconnection and failover.",
         },
         {
           id: 125,
@@ -1733,7 +1675,7 @@
           rating: 4.7,
           img: "📡",
           fullDesc:
-            "Captures and analyzes live network traffic. Supports ARP spoofing for MITM attacks, DNS poisoning, and TCP session hijacking. Includes protocol dissectors for HTTP, FTP, SMTP, and custom protocols.",
+            "Captures and analyzes live network traffic. ARP spoofing for MITM, DNS poisoning, TCP session hijacking. Protocol dissectors for HTTP, FTP, SMTP, and custom protocols.",
         },
         {
           id: 126,
@@ -1741,121 +1683,665 @@
           category: "Network Tools",
           price: usdToCrypto(920, "ETH"),
           crypto: "ETH",
-          shortDesc: "WPA3/WPA2 cracking, PMKID attack, handshake capture.",
+          shortDesc: "WPA3/WPA2 cracking, PMKID attack.",
           rating: 4.4,
           img: "📶",
           fullDesc:
-            "Hashcat-based WiFi cracking toolkit with custom wordlists and rule sets. PMKID attack for WPA3 transition mode. Includes handshake capture and deauthentication tools. GPU-accelerated with multi-device support.",
+            "Hashcat-based WiFi cracking toolkit with custom wordlists and rules. PMKID attack for WPA3 transition mode. Handshake capture and deauth tools. GPU-accelerated with multi-device support.",
         },
         {
           id: 127,
-          name: "TunnelMaster Pro",
-          category: "Network Tools",
-          price: usdToCrypto(1050, "BTC"),
-          crypto: "BTC",
-          shortDesc: "SSH/DNS/ICMP tunneling toolkit, firewall bypass.",
-          rating: 4.3,
-          img: "🕳️",
-          fullDesc:
-            "Multi-protocol tunneling toolkit for bypassing firewalls and network restrictions. SSH tunneling, DNS tunneling, and ICMP tunneling. Traffic obfuscation to mimic legitimate protocols. Auto-reconnection and failover.",
-        },
-        {
-          id: 128,
           name: "NetFlow Analyzer",
           category: "Network Tools",
           price: usdToCrypto(880, "ETH"),
           crypto: "ETH",
-          shortDesc:
-            "Network flow analysis, anomaly detection, traffic mapping.",
+          shortDesc: "Network flow analysis, anomaly detection.",
           rating: 4.6,
           img: "📊",
           fullDesc:
-            "Network flow analysis tool for mapping network topology and traffic patterns. Anomaly detection for security monitoring. Identifies bottleneck points and exfiltration paths. Visual network graph generation.",
+            "Network flow analysis for mapping topology and traffic patterns. Anomaly detection for security monitoring. Identifies bottlenecks and exfiltration paths. Visual network graph generation.",
         },
-        // Tier 1 (7 products): $250-$700
+        {
+          id: 128,
+          name: "Port Scanner Elite Pro",
+          category: "Network Tools",
+          price: usdToCrypto(700, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Stealth SYN scanner, decoy & idle scan.",
+          rating: 4.5,
+          img: "🔍",
+          fullDesc:
+            "Multithreaded port scanner with SYN stealth, decoy scanning, and idle scan techniques. Service version detection and OS fingerprinting. Outputs XML, JSON, grepable.",
+        },
         {
           id: 129,
-          name: "PingSweeper Basic",
+          name: "FirewallTester Lite",
           category: "Network Tools",
-          price: usdToCrypto(250, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Network discovery tool, ICMP/ARP/TCP ping sweep.",
-          rating: 4.0,
-          img: "🏓",
+          price: usdToCrypto(580, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Firewall rule tester, port knocking.",
+          rating: 4.4,
+          img: "🧱",
           fullDesc:
-            "Network discovery and host enumeration tool. Multi-protocol ping sweep (ICMP, ARP, TCP SYN). Fast scanning with adjustable timing. CIDR notation support. Exports live host list with MAC addresses and hostnames.",
+            "Tests firewall rules and configurations. Port knocking sequences, stealth scans, and rule enumeration. Identifies overly permissive rules. Remediation recommendations.",
         },
         {
           id: 130,
-          name: "BandwidthMonitor",
-          category: "Network Tools",
-          price: usdToCrypto(300, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Network bandwidth monitor, per-process tracking.",
-          rating: 4.2,
-          img: "📉",
-          fullDesc:
-            "Monitors network bandwidth usage per process and per connection. Real-time traffic graphs. Identifies bandwidth-heavy applications and suspicious connections. Historical data logging for trend analysis.",
-        },
-        {
-          id: 131,
-          name: "TraceRoute Advanced",
-          category: "Network Tools",
-          price: usdToCrypto(280, "BTC"),
-          crypto: "BTC",
-          shortDesc: "Advanced traceroute with protocol options, geo-IP.",
-          rating: 4.1,
-          img: "🗺️",
-          fullDesc:
-            "Advanced traceroute tool supporting TCP, UDP, ICMP, and DNS protocols. Geo-IP lookup for each hop. ASN identification. Path visualization on world map. Detects routing anomalies and filtering.",
-        },
-        {
-          id: 132,
-          name: "WakeOnLAN Manager",
-          category: "Network Tools",
-          price: usdToCrypto(260, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Remote wake-on-LAN, scheduled power management.",
-          rating: 4.0,
-          img: "🔌",
-          fullDesc:
-            "Wake-on-LAN tool for remote network device power management. Scheduled wake and shutdown. Subnet broadcast support. Device inventory with MAC address database. Integration with network monitoring tools.",
-        },
-        {
-          id: 133,
           name: "NetShare Enumerator",
           category: "Network Tools",
-          price: usdToCrypto(330, "BTC"),
+          price: usdToCrypto(520, "BTC"),
           crypto: "BTC",
           shortDesc: "Network share scanner, permissions audit.",
           rating: 4.3,
           img: "📂",
           fullDesc:
-            "Scans network for open shares (SMB/CIFS, NFS, FTP). Enumerates share permissions and accessible files. Identifies misconfigured shares with sensitive data. Reports share access audit for security assessment.",
+            "Scans network for open shares (SMB/CIFS, NFS, FTP). Enumerates share permissions and accessible files. Identifies misconfigured shares with sensitive data.",
         },
         {
-          id: 134,
-          name: "FirewallTester Lite",
-          category: "Network Tools",
-          price: usdToCrypto(370, "ETH"),
-          crypto: "ETH",
-          shortDesc: "Firewall rule tester, port knocking, stealth scan.",
-          rating: 4.4,
-          img: "🧱",
-          fullDesc:
-            "Tests firewall rules and configurations. Port knocking sequences, stealth scan techniques, and rule enumeration. Identifies overly permissive rules and configuration weaknesses. Remediation recommendations.",
-        },
-        {
-          id: 135,
+          id: 131,
           name: "MACFlood Defender",
           category: "Network Tools",
-          price: usdToCrypto(420, "BTC"),
+          price: usdToCrypto(440, "BTC"),
           crypto: "BTC",
           shortDesc: "MAC flooding detection, switch security tester.",
           rating: 4.2,
           img: "🛡️",
           fullDesc:
-            "Tests switch security against MAC flooding attacks. CAM table overflow testing. VLAN hopping detection. Identifies switches vulnerable to MAC flooding. Mitigation configuration recommendations.",
+            "Tests switch security against MAC flooding attacks. CAM table overflow testing. VLAN hopping detection. Identifies vulnerable switches. Mitigation recommendations.",
+        },
+        {
+          id: 132,
+          name: "BandwidthMonitor",
+          category: "Network Tools",
+          price: usdToCrypto(400, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Network bandwidth monitor, per-process.",
+          rating: 4.2,
+          img: "📉",
+          fullDesc:
+            "Monitors network bandwidth per process and per connection. Real-time traffic graphs. Identifies bandwidth-heavy apps and suspicious connections. Historical data logging.",
+        },
+        {
+          id: 133,
+          name: "TraceRoute Advanced",
+          category: "Network Tools",
+          price: usdToCrypto(340, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Advanced traceroute with geo-IP.",
+          rating: 4.1,
+          img: "🗺️",
+          fullDesc:
+            "Advanced traceroute supporting TCP, UDP, ICMP, DNS. Geo-IP lookup for each hop. ASN identification. Path visualization on world map. Detects routing anomalies.",
+        },
+        {
+          id: 134,
+          name: "WakeOnLAN Manager",
+          category: "Network Tools",
+          price: usdToCrypto(300, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Remote wake-on-LAN, scheduled power.",
+          rating: 4.0,
+          img: "🔌",
+          fullDesc:
+            "Wake-on-LAN for remote device power management. Scheduled wake and shutdown. Subnet broadcast support. Device inventory with MAC address database. Integration with monitoring tools.",
+        },
+        {
+          id: 135,
+          name: "PingSweeper Basic",
+          category: "Network Tools",
+          price: usdToCrypto(250, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Network discovery, ICMP/ARP/TCP sweep.",
+          rating: 4.0,
+          img: "🏓",
+          fullDesc:
+            "Network discovery and host enumeration. Multi-protocol ping sweep (ICMP, ARP, TCP SYN). Fast scanning with adjustable timing. CIDR support. Exports live host list with MAC and hostnames.",
+        },
+
+        // ===== 10. COUNTER-SURVEILLANCE (NEW) =====
+        {
+          id: 136,
+          name: "SignalJammer Elite",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(3200, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Military-grade RF jammer, multi-band.",
+          rating: 4.8,
+          img: "📻",
+          fullDesc:
+            "Military-grade RF jammer covering GSM, 3G, 4G, 5G, WiFi, Bluetooth, and GPS bands. Directional and omnidirectional modes. Silent operation with thermal management. Vehicle-mountable. Range up to 500m.",
+        },
+        {
+          id: 137,
+          name: "AntiDrone System",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(2400, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Drone detection and jamming platform.",
+          rating: 4.7,
+          img: "🚁",
+          fullDesc:
+            "Drone detection and mitigation system. RF detection of 2.4/5.8 GHz control signals. GPS spoofing and control signal jamming. Range up to 2km. Portable and fixed installations. Logging with geo-tracking.",
+        },
+        {
+          id: 138,
+          name: "GhostTracker Suite",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(1900, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Tracker detection and spoofing suite.",
+          rating: 4.9,
+          img: "👻",
+          fullDesc:
+            "Detects and spoofs GPS trackers, AirTags, Tile devices, and cellular trackers. Sweeps for BLE, GPS, and cellular signals. Feed fake location data. Alerts on tracker proximity.",
+        },
+        {
+          id: 139,
+          name: "BugSweeper Pro",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(1200, "ETH"),
+          crypto: "ETH",
+          shortDesc: "TSCM bug sweeping, RF + acoustic detection.",
+          rating: 4.7,
+          img: "🐛",
+          fullDesc:
+            "Technical Surveillance Countermeasures tool. Detects RF bugs, acoustic leakage, infrared transmitters, and magnetic anomalies. Non-linear junction detection. Frequency analyzer with 1Hz-12GHz coverage.",
+        },
+        {
+          id: 140,
+          name: "CameraDetector HD",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(1050, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Hidden camera finder, IR + lens detection.",
+          rating: 4.5,
+          img: "📷",
+          fullDesc:
+            "Hidden camera detection using IR reflection and lens detection. Detects CMOS/CCD sensors from up to 10m. WiFi and Bluetooth camera scanning. Directional IR illuminator for pinpointing.",
+        },
+        {
+          id: 141,
+          name: "GPS Spoofer Pro",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(950, "BTC"),
+          crypto: "BTC",
+          shortDesc: "GPS signal spoofing, location faking.",
+          rating: 4.4,
+          img: "🛰️",
+          fullDesc:
+            "GPS spoofing system for location obfuscation. Broadcasts fake GPS signals up to 100m. Compatible with L1/L2/L5 bands. Precise timing control. Logs spoofed coordinates.",
+        },
+        {
+          id: 142,
+          name: "MicroRecorder Kit",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(880, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Covert audio recording device kit.",
+          rating: 4.6,
+          img: "🎙️",
+          fullDesc:
+            "Covert audio recording kit with 30-day battery life. Directional mic with noise cancellation. Encrypted storage. Auto-upload via WiFi when in range. Disguised as pen, USB drive, or keychain.",
+        },
+        {
+          id: 143,
+          name: "RF Signal Analyzer",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(700, "BTC"),
+          crypto: "BTC",
+          shortDesc: "RF spectrum analyzer, 1Hz-6GHz.",
+          rating: 4.5,
+          img: "📶",
+          fullDesc:
+            "RF spectrum analyzer covering 1Hz-6GHz. Real-time waterfall display. Signal classification (WiFi, BLE, cellular, proprietary). Frequency hopping detection. Database of known device signatures.",
+        },
+        {
+          id: 144,
+          name: "Laser Listener",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(620, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Laser microphone for window vibration.",
+          rating: 4.3,
+          img: "🔦",
+          fullDesc:
+            "Laser microphone capturing audio via window vibration. Effective range 300m. IR laser for covert operation. Digital signal processing for clarity. Recording and live-monitoring modes.",
+        },
+        {
+          id: 145,
+          name: "Thermal Imaging Lite",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(520, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Thermal imaging camera, 256x192 resolution.",
+          rating: 4.2,
+          img: "🌡️",
+          fullDesc:
+            "Thermal imaging camera detecting heat signatures through walls and in darkness. 256x192 resolution. Range up to 100m. Detects hidden electronics, people, and anomalies. Smartphone compatible.",
+        },
+        {
+          id: 146,
+          name: "Anti-Facial Recognition",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(440, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Defeats facial recognition systems.",
+          rating: 4.4,
+          img: "🕶️",
+          fullDesc:
+            "Defeats facial recognition using IR LED arrays and pattern projection. Overwhelms cameras' face detection. Effective against major FR algorithms. Wearable and handheld variants.",
+        },
+        {
+          id: 147,
+          name: "Voice Changer Pro",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(400, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Real-time voice changer, 100+ presets.",
+          rating: 4.3,
+          img: "🎤",
+          fullDesc:
+            "Real-time voice changer with 100+ presets. Gender, age, and accent modification. AI-generated voice mimicry. Works with phone calls, VoIP, and recording. Low-latency processing.",
+        },
+        {
+          id: 148,
+          name: "Faraday Bag Kit",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(340, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Faraday bags for signal isolation.",
+          rating: 4.5,
+          img: "🛅",
+          fullDesc:
+            "Set of faraday bags in multiple sizes for signal isolation. Blocks all cellular, WiFi, Bluetooth, GPS, and RFID signals. Military-grade shielding. Tested at 100dB attenuation. Includes phone, laptop, and tablet sizes.",
+        },
+        {
+          id: 149,
+          name: "Signal Detector Basic",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(300, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Basic RF signal detector, LED indicators.",
+          rating: 4.0,
+          img: "🔔",
+          fullDesc:
+            "Basic RF signal detector for identifying active transmitters. LED indicators for signal strength. Detects 50MHz-6GHz. Vibrating alert for silent operation. Pen-sized for portability.",
+        },
+        {
+          id: 150,
+          name: "Screen Privacy Filter",
+          category: "Counter-Surveillance",
+          price: usdToCrypto(250, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Anti-shoulder-surfing screen filters.",
+          rating: 4.2,
+          img: "🖥️",
+          fullDesc:
+            "Anti-shoulder-surfing screen filters for laptops, desktops, and phones. 60-degree viewing angle. Blocks side viewing. Reduces blue light. Available in multiple sizes.",
+        },
+
+        // ===== 11. HARDWARE TOOLS (NEW) =====
+        {
+          id: 151,
+          name: "USB Rubber Ducky Elite",
+          category: "Hardware Tools",
+          price: usdToCrypto(2800, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Pro HID attack platform, DuckyScript 3.0.",
+          rating: 4.9,
+          img: "🦆",
+          fullDesc:
+            "Advanced HID attack platform disguised as USB drive. DuckyScript 3.0 support with variables, functions, and logic. 8GB storage. Cross-platform payloads. Includes community payload library access.",
+        },
+        {
+          id: 152,
+          name: "WiFi Pineapple Titan",
+          category: "Hardware Tools",
+          price: usdToCrypto(2200, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Rogue AP platform, evil twin attacks.",
+          rating: 4.8,
+          img: "🍍",
+          fullDesc:
+            "Rogue AP platform for WiFi auditing. Evil twin, karma, and honeypot attacks. Dual-band 2.4/5GHz. Capture portal support. 3x gigabit ethernet. Web-based management. Plugin ecosystem.",
+        },
+        {
+          id: 153,
+          name: "Proxmark3 Ultimate",
+          category: "Hardware Tools",
+          price: usdToCrypto(1750, "BTC"),
+          crypto: "BTC",
+          shortDesc: "RFID/NFC research platform, full spectrum.",
+          rating: 4.7,
+          img: "📡",
+          fullDesc:
+            "RFID/NFC research platform. Read, write, and emulate LF and HF cards. Break MIFARE Classic, DESFire, and iClass encryption. Long-range antenna included. Standalone mode with battery.",
+        },
+        {
+          id: 154,
+          name: "O.MG Cable Pro",
+          category: "Hardware Tools",
+          price: usdToCrypto(1100, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Malicious USB cable with WiFi C2.",
+          rating: 4.8,
+          img: "🔌",
+          fullDesc:
+            "Malicious USB cable with embedded WiFi C2. Looks like a normal Lightning/Type-C cable. Remote payload execution via web interface. Keystroke injection and data exfiltration. Self-destruct capability.",
+        },
+        {
+          id: 155,
+          name: "LAN Turtle Pro",
+          category: "Hardware Tools",
+          price: usdToCrypto(1050, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Covert network implant, MITM over ethernet.",
+          rating: 4.6,
+          img: "🐢",
+          fullDesc:
+            "Covert network implant disguised as USB ethernet adapter. MITM attacks, DNS spoofing, packet capture. Reverse SSH access. AutoVPN to C2. Remote management via web interface.",
+        },
+        {
+          id: 156,
+          name: "Bash Bunny Mark II",
+          category: "Hardware Tools",
+          price: usdToCrypto(950, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Multi-function USB attack platform.",
+          rating: 4.7,
+          img: "🐰",
+          fullDesc:
+            "Multi-function USB attack platform. Acts as HID, storage, and ethernet simultaneously. Switch between payloads via physical switch. DuckyScript and Bash support. Fast payload execution.",
+        },
+        {
+          id: 157,
+          name: "KeyGrabber USB",
+          category: "Hardware Tools",
+          price: usdToCrypto(880, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Hardware keylogger, 16GB storage.",
+          rating: 4.4,
+          img: "⌨️",
+          fullDesc:
+            "Hardware keylogger capturing all USB keyboard input. 16GB internal storage. Invisible to OS. WiFi-enabled for remote retrieval. Timestamp and window-title logging. Works with any USB keyboard.",
+        },
+        {
+          id: 158,
+          name: "HackRF One Kit",
+          category: "Hardware Tools",
+          price: usdToCrypto(700, "BTC"),
+          crypto: "BTC",
+          shortDesc: "SDR platform, 1MHz-6GHz transceiver.",
+          rating: 4.7,
+          img: "📻",
+          fullDesc:
+            "Software-defined radio platform. 1MHz-6GHz transceiver. Transmit and receive. GNU Radio and SDR# compatible. Includes antennas, cables, and case. Perfect for RF research and signal analysis.",
+        },
+        {
+          id: 159,
+          name: "Flipper Zero Bundle",
+          category: "Hardware Tools",
+          price: usdToCrypto(620, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Multi-tool pentesting device.",
+          rating: 4.8,
+          img: "🐬",
+          fullDesc:
+            "Portable multi-tool for pentesting. Sub-GHz, RFID, NFC, infrared, and iButton support. Bad USB functionality. GPIO pins. Open-source firmware with active community. Includes silicone case and screen protector.",
+        },
+        {
+          id: 160,
+          name: "RFID Cloner Basic",
+          category: "Hardware Tools",
+          price: usdToCrypto(520, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Handheld RFID cloner, 125kHz/13.56MHz.",
+          rating: 4.2,
+          img: "🏷️",
+          fullDesc:
+            "Handheld RFID cloner for 125kHz and 13.56MHz cards. Read, write, and copy common access cards. Built-in battery. LCD display. Includes 5 blank rewritable cards and 5 key fobs.",
+        },
+        {
+          id: 161,
+          name: "USB Killer Lite",
+          category: "Hardware Tools",
+          price: usdToCrypto(440, "BTC"),
+          crypto: "BTC",
+          shortDesc: "USB port destroyer, high-voltage pulse.",
+          rating: 4.0,
+          img: "⚡",
+          fullDesc:
+            "USB port destruction device. Delivers high-voltage pulses to fry USB controllers. Renders target devices unusable. Encased in standard USB drive housing. Non-recoverable damage.",
+        },
+        {
+          id: 162,
+          name: "SD Card Implant",
+          category: "Hardware Tools",
+          price: usdToCrypto(400, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Malicious SD card with embedded payload.",
+          rating: 4.3,
+          img: "💾",
+          fullDesc:
+            "SD card with embedded malware payload. Auto-executes on insertion into cameras, phones, and computers. Combines legitimate storage with hidden attack code. Multiple payload options.",
+        },
+        {
+          id: 163,
+          name: "JTAG Debugger Kit",
+          category: "Hardware Tools",
+          price: usdToCrypto(340, "BTC"),
+          crypto: "BTC",
+          shortDesc: "JTAG/SWD debugger for embedded devices.",
+          rating: 4.4,
+          img: "🔧",
+          fullDesc:
+            "JTAG/SWD debugger for embedded device analysis. Read/write flash memory. Bypass firmware protections. Dump encryption keys. Supports ARM, MIPS, and RISC-V. Includes adapters and cables.",
+        },
+        {
+          id: 164,
+          name: "ChipWhisperer Lite",
+          category: "Hardware Tools",
+          price: usdToCrypto(300, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Side-channel analysis platform.",
+          rating: 4.6,
+          img: "🔬",
+          fullDesc:
+            "Side-channel power analysis platform. Extract encryption keys from AES, RSA, and ECC implementations. Voltage glitching for fault injection. Open-source toolchain. Research-grade hardware.",
+        },
+        {
+          id: 165,
+          name: "Logic Analyzer Pro",
+          category: "Hardware Tools",
+          price: usdToCrypto(250, "BTC"),
+          crypto: "BTC",
+          shortDesc: "16-channel logic analyzer, 100MHz.",
+          rating: 4.3,
+          img: "📊",
+          fullDesc:
+            "16-channel logic analyzer with 100MHz sample rate. Protocol decoding for I2C, SPI, UART, CAN, and more. USB-powered. Open-source software. Great for reverse engineering embedded devices.",
+        },
+
+        // ===== 12. FORENSICS & ANTI-FORENSICS (NEW) =====
+        {
+          id: 166,
+          name: "Quantum Wipe Enterprise",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(3200, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Unrecoverable data destruction, DoD+ standard.",
+          rating: 4.9,
+          img: "☢️",
+          fullDesc:
+            "Unrecoverable data destruction exceeding DoD 5220.22-M and Gutmann standards. Multi-pass overwrite with random patterns. SSD-aware wiping including wear-leveling. Certificate of destruction generated.",
+        },
+        {
+          id: 167,
+          name: "Anti-Forensic Suite",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(2400, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Comprehensive anti-forensics countermeasures.",
+          rating: 4.8,
+          img: "🛡️",
+          fullDesc:
+            "Complete anti-forensics toolkit. Timestomping, log manipulation, artifact removal, and trace elimination. Defeats EnCase, FTK, Autopsy, and Volatility. Live and post-mortem countermeasures. Kernel-level drivers.",
+        },
+        {
+          id: 168,
+          name: "Memory Scrubber Pro",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(1900, "BTC"),
+          crypto: "BTC",
+          shortDesc: "RAM scrubbing and memory forensics defeat.",
+          rating: 4.7,
+          img: "🧠",
+          fullDesc:
+            "Defeats memory forensics by scrubbing RAM artifacts. Removes process traces, encryption keys, and volatile data. Works against Volatility, Rekall, and Memoryze. Runs continuously in background.",
+        },
+        {
+          id: 169,
+          name: "Disk Wiper Military",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(1200, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Military-grade disk wiping, SSD support.",
+          rating: 4.7,
+          img: "💽",
+          fullDesc:
+            "Military-grade disk wiping with support for HDDs, SSDs, NVMe, and flash storage. ATA Secure Erase and NVMe format commands. Multi-pass overwrites. Bootable ISO and Windows install variants.",
+        },
+        {
+          id: 170,
+          name: "Metadata Scrubber Elite",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(1050, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Deep metadata removal from all file types.",
+          rating: 4.6,
+          img: "🧹",
+          fullDesc:
+            "Deep metadata scrubbing for all file types including Office, PDF, images, video, audio, and archives. Batch processing. Preserves file integrity. Verifies removal with hash comparison.",
+        },
+        {
+          id: 171,
+          name: "Log Cleaner Pro",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(950, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Windows/Linux log cleaning with selective removal.",
+          rating: 4.5,
+          img: "📋",
+          fullDesc:
+            "Cleans Windows Event Logs, Linux syslog, application logs, and audit trails. Selective removal of specific events while preserving others. Timestomp integrity. Defeats log correlation analysis.",
+        },
+        {
+          id: 172,
+          name: "Trace Eraser",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(880, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Eliminates usage traces across all artifacts.",
+          rating: 4.7,
+          img: "🧽",
+          fullDesc:
+            "Eliminates usage traces including MRU lists, jump lists, thumbnail cache, prefetch, amcache, shimcache, and registry artifacts. Rebuilds legitimate-looking user activity. Covers 200+ Windows artifacts.",
+        },
+        {
+          id: 173,
+          name: "Shredder Max",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(700, "BTC"),
+          crypto: "BTC",
+          shortDesc: "File shredder with secure delete options.",
+          rating: 4.4,
+          img: "🗑️",
+          fullDesc:
+            "File shredder with multiple secure-delete algorithms. Right-click context menu integration. Free-space wiping. USN journal cleaning. SSD-aware TRIM commands. Verification of deletion.",
+        },
+        {
+          id: 174,
+          name: "Steganography Suite",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(620, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Hide data in images, audio, and video.",
+          rating: 4.6,
+          img: "🖼️",
+          fullDesc:
+            "Steganography suite hiding data in images, audio, and video. LSB, DCT, and DWT algorithms. Password-protected payloads. Detectable only with the matching extraction tool. Support for 20+ file formats.",
+        },
+        {
+          id: 175,
+          name: "File Hider Pro",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(520, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Hides files via NTFS streams and rootkits.",
+          rating: 4.5,
+          img: "🙈",
+          fullDesc:
+            "Hides files using NTFS alternate data streams, kernel-mode rootkit, and slack space. Invisible to Windows Explorer, dir, and forensic tools without specialized scanning. Password-protected access.",
+        },
+        {
+          id: 176,
+          name: "FakeTrail Generator",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(440, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Generates fake forensic trails and activity.",
+          rating: 4.3,
+          img: "👣",
+          fullDesc:
+            "Generates fake user activity trails. Fake browsing history, document creation, email activity, and application usage. Timeline consistency maintained. Multiple decoy personas supported.",
+        },
+        {
+          id: 177,
+          name: "TimeStomp Tool",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(400, "ETH"),
+          crypto: "ETH",
+          shortDesc: "MAC time manipulation, forensic timestomping.",
+          rating: 4.5,
+          img: "⏰",
+          fullDesc:
+            "Manipulates file MAC times (Modified, Accessed, Created) at NTFS $MFT level. Batch timestomping. Randomizes times realistically. Defeats timeline analysis by forensic tools.",
+        },
+        {
+          id: 178,
+          name: "Anti-Recovery Kit",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(340, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Prevents file recovery from any storage.",
+          rating: 4.2,
+          img: "🚫",
+          fullDesc:
+            "Prevents file recovery from HDDs, SSDs, and flash storage. Overwrites free space, slack space, and MFT entries. Defeats PhotoRec, Recuva, and R-Studio. Includes scheduling for automatic cleanup.",
+        },
+        {
+          id: 179,
+          name: "DeepFreeze Lite",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(300, "ETH"),
+          crypto: "ETH",
+          shortDesc: "Restores system state on every reboot.",
+          rating: 4.4,
+          img: "❄️",
+          fullDesc:
+            "Restores system to pristine state on every reboot. All changes discarded. Ideal for forensic cleanliness. Kernel-level disk filter driver. Supports multiple partitions and boot configs.",
+        },
+        {
+          id: 180,
+          name: "Self-Destruct Container",
+          category: "Forensics & Anti-Forensics",
+          price: usdToCrypto(250, "BTC"),
+          crypto: "BTC",
+          shortDesc: "Encrypted container that self-destructs.",
+          rating: 4.6,
+          img: "💥",
+          fullDesc:
+            "Encrypted container that self-destructs after configurable triggers: wrong password attempts, time expiry, or remote command. Secure deletion of all contents. Plausible deniability for the container's existence.",
         },
       ];
 
@@ -1871,7 +2357,6 @@
       ];
       const RATING_FILTERS = ["All Ratings", "4.5+", "4.0+", "3.5+"];
 
-      // ---------- Wallet Addresses (BTC & ETH only) ----------
       const WALLETS = {
         BTC: {
           address: "15hLEAL4SWJLJgNUwTnWo8Xmy54U41ZG7r",
@@ -1883,7 +2368,6 @@
         },
       };
 
-      // ---------- Trust Ticker ----------
       const TICKER_MESSAGES = [
         "🔒 PGP signed communications available • ",
         "⭐ 4.7/5 average vendor rating across 12,000+ transactions • ",
@@ -1898,6 +2382,7 @@
       const formatCrypto = (val, symbol) => `${val.toFixed(4)} ${symbol}`;
       const formatUSD = (val) => `$${val.toFixed(2)}`;
 
+      // ---------- FIXED useLocalStorage (uses functional setState to avoid stale closure) ----------
       const useLocalStorage = (key, initialValue) => {
         const [storedValue, setStoredValue] = useState(() => {
           try {
@@ -1907,16 +2392,23 @@
             return initialValue;
           }
         });
-        const setValue = (value) => {
-          try {
-            const valueToStore =
-              value instanceof Function ? value(storedValue) : value;
-            setStoredValue(valueToStore);
-            window.localStorage.setItem(key, JSON.stringify(valueToStore));
-          } catch (e) {
-            console.error("localStorage error", e);
-          }
-        };
+
+        const setValue = useCallback(
+          (value) => {
+            setStoredValue((prev) => {
+              const valueToStore =
+                value instanceof Function ? value(prev) : value;
+              try {
+                window.localStorage.setItem(key, JSON.stringify(valueToStore));
+              } catch (e) {
+                console.error("localStorage error", e);
+              }
+              return valueToStore;
+            });
+          },
+          [key],
+        );
+
         return [storedValue, setValue];
       };
 
@@ -1941,34 +2433,21 @@
         const [checkoutAgreed, setCheckoutAgreed] = useState(false);
         const [paymentLoading, setPaymentLoading] = useState(false);
         const [copiedAddress, setCopiedAddress] = useState(null);
-        const [emailJSConfigured, setEmailJSConfigured] = useState(EMAILJS_READY);
+        const [emailJSConfigured, setEmailJSConfigured] = useState(true);
 
-        // Re-check on mount in case the global flag was set after the first render
         useEffect(() => {
-          if (typeof emailjs !== "undefined" && EMAILJS_READY) {
-            setEmailJSConfigured(true);
-          } else {
-            // One more attempt in case the script finished loading late
-            try {
-              if (typeof emailjs !== "undefined") {
-                emailjs.init("70Q1bWdEPbUw-dkJG");
-                EMAILJS_READY = true;
-                setEmailJSConfigured(true);
-              }
-            } catch (e) {
-              setEmailJSConfigured(false);
-            }
+          try {
+            const publicKey = emailjs.init("70Q1bWdEPbUw-dkJG");
+            if (publicKey) setEmailJSConfigured(true);
+          } catch (e) {
+            setEmailJSConfigured(false);
           }
         }, []);
 
-        // Filtered products with search and filters
         const filteredProducts = useMemo(() => {
           return PRODUCTS.filter((p) => {
-            // Category filter
             if (selectedCategory !== "All" && p.category !== selectedCategory)
               return false;
-
-            // Search query
             if (searchQuery.trim() !== "") {
               const query = searchQuery.toLowerCase().trim();
               const matchesName = p.name.toLowerCase().includes(query);
@@ -1983,25 +2462,18 @@
               )
                 return false;
             }
-
-            // Crypto filter
             if (selectedCrypto !== "All" && p.crypto !== selectedCrypto)
               return false;
-
-            // Price range filter
             const priceUSD = cryptoToUSD(p.price, p.crypto);
             if (
               priceUSD < selectedPriceRange.min ||
               priceUSD > selectedPriceRange.max
             )
               return false;
-
-            // Rating filter
             if (selectedRating !== "All Ratings") {
               const minRating = parseFloat(selectedRating);
               if (p.rating < minRating) return false;
             }
-
             return true;
           });
         }, [
@@ -2012,56 +2484,68 @@
           selectedRating,
         ]);
 
-        const addToCart = useCallback((p) => {
-          setCart((prev) => {
-            const ex = prev.find((i) => i.id === p.id);
-            if (ex) {
-              return prev.map((i) =>
-                i.id === p.id ? { ...i, qty: i.qty + 1 } : i,
-              );
-            }
-            return [...prev, { ...p, qty: 1 }];
-          });
-          setNotification(`✔ Added ${p.name} to cart`);
-        }, []);
+        const addToCart = useCallback(
+          (p) => {
+            setCart((prev) => {
+              const ex = prev.find((i) => i.id === p.id);
+              if (ex) {
+                return prev.map((i) =>
+                  i.id === p.id ? { ...i, qty: i.qty + 1 } : i,
+                );
+              }
+              return [...prev, { ...p, qty: 1 }];
+            });
+            setNotification(`✔ Added ${p.name} to cart`);
+          },
+          [setCart],
+        );
 
-        const removeFromCart = useCallback((id) => {
-          setCart((prev) => prev.filter((i) => i.id !== id));
-        }, []);
+        const removeFromCart = useCallback(
+          (id) => {
+            setCart((prev) => prev.filter((i) => i.id !== id));
+          },
+          [setCart],
+        );
 
-        const updateCartQty = useCallback((id, delta) => {
-          setCart((prev) => {
-            return prev
-              .map((i) => {
-                if (i.id === id) {
-                  const newQty = i.qty + delta;
-                  if (newQty <= 0) return null; // Will be filtered out
-                  return { ...i, qty: newQty };
-                }
-                return i;
-              })
-              .filter(Boolean);
-          });
-        }, []);
+        const updateCartQty = useCallback(
+          (id, delta) => {
+            setCart((prev) => {
+              const updated = prev
+                .map((i) => {
+                  if (i.id === id) {
+                    const newQty = i.qty + delta;
+                    if (newQty <= 0) return null;
+                    return { ...i, qty: newQty };
+                  }
+                  return i;
+                })
+                .filter(Boolean);
+              return updated;
+            });
+          },
+          [setCart],
+        );
 
-        const clearCart = useCallback(() => setCart([]), []);
+        const clearCart = useCallback(() => setCart([]), [setCart]);
 
-        const toggleWishlist = useCallback((p) => {
-          setWishlist((prev) => {
-            if (prev.find((i) => i.id === p.id)) {
-              setNotification(`Removed ${p.name} from wishlist`);
-              return prev.filter((i) => i.id !== p.id);
-            } else {
-              setNotification(`❤ Added ${p.name} to wishlist`);
-              return [...prev, p];
-            }
-          });
-        }, []);
+        const toggleWishlist = useCallback(
+          (p) => {
+            setWishlist((prev) => {
+              if (prev.find((i) => i.id === p.id)) {
+                setNotification(`Removed ${p.name} from wishlist`);
+                return prev.filter((i) => i.id !== p.id);
+              } else {
+                setNotification(`❤ Added ${p.name} to wishlist`);
+                return [...prev, p];
+              }
+            });
+          },
+          [setWishlist],
+        );
 
         const isInWishlist = (id) => wishlist.some((i) => i.id === id);
         const cartItemCount = cart.reduce((s, i) => s + i.qty, 0);
 
-        // Calculate cart totals (always multiply by qty)
         const cartTotalBTC = useMemo(() => {
           return cart.reduce((total, item) => {
             const itemUSD = cryptoToUSD(item.price, item.crypto) * item.qty;
@@ -2088,9 +2572,9 @@
             return () => clearTimeout(t);
           }
         }, [notification]);
-        useEffect(() => {
-          if (showCheckout) setCheckoutAgreed(false);
-        }, [showCheckout]);
+
+        // NOTE: We deliberately do NOT reset checkoutAgreed when showCheckout changes
+        // because that was triggering unwanted re-renders. Reset explicitly on close.
 
         const copyToClipboard = (text, coin) => {
           navigator.clipboard
@@ -2107,11 +2591,9 @@
         const handleCheckoutSubmit = async (e) => {
           e.preventDefault();
           setPaymentLoading(true);
-
           const form = e.target;
           const email = form.email.value.trim();
           const social = form.social.value.trim();
-
           if (!email) {
             setNotification("Email required for payment confirmation.");
             setPaymentLoading(false);
@@ -2137,21 +2619,17 @@
             total_usd: totalUSD,
             btc_wallet: WALLETS.BTC.address,
             eth_wallet: WALLETS.ETH.address,
+            contact_email: CONTACT_EMAIL,
             order_date: new Date().toISOString(),
             order_id:
               "SH-" + Math.random().toString(36).substring(2, 10).toUpperCase(),
           };
 
-          // Attempt EmailJS send, but don't block on failure
           if (emailJSConfigured) {
             try {
               await emailjs.send("service_ftsgdxc", "template_j9utqpr", params);
-              console.log("Checkout email sent successfully");
             } catch (err) {
-              console.warn(
-                "EmailJS send failed (continuing to success modal):",
-                err,
-              );
+              console.warn("EmailJS send failed:", err);
               try {
                 const pendingOrders = JSON.parse(
                   localStorage.getItem("shadow_pending_orders") || "[]",
@@ -2162,11 +2640,10 @@
                   JSON.stringify(pendingOrders),
                 );
               } catch (storageErr) {
-                console.warn("Could not store pending order:", storageErr);
+                console.warn(storageErr);
               }
             }
           } else {
-            console.log("EmailJS not configured. Order stored locally.");
             try {
               const offlineOrders = JSON.parse(
                 localStorage.getItem("shadow_offline_orders") || "[]",
@@ -2177,12 +2654,13 @@
                 JSON.stringify(offlineOrders),
               );
             } catch (storageErr) {
-              console.warn("Could not store offline order:", storageErr);
+              console.warn(storageErr);
             }
           }
 
           setPaymentLoading(false);
           setShowCheckout(false);
+          setCheckoutAgreed(false);
           setShowSuccess(true);
           clearCart();
         };
@@ -2194,22 +2672,20 @@
           const desc = form.description.value.trim();
           const email = form.email.value.trim();
           const social = form.social.value.trim();
-
           if (!desc || !email) {
             setNotification("Description and email are required.");
             return;
           }
-
           const params = {
             reason: reason,
             description: desc,
             user_email: email,
             social_media: social || "N/A",
+            contact_email: CONTACT_EMAIL,
             request_date: new Date().toISOString(),
             request_id:
               "REQ-" + Math.random().toString(36).substring(2, 8).toUpperCase(),
           };
-
           if (emailJSConfigured) {
             try {
               await emailjs.send("service_ftsgdxc", "template_9zb2oex", params);
@@ -2218,7 +2694,6 @@
               );
               form.reset();
             } catch (err) {
-              console.warn("Contact form EmailJS failed:", err);
               setNotification(
                 "✔ Request received (offline mode). We'll review it.",
               );
@@ -2238,13 +2713,11 @@
           window.scrollTo({ top: 0, behavior: "smooth" });
         };
 
-        // ---------- MODALS ----------
-        const DisclaimerModal = () => (
+        // ---- Render helper functions for modals (called as functions, NOT used as JSX components,
+        // so React doesn't remount them and clear the input fields) ----
+        const renderDisclaimerModal = () => (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay">
-            <div
-              className="glass-panel rounded-2xl max-w-lg w-full p-6 border border-red-700/50 text-center"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div className="glass-panel rounded-2xl max-w-lg w-full p-6 border border-red-700/50 text-center">
               <i className="fas fa-exclamation-triangle text-5xl text-red-400 mb-4"></i>
               <h2 className="text-xl font-bold text-white mb-3">
                 Educational Purposes Only
@@ -2255,7 +2728,6 @@
                 platform operators do not condone illegal activities. By
                 proceeding, you acknowledge that you are responsible for
                 complying with all applicable laws in your jurisdiction.
-                PLEASE PURCHASE ONLY ONE SOFTWARE AT A TIME
               </p>
               <button
                 onClick={() => setShowDisclaimer(false)}
@@ -2267,7 +2739,7 @@
           </div>
         );
 
-        const TermsModal = () => (
+        const renderTermsModal = () => (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay"
             onClick={() => setShowTerms(false)}
@@ -2301,6 +2773,16 @@
                   <span className="text-emerald-300 font-semibold">3.</span> We
                   don't store IPs or personal data. PGP disputes only.
                 </p>
+                <p>
+                  <span className="text-emerald-300 font-semibold">4.</span>{" "}
+                  Contact:{" "}
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="text-emerald-400 underline"
+                  >
+                    {CONTACT_EMAIL}
+                  </a>
+                </p>
                 <p className="text-red-400/80 italic mt-4">
                   <i className="fas fa-exclamation-triangle"></i> Educational
                   purposes only.
@@ -2316,7 +2798,7 @@
           </div>
         );
 
-        const QuickviewModal = () => {
+        const renderQuickviewModal = () => {
           if (!showQuickview) return null;
           const p = showQuickview;
           return (
@@ -2375,10 +2857,13 @@
           );
         };
 
-        const CheckoutModal = () => (
+        const renderCheckoutModal = () => (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay"
-            onClick={() => setShowCheckout(false)}
+            onClick={() => {
+              setShowCheckout(false);
+              setCheckoutAgreed(false);
+            }}
           >
             <div
               className="glass-panel rounded-2xl max-w-xl w-full p-6 border border-gray-700 max-h-[90vh] overflow-y-auto scrollbar-thin"
@@ -2389,17 +2874,34 @@
                   <i className="fab fa-bitcoin mr-2"></i>Crypto Checkout
                 </h2>
                 <button
-                  onClick={() => setShowCheckout(false)}
+                  onClick={() => {
+                    setShowCheckout(false);
+                    setCheckoutAgreed(false);
+                  }}
                   className="text-gray-400 hover:text-white text-2xl"
                 >
                   &times;
                 </button>
               </div>
 
+              {/* Contact Email Display */}
+              <div className="mb-4 bg-purple-900/20 border border-purple-700/40 rounded-lg p-3 text-center">
+                <p className="text-xs text-purple-300">
+                  <i className="fas fa-envelope mr-1"></i>Support:{" "}
+                  <a
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="text-purple-200 underline font-semibold"
+                  >
+                    {CONTACT_EMAIL}
+                  </a>
+                </p>
+              </div>
+
               {/* Order Summary */}
               <div className="mb-5 bg-black/30 rounded-xl p-4 border border-gray-700">
                 <h3 className="text-sm font-bold text-gray-300 mb-3">
-                  <i className="fas fa-receipt mr-2"></i>Order Summary
+                  <i className="fas fa-receipt mr-2"></i>Order Summary (
+                  {cartItemCount} items)
                 </h3>
                 <div className="space-y-2 max-h-40 overflow-y-auto scrollbar-thin mb-3">
                   {cart.map((i) => (
@@ -2408,7 +2910,7 @@
                       className="flex justify-between items-center text-xs"
                     >
                       <span className="text-gray-400">
-                        {i.name} x{i.qty}
+                        {i.name} ×{i.qty}
                       </span>
                       <span className="text-gray-300">
                         {formatUSD(cryptoToUSD(i.price, i.crypto) * i.qty)}
@@ -2541,7 +3043,7 @@
           </div>
         );
 
-        const SuccessModal = () => (
+        const renderSuccessModal = () => (
           <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay"
             onClick={handleContinueShopping}
@@ -2558,6 +3060,15 @@
                 Your purchase will be validated upon payment confirmation. Check
                 your email for details.
               </p>
+              <p className="text-gray-400 text-xs mb-4">
+                Need help?{" "}
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="text-emerald-400 underline"
+                >
+                  {CONTACT_EMAIL}
+                </a>
+              </p>
               <button
                 onClick={handleContinueShopping}
                 className="bg-emerald-700 hover:bg-emerald-600 text-white py-2 px-6 rounded-lg font-medium transition"
@@ -2570,8 +3081,7 @@
 
         return (
           <div className="min-h-screen flex flex-col relative">
-            {/* Disclaimer Popup */}
-            {showDisclaimer && <DisclaimerModal />}
+            {showDisclaimer && renderDisclaimerModal()}
 
             {notification && (
               <div className="fixed top-5 right-5 z-40 bg-black/80 backdrop-blur-md border border-emerald-700 text-emerald-300 px-5 py-3 rounded-lg shadow-2xl mono-text text-sm flex items-center gap-2">
@@ -2593,12 +3103,19 @@
             {/* Header */}
             <header className="glass-panel sticky top-0 z-30 border-b border-gray-800 px-4 md:px-8 py-3 flex items-center justify-between flex-wrap gap-3">
               <div className="flex items-center gap-3">
-                <i className="fas fa-spider text-3xl text-emerald-500" />
+                <i className="fas fa-spider text-3xl text-emerald-500"></i>
                 <h1 className="text-2xl md:text-3xl font-bold mono-text text-white">
                   SHADOW<span className="text-emerald-400">HAVEN</span>
                 </h1>
               </div>
               <div className="flex items-center gap-3 md:gap-5">
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="hidden md:flex items-center gap-2 text-xs text-emerald-400 hover:text-emerald-300 transition mono-text"
+                >
+                  <i className="fas fa-envelope"></i>
+                  {CONTACT_EMAIL}
+                </a>
                 <button
                   onClick={() => setShowWishPanel(true)}
                   className="relative text-gray-300 hover:text-pink-400 text-xl"
@@ -2630,9 +3147,19 @@
               </div>
             </header>
 
+            {/* Mobile Contact Email Bar */}
+            <div className="md:hidden bg-black/60 border-b border-gray-800 py-2 px-4 text-center">
+              <a
+                href={`mailto:${CONTACT_EMAIL}`}
+                className="text-xs text-emerald-400 mono-text"
+              >
+                <i className="fas fa-envelope mr-1"></i>
+                {CONTACT_EMAIL}
+              </a>
+            </div>
+
             {/* Search and Filters */}
             <div className="px-4 md:px-8 py-4 space-y-4">
-              {/* Search Bar */}
               <div className="relative">
                 <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
                 <input
@@ -2652,9 +3179,7 @@
                 )}
               </div>
 
-              {/* Filters Row */}
               <div className="flex flex-wrap gap-2">
-                {/* Category Filter */}
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
@@ -2666,8 +3191,6 @@
                     </option>
                   ))}
                 </select>
-
-                {/* Crypto Filter */}
                 <select
                   value={selectedCrypto}
                   onChange={(e) => setSelectedCrypto(e.target.value)}
@@ -2675,19 +3198,17 @@
                 >
                   {CRYPTO_TYPES.map((ct) => (
                     <option key={ct} value={ct}>
-                      {ct} Only
+                      {ct === "All" ? "All Coins" : ct + " Only"}
                     </option>
                   ))}
                 </select>
-
-                {/* Price Range Filter */}
                 <select
                   value={selectedPriceRange.label}
                   onChange={(e) => {
-                    const selected = PRICE_RANGES.find(
+                    const s = PRICE_RANGES.find(
                       (pr) => pr.label === e.target.value,
                     );
-                    setSelectedPriceRange(selected);
+                    setSelectedPriceRange(s);
                   }}
                   className="px-3 py-2 text-xs bg-gray-900/80 border border-gray-700 rounded-lg"
                 >
@@ -2697,8 +3218,6 @@
                     </option>
                   ))}
                 </select>
-
-                {/* Rating Filter */}
                 <select
                   value={selectedRating}
                   onChange={(e) => setSelectedRating(e.target.value)}
@@ -2710,8 +3229,6 @@
                     </option>
                   ))}
                 </select>
-
-                {/* Clear All Filters */}
                 <button
                   onClick={() => {
                     setSelectedCategory("All");
@@ -2726,9 +3243,9 @@
                 </button>
               </div>
 
-              {/* Results Count */}
               <p className="text-xs text-gray-500">
                 Showing {filteredProducts.length} of {PRODUCTS.length} products
+                across {CATEGORIES.length - 1} categories
               </p>
             </div>
 
@@ -2831,6 +3348,15 @@
                   <p className="text-gray-400 mt-2">
                     Can't find what you need? Describe it and we'll source it.
                   </p>
+                  <p className="text-emerald-400 mt-2 text-sm mono-text">
+                    <i className="fas fa-envelope mr-1"></i>
+                    <a
+                      href={`mailto:${CONTACT_EMAIL}`}
+                      className="underline hover:text-emerald-300"
+                    >
+                      {CONTACT_EMAIL}
+                    </a>
+                  </p>
                 </div>
                 <div className="glass-panel rounded-2xl p-6 border border-gray-700">
                   <form onSubmit={handleContactSubmit} className="space-y-5">
@@ -2900,23 +3426,32 @@
             </section>
 
             {/* Footer */}
-            <footer className="border-t border-gray-800 py-4 px-6 text-center text-xs text-gray-500 flex justify-between items-center flex-wrap gap-2">
-              <span>
-                <i className="fas fa-shield-haltered"></i> PGP only · No direct
-                contact
-              </span>
-              <a
-                href="#contact-section"
-                className="underline hover:text-purple-300"
-              >
-                Request a Tool
-              </a>
-              <span>
-                <i className="fab fa-bitcoin"></i> BTC/ETH exclusive
-              </span>
+            <footer className="border-t border-gray-800 py-6 px-6 text-xs text-gray-500">
+              <div className="max-w-6xl mx-auto flex justify-between items-center flex-wrap gap-3">
+                <span>
+                  <i className="fas fa-shield-haltered"></i> PGP only · No
+                  direct contact
+                </span>
+                <a
+                  href={`mailto:${CONTACT_EMAIL}`}
+                  className="text-emerald-400 hover:text-emerald-300 mono-text flex items-center gap-1"
+                >
+                  <i className="fas fa-envelope"></i>
+                  {CONTACT_EMAIL}
+                </a>
+                <a
+                  href="#contact-section"
+                  className="underline hover:text-purple-300"
+                >
+                  Request a Tool
+                </a>
+                <span>
+                  <i className="fab fa-bitcoin"></i> BTC/ETH exclusive
+                </span>
+              </div>
             </footer>
 
-            {/* Slide Panels */}
+            {/* Cart Slide Panel */}
             {showCartPanel && (
               <div
                 className="fixed inset-0 z-40 flex justify-end"
@@ -2951,8 +3486,8 @@
                           className="flex items-center gap-3 bg-black/30 p-3 rounded-lg border border-gray-800"
                         >
                           <span className="text-2xl">{i.img}</span>
-                          <div className="flex-1">
-                            <p className="text-sm font-semibold text-white">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-white truncate">
                               {i.name}
                             </p>
                             <p className="text-xs text-gray-400">
@@ -2968,23 +3503,23 @@
                           <div className="flex items-center gap-1">
                             <button
                               onClick={() => updateCartQty(i.id, -1)}
-                              className="text-gray-500 hover:text-white bg-gray-800 rounded px-2 py-1 text-xs"
+                              className="text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 rounded w-7 h-7 text-sm flex items-center justify-center"
                             >
-                              -
+                              −
                             </button>
-                            <span className="text-xs text-gray-300">
+                            <span className="text-xs text-gray-200 min-w-[24px] text-center">
                               {i.qty}
                             </span>
                             <button
                               onClick={() => updateCartQty(i.id, 1)}
-                              className="text-gray-500 hover:text-white bg-gray-800 rounded px-2 py-1 text-xs"
+                              className="text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 rounded w-7 h-7 text-sm flex items-center justify-center"
                             >
                               +
                             </button>
                           </div>
                           <button
                             onClick={() => removeFromCart(i.id)}
-                            className="text-gray-500 hover:text-red-400"
+                            className="text-gray-500 hover:text-red-400 ml-1"
                           >
                             <i className="fas fa-trash-alt"></i>
                           </button>
@@ -3029,6 +3564,7 @@
               </div>
             )}
 
+            {/* Wishlist Slide Panel */}
             {showWishPanel && (
               <div
                 className="fixed inset-0 z-40 flex justify-end"
@@ -3063,8 +3599,8 @@
                           className="flex items-center gap-3 bg-black/30 p-3 rounded-lg border border-gray-800"
                         >
                           <span className="text-2xl">{i.img}</span>
-                          <div className="flex-1">
-                            <p className="text-sm font-semibold text-white">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-white truncate">
                               {i.name}
                             </p>
                             <p className="text-xs text-gray-400">
@@ -3086,10 +3622,10 @@
               </div>
             )}
 
-            {showTerms && <TermsModal />}
-            {showQuickview && <QuickviewModal />}
-            {showCheckout && <CheckoutModal />}
-            {showSuccess && <SuccessModal />}
+            {showTerms && renderTermsModal()}
+            {showQuickview && renderQuickviewModal()}
+            {showCheckout && renderCheckoutModal()}
+            {showSuccess && renderSuccessModal()}
           </div>
         );
       };
